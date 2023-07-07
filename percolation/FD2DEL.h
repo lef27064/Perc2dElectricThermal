@@ -15,9 +15,10 @@ class Matrix2D
 	int height;  //y
 
 public: Matrix2D(int w, int h) :
+	
+	array(new T[w * h]),
 	width(w),
-	height(h),
-	array(new T[w * h]){}
+	height(h) {}
 
 	  ~Matrix2D()
 	  {

@@ -39,22 +39,24 @@ struct nodeWithState
 	point2d pt;			// The cordinates of a cell
 	point2d previous;
 	int dist;			// cell's distance  from the source
-	double resistance;	// cell's resistance from the source
-	double thermalResistance;
-	double YoungModulus;
-	double PoissonRatio;
+	float resistance;	// cell's resistance from the source
+	float thermalResistance;
+	float YoungModulus;
+	float PoissonRatio;
 	char state;
 };
+
+
 
 struct queueNode
 {
 	point2d pt;			// The cordinates of a cell
 	point2d previous;
 	int dist;			// cell's distance  from the source
-	double resistance;	// cell's resistance from the source
-	double thermalResistance;
-	double YoungModulus;
-	double PoissonRatio;
+	float resistance;	// cell's resistance from the source
+	float thermalResistance;
+	float YoungModulus;
+	float PoissonRatio;
 
 };
 

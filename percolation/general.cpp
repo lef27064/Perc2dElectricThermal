@@ -90,7 +90,7 @@ double  average_element(double values[], int first, int last)
 
 	double sum = 0;
 	int i = first;
-	double result = values[i];
+//	double result = values[i];
 	for (i = first; i < last; i++)
 		sum += values[i];
 	return sum / (last - first);

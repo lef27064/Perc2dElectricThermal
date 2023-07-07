@@ -48,7 +48,7 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 	double avgMaxClusterRadius = 0;
 
 	//calc sumMaxClusterRadius
-	for (int i = 0; i < grid.cMaxClusterRadius.size(); i++)
+	for (unsigned long long i = 0; i < grid.cMaxClusterRadius.size(); i++)
 		sumMaxClusterRadius = sumMaxClusterRadius + grid.cMaxClusterRadius[i];
 
 	avgMaxClusterRadius = sumMaxClusterRadius / grid.cMaxClusterRadius.size();
@@ -154,7 +154,7 @@ void BatchMonteCarlo::saveResultsWithSemicolon(void)
 		componentFile << "Electric Conductivity; Thermal Conductivity; Young Modulus; Poisson Ratio ;Total Conductive Paths;Mean Conductive Length;";
 
 	if (this->iShapes[2].calcElectricConductivityWithFDM)
-		componentFile << "FDM Ix;FDM Iy;FDM ñ;";
+		componentFile << "FDM Ix;FDM Iy;FDM ro;";
 
 	componentFile << "Process Time; Preperation Time; Grid(X); Grid(Y);  ppms;";
 
@@ -237,7 +237,7 @@ void BatchMonteCarlo::saveResults(void)
 			componentFile << "Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Conductive Length,";
 
 		if (this->iShapes[2].calcElectricConductivityWithFDM)
-			componentFile << "FDM Ix,FDM Iy,FDM ñ,";
+			componentFile << "FDM Ix,FDM Iy,FDM ro,";
 
 		componentFile << "Process Time, Preperation Time, Grid(X), Grid(Y),  ppms,";
 

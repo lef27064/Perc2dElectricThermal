@@ -225,8 +225,8 @@ Rectangle::Rectangle(Point lowLeft, Point upRight): lowerLeft(lowLeft)
 		, leftLine(lowerLeft, upperLeft)
 		, rightLine(lowerRight, upperRight)
 		, center((upRight.x + lowLeft.x) / 2, (upRight.y + lowLeft.y) / 2)
-		, height(upRight.y - lowLeft.y)
 		, width(upRight.x - lowLeft.x)
+	    , height(upRight.y - lowLeft.y)
 
 	{ }
 

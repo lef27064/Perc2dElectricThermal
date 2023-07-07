@@ -41,7 +41,7 @@ Grid::Grid(int x, int y) : width(x), height(y)
 			start = (char*)malloc(total + 1);
 			assert(start);
 			cell = start;
-			long long lastLine = (long long)width * (long long)(height - 1);
+			long long lastLine = width * (height - 1);
 			end = start + lastLine;
 			std::fill_n(start, total, CellState::EMPTY);
 		}
@@ -615,7 +615,7 @@ int Grid::DFSRestore(char* mat, bool* ivisited, point2dShort src)
 
 		}
 	}
-
+	return true;
 }
 
 
@@ -635,7 +635,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path,
 	list<queueNode> backUp;
 
 
-	int count = 0;
+//	int count = 0;
 	while (!path.empty())
 	{
 		currentPoint = path.front();
@@ -1176,10 +1176,10 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	std::list<queueNode> singlePath;
 
 	int material = ingadients[position];
-	double currResistance = 1. / ielectricConductivities[material];
-	double currThermalResistance = 1. / ithermalConductivities[material];
-	double currYoungModulus = iYoungModulus[material];
-	double currPoissonRatio = iPoissonRatio[material];
+	float currResistance = 1. / ielectricConductivities[material];
+	float currThermalResistance = 1. / ithermalConductivities[material];
+	float currYoungModulus = iYoungModulus[material];
+	float currPoissonRatio = iPoissonRatio[material];
 
 
 	queueNode s = { src, {0,0},0,currResistance,currThermalResistance, currYoungModulus, currPoissonRatio };
@@ -1191,7 +1191,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	{
 		curr = q.front();
 		point2d pt = curr.pt;
-		position = (long long)pt.y * width + pt.x;
+//		position = (long long)pt.y * width + pt.x;
 
 
 
@@ -1308,9 +1308,9 @@ int Grid::clusterCenter(point2d src, doublepoint2d* center, long long int* total
 
 int Grid::clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, long long int totalPoints, double* inertia, double* radiusOfGyration)
 {
-	long long int totalP = 0;
+//	long long int totalP = 0;
 	double sum = 0;
-	double sqrtSum = 0;
+//	double sqrtSum = 0;
 	int x, y;
 
 	double distance;
@@ -1379,7 +1379,7 @@ Cluster Grid::markClusters()
 	Cluster currCluster;
 	point2d src;
 
-	double meanDistance = 0;
+//	double meanDistance = 0;
 
 	queue<Cluster> cClusters;
 	double maxRadius = 0;
@@ -1431,7 +1431,7 @@ Cluster Grid::markClusters()
 
 
 
-		int j = 0;
+//		int j = 0;
 	}
 
 
@@ -1450,7 +1450,7 @@ double Grid::findCorrelationLength(std::vector<clusterStatistics> iClusters)
 	double denominator = 0;
 	double weight = 0;
 
-	for (long long int i = 0; i < iClusters.size(); i++)
+	for (unsigned long long int i = 0; i < iClusters.size(); i++)
 		//if (iClusters.size()>10)
 	{
 		weight = double(iClusters[i].totalPoints) * double(iClusters[i].totalPoints);
@@ -1468,7 +1468,7 @@ double Grid::findCorrelationLength(std::vector<clusterStatistics> iClusters)
 int  Grid::percolate(void)
 {
 	int iter;
-	int perc = false;
+//	int perc = false;
 	int step = width / 8;
 	int result[8] = { -1,-1,-1,-1,-1,-1,-1,-1 };
 
@@ -1535,7 +1535,7 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 {
 	int i;
 
-	double sumCalculatedLength = 0;
+//	double sumCalculatedLength = 0;
 
 	point2dShort startPoint;
 	point2d endPoint = { 0,0 };
