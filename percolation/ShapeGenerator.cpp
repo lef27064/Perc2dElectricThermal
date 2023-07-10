@@ -84,10 +84,10 @@ void ShapeGenerator::areaSolve(void)
 	double sumError;
 	double epsilon = 1.e-10;
 
-	double maxError = 0;
-	double totalWeight = 0;
+//	double maxError = 0;
+//	double totalWeight = 0;
 	double sumAreas = 0;
-	int whereMaxError = 0;
+//	int whereMaxError = 0;
 	int iter = 0;
 
 	//initialize
@@ -98,7 +98,7 @@ void ShapeGenerator::areaSolve(void)
 	{
 		iter++;
 		sum = 0;
-		maxError = 0;
+//		maxError = 0;
 
 		//compute ÓAi*ñi 
 		for (int i = 0; i < totalComponents; i++)
@@ -107,7 +107,7 @@ void ShapeGenerator::areaSolve(void)
 
 		}
 
-		maxError = 0;
+//		maxError = 0;
 
 		//calculate  current Wi = Ai*ñi/ ÓAj*ñj and compute errors
 		//
@@ -180,7 +180,7 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 
 
 		clock_t start = clock();
-		int i, j, k;
+		int i, j;
 		double what;
 
 
@@ -355,7 +355,7 @@ SlopedRectangle ShapeGenerator::addOneSlopedRectangle(int caseNo, int ingradient
 	Point dCenter(0, 0);
 	double maxAngle = 0;
 	double minAngle = 0;
-	double sharedArea = 0;
+//	double sharedArea = 0;
 	double rectWidth;
 	double rectHeight;
 
@@ -397,7 +397,7 @@ Ellipse ShapeGenerator::addOneEllipse(int caseNo, int ingradient, std::normal_di
 
 	double maxAngle = 0;
 	double minAngle = 0;
-	double sharedArea = 0;
+//	double sharedArea = 0;
 
 	Ellipse cEllipse(Point(0, 0), 0, 0, 0);
 
@@ -696,7 +696,7 @@ void ShapeGenerator::monteCarlo(void)
 			cout << "-----------------------------------------------------------------------------------------\n";
 			cout << "Calculate Statistics.. Mark Clusters,";
 
-			Cluster cCluster = grid->markClusters();
+//			Cluster cCluster = grid->markClusters();
 			double corrLength = grid->findCorrelationLength(grid->Clusters);
 			cout << "Correlation length=" << corrLength << "\n";
 
@@ -790,7 +790,7 @@ void ShapeGenerator::calcMeanCorrellationLength()
 {
 	double sum = 0;
 
-	for (int i = 0; i < correleationLengths.size(); i++)
+	for (unsigned long long i = 0; i < correleationLengths.size(); i++)
 		sum = sum + correleationLengths[i];
 	correleationLength = sum / correleationLengths.size();
 }
@@ -844,7 +844,7 @@ void ShapeGenerator::Report()
 		File << ",Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity";
 
 	if (calcElectricConductivityWithFDM)
-		File << ",FDM Ix       ,FDM Iy,       FDM ñ";
+		File << ",FDM Ix       ,FDM Iy,       FDM  ro";
 
 	File << "\n";
 
@@ -1051,7 +1051,7 @@ void ShapeGenerator::ReportStatistics(void)
 	File << "Total  Points  |Mean Radius | Inertia \n";
 
 	//clustersSize = int(0.5 * sqrt(grid->height * grid->height + grid->width* grid->width));
-	for (int i = 0; i < grid->Clusters.size(); i++)
+	for (unsigned long long i = 0; i < grid->Clusters.size(); i++)
 	{
 		if (grid->Clusters[i].totalPoints > 0)
 		{

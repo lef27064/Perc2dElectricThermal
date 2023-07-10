@@ -51,8 +51,6 @@ struct point2dShort
 {
 	short int x;
 	short int y;
-	short int z;
-
 };
 
 //To store matrix cell cordinates

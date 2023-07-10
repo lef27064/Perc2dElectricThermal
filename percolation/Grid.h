@@ -39,22 +39,30 @@ struct nodeWithState
 	point2d pt;			// The cordinates of a cell
 	point2d previous;
 	int dist;			// cell's distance  from the source
-	double resistance;	// cell's resistance from the source
-	double thermalResistance;
-	double YoungModulus;
-	double PoissonRatio;
+	float resistance;	// cell's resistance from the source
+	float thermalResistance;
+	float YoungModulus;
+	float PoissonRatio;
 	char state;
 };
 
-struct queueNode
+
+struct smallQueueNode
 {
 	point2d pt;			// The cordinates of a cell
 	point2d previous;
 	int dist;			// cell's distance  from the source
-	double resistance;	// cell's resistance from the source
-	double thermalResistance;
-	double YoungModulus;
-	double PoissonRatio;
+};
+
+struct queueNode: smallQueueNode {
+	//point2d pt;			// The cordinates of a cell
+	//point2d previous;
+	//int dist;			    // cell's distance  from the source
+	
+	float resistance;	// cell's resistance from the source
+	float thermalResistance;
+	float YoungModulus;
+	float PoissonRatio;
 
 };
 
@@ -69,7 +77,7 @@ class Grid {
 	int percolate(void);
 	long long total;
 public:
-	list<list<queueNode>> pathsList;
+	list<list<smallQueueNode>> pathsList;
 	char* cell, * start, * end;
 	unsigned char* cluster;
 	int totalClusters = 0;
@@ -138,16 +146,18 @@ public:
 
 		//void calcPropertiesAtPoint(queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio);
 
-	void CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio);
+	void CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio);
+//void CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio);
 
 	void calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio);
 
 	//void MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode> clusterStack, list<queueNode>* listPath);
 
-	void MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterStack, list<queueNode>* listPath);
+	void MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clusterStack, list<smallQueueNode>* listPath);
 
-	int drawPath(char* mat, bool* ivisited, list<queueNode> cpath);
-
+	//void MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterStack, list<queueNode>* listPath);
+	int drawPath(char* mat, bool* ivisited, list<smallQueueNode> cpath);
+	//int drawPath(char* mat, bool* ivisited, list<queueNode> cpath);
 	int drawPaths(char* mat, bool* ivisited);
 
 	int BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint);

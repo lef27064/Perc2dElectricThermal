@@ -1,7 +1,7 @@
 
 
 #include "image.h"
-#include <cerrno>
+
 
 
 
@@ -22,7 +22,7 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 
 	// Writing the maximum gray value
 	fprintf(pgmimg, "255\n");
-	int count = 0;
+	//int count = 0;
 
 
 	for (int line = 0; line < height; line++)
@@ -108,6 +108,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 	//close
 	fclose(imageFile);
+	free(colors);
 }
 
 
@@ -159,6 +160,8 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 	//close
 	fclose(imageFile);
+	free(colors);
+
 }
 
 
@@ -215,6 +218,7 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 	//close
 	fclose(imageFile);
+	free(colors);
 }
 
 //create bitmap from array

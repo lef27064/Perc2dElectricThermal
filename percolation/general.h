@@ -80,7 +80,8 @@ struct pinfo {
 
 pinfo const info{ 
 		"Rerclolation 2d\n", 
-		"Version 1.5 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...), 4/7/2023  \n",
+		"Version 1.5 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)",
+		"4/7/2023  \n",
 		"Lefteris Lamprou\n", 
 		"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n" 
 };
