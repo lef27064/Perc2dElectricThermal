@@ -637,10 +637,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 	long long position;
 	int material;
 	
-	double currResistance;
-	double currThermalResistance;
-	double currYoungModulus;
-	double currPoissonRatio;
+	
 
 //	int count = 0;
 	while (!path.empty())

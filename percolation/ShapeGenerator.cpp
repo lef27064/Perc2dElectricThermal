@@ -46,15 +46,40 @@ void ShapeGenerator::initDirs(void)
 	char* cshapesDir = &shapesDir[0u];
 	char* cimagesDir = &imagesDir[0u];
 
+	int result = 0 ;
+	int sum;
 	if (!dirExists(cprojectDir))
-		_mkdir(cprojectDir);
+	{
+		result = _mkdir(cprojectDir);
+		if (result != 0)
+		{
+			cout << "Error create directory " << projectDir;
+			exit(-1);
+		}
+		
+	}
 
 	if (!dirExists(cshapesDir))
-		_mkdir(cshapesDir);
+	{
+		result = _mkdir(cshapesDir);
+		if (result != 0)
+		{
+			cout << "Error create directory " << shapesDir;
+			exit(-1);
+		}
+
+	}
 
 	if (!dirExists(cimagesDir))
-		_mkdir(cimagesDir);
-
+	{
+		result = _mkdir(cimagesDir);
+		if (result != 0)
+		{
+			cout << "Error create directory " << imagesDir;
+			exit(-1);
+		}
+	}
+	
 	return;
 }
 
