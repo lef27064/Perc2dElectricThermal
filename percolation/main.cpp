@@ -13,7 +13,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#pragma comment(linker, "/STACK:6000000000")
+#pragma comment(linker, "/STACK:600000000")
 #pragma comment(linker,  "/HEAP:4200000000")
 
 #include <cstdlib>

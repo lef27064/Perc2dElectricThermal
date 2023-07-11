@@ -34,7 +34,7 @@ public:
 	int totalImagesToSave;
 	bool saveShapes;
 	bool saveAsBmpImage;
-	bool isLattice;
+	bool isLattice=true;
 	Settings(void) : saveImageFile(true), RandomSaveImageFile(true), totalImagesToSave(1), saveShapes(true), saveAsBmpImage(true) {};
 	Settings(bool isaveImageFile, bool iRandomSaveImageFile, int itotalImagesToSave, bool isaveShapes) : saveImageFile(isaveImageFile), RandomSaveImageFile(iRandomSaveImageFile), totalImagesToSave(itotalImagesToSave), saveShapes(isaveShapes),saveAsBmpImage(true) {};
 

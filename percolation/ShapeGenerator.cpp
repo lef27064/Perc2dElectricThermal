@@ -47,7 +47,7 @@ void ShapeGenerator::initDirs(void)
 	char* cimagesDir = &imagesDir[0u];
 
 	int result = 0 ;
-	int sum;
+	
 	if (!dirExists(cprojectDir))
 	{
 		result = _mkdir(cprojectDir);
