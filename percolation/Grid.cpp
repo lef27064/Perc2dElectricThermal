@@ -636,14 +636,14 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 	list<smallQueueNode> backUp;
 	long long position;
 	int material;
-	
-	
+
+
 
 //	int count = 0;
 	while (!path.empty())
 	{
 		smallCurrentPoint = path.front();
-		
+
 		path.pop_front();
 		currentPoint.pt = smallCurrentPoint.pt;
 		currentPoint.previous = smallCurrentPoint.previous;
@@ -656,7 +656,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 		currentPoint.YoungModulus= iYoungModulus[material];
 		currentPoint.PoissonRatio = iPoissonRatio[material];
 
-		 
+
 
 		calcPropertiesAtPoint(mat, ivisited, &currentPoint, ielectricConductivities, ithermalConductivities, iYoungModulus, iPoissonRatio);
 		backUp.push_back(currentPoint);
@@ -1281,7 +1281,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 				// mark cell as visited and enqueue it
 
 				smallQueueNode Adjcell = { {x, y},{pt.x,pt.y},curr.dist + 1 };// , 0.0, 0.0, 0.0, 0.0
-			
+
 
 				q.push(Adjcell);
 				backup.push(Adjcell);
@@ -1920,8 +1920,8 @@ void  Grid::saveToDisk(char* path, char* imageFileName, bool saveAsBMP)
 {
 	char* filename{ new char[strlen(path) + strlen(imageFileName) + 1] };
 
-	strcpy_s(filename, strlen(path), path);
-	strcat_s(filename, strlen(imageFileName), imageFileName);
+	strcpy(filename, path);
+	strcat(filename,  imageFileName);
 	saveToDisk(filename, saveAsBMP);
 }
 

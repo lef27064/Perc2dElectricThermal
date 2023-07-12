@@ -21,14 +21,13 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 
 
-string NowToString()
+std::string NowToString(void)
 {
-	chrono::system_clock::time_point p = chrono::system_clock::now();
-	time_t t = chrono::system_clock::to_time_t(p);
-	char str[26];
+    auto endt = std::chrono::system_clock::now();
+    std::time_t end_time = std::chrono::system_clock::to_time_t(endt);
+    std::string s = std::ctime(&end_time);
 
-	ctime_s(str, sizeof str, &t);
-	return str;
+    return s;
 }
 
 

@@ -2,6 +2,8 @@
 #include <fstream>
 #include <stdio.h>
 #include "Grid.h"
+#include <errno.h>
+#include <string.h>
 
 const int bytesPerPixel = 3; /// red, green, blue
 const int fileHeaderSize = 14;

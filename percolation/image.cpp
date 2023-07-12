@@ -10,8 +10,8 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 
 
 	FILE* pgmimg;
-	errno_t err;
-	err = fopen_s(&pgmimg, imageFileName, "w");
+	int err;
+	pgmimg = fopen(imageFileName, "w");
 
 
 	// Writing Magic Number to the File
@@ -68,8 +68,8 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -128,8 +128,8 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -181,8 +181,8 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -241,8 +241,8 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);

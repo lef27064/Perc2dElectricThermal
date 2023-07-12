@@ -17,7 +17,6 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
 
 
-//#include "intArraytoBMP/intarraytobmp.hpp"
 
 #include "ShapeGenerator.h"
 ShapeGenerator::ShapeGenerator()
@@ -29,7 +28,7 @@ ShapeGenerator::ShapeGenerator()
 	std::fill_n(Times, maxCases, 0.0);
 	std::fill_n(YoungModulus, maxCases, 0.0);
 	std::fill_n(componentsArea, maxCases, 0.0);
-
+	
 }
 /*
 ShapeGenerator::~ShapeGenerator()

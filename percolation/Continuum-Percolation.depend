@@ -1,136 +1,4 @@
 # depslib dependency file v1.0
-1666677936 source:c:\percolation\percolation_2d_v 1.5\percolation\cluster.cpp
-	"cluster.h"
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\cluster.h
-	<stdio.h>
-	<chrono>
-	<iostream>
-	<fstream>
-	<string>
-	<queue>
-
-1688462044 source:c:\percolation\percolation_2d_v 1.5\percolation\fd2del.cpp
-	"FD2DEL.h"
-	<cstring>
-	<cmath>
-
-1688453096 c:\percolation\percolation_2d_v 1.5\percolation\fd2del.h
-	<algorithm>
-	<iostream>
-	<string>
-	<fstream>
-	<sstream>
-	<sys/stat.h>
-	<vector>
-	<list>
-
-1666677936 source:c:\percolation\percolation_2d_v 1.5\percolation\batchmontecarlo.cpp
-	"BatchMonteCarlo.h"
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\batchmontecarlo.h
-	"Shapes.h"
-	"Grid.h"
-	"ShapeGenerator.h"
-	"dirent.h"
-	"general.h"
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\shapes.h
-	<cmath>
-	<iostream>
-
-1672817600 c:\percolation\percolation_2d_v 1.5\percolation\grid.h
-	<assert.h>
-	<iostream>
-	<stdlib.h>
-	<stdio.h>
-	<time.h>
-	<chrono>
-	<queue>
-	<stack>
-	<list>
-	"Shapes.h"
-	"image.h"
-	"general.h"
-	"cluster.h"
-	<omp.h>
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\image.h
-	<fstream>
-	<stdio.h>
-	"Grid.h"
-
-1688454017 c:\percolation\percolation_2d_v 1.5\percolation\general.h
-	<fstream>
-	<iostream>
-	<string>
-	<chrono>
-	<time.h>
-	<direct.h>
-	<unistd.h>
-
-1688462085 c:\percolation\percolation_2d_v 1.5\percolation\shapegenerator.h
-	<iostream>
-	<cmath>
-	<fstream>
-	<string>
-	<random>
-	<limits>
-	<algorithm>
-	<time.h>
-	<stdlib.h>
-	<string>
-	<vector>
-	<sstream>
-	<sys/types.h>
-	<sys/stat.h>
-	<direct.h>
-	<chrono>
-	<ctime>
-	<iomanip>
-	<omp.h>
-	"Shapes.h"
-	"Grid.h"
-	"general.h"
-	"Settings.h"
-	"FD2DEL.h"
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\settings.h
-	<stdio.h>
-	<chrono>
-	<iostream>
-	<fstream>
-	<string>
-
-1666677936 c:\percolation\percolation_2d_v 1.5\percolation\dirent.h
-	<windows.h>
-	<stdio.h>
-	<stdarg.h>
-	<wchar.h>
-	<string.h>
-	<stdlib.h>
-	<malloc.h>
-	<sys/types.h>
-	<sys/stat.h>
-	<errno.h>
-
-1669375568 source:c:\percolation\percolation_2d_v 1.5\percolation\main.cpp
-	<cstdlib>
-	<cstring>
-	<iostream>
-	<string>
-	<time.h>
-	<chrono>
-	"Shapes.h"
-	"Grid.h"
-	"ShapeGenerator.h"
-	"general.h"
-	"BatchMonteCarlo.h"
-	"Settings.h"
-
-1666677936 source:c:\percolation\percolation_2d_v 1.5\percolation\settings.cpp
-	"Settings.h"
-
 1689068343 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\batchmontecarlo.cpp
 	"BatchMonteCarlo.h"
 
@@ -252,16 +120,6 @@
 	"general.h"
 	<sys/stat.h>
 
-1689145537 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\grid.cpp
-	"Grid.h"
-	<cstring>
-	<string.h>
-	<stdio.h>
-	<stdlib.h>
-
-1689143603 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\image.cpp
-	"image.h"
-
 1689069585 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\main.cpp
 	<cstdlib>
 	<cstring>
@@ -286,4 +144,14 @@
 	<iostream>
 	"Shapes.h"
 	<algorithm>
+
+1689143603 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\image.cpp
+	"image.h"
+
+1689145537 source:c:\percolation\perc2delectricthermalcrossplatform\percolation\grid.cpp
+	"Grid.h"
+	<cstring>
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
 

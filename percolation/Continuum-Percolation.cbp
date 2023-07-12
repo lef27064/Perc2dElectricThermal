@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Electric Percolation Continuum" />
+		<Option title="Continuum Percolation" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Win32">
-				<Option output="../Debug/Electric Percolation Continuum" prefix_auto="1" extension_auto="1" />
+				<Option output="Debug/Continuum Percolation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Debug/" />
-				<Option deps_output="../Debug/" />
+				<Option deps_output="Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -19,17 +19,15 @@
 				</Compiler>
 			</Target>
 			<Target title="Debug x64">
-				<Option output="../Debug/Electric Percolation Continuum" prefix_auto="1" extension_auto="1" />
+				<Option output="Debug/Continuum Percolation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Debug/" />
-				<Option deps_output="../Debug/" />
+				<Option deps_output="Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-O0" />
 					<Add option="-Wall" />
-					<Add option="-Wextra" />
 				</Compiler>
 				<Linker>
 					<Add library="winmm.lib" />
@@ -49,13 +47,12 @@
 				</Linker>
 			</Target>
 			<Target title="Release x64">
-				<Option output="../Release/Electric Percolation Continuum" prefix_auto="1" extension_auto="1" />
+				<Option output="Release/Continuum Percolation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Release/" />
-				<Option deps_output="../Release/" />
+				<Option deps_output="Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-O1" />
 					<Add option="-Wall" />
 					<Add option="-Wextra" />
@@ -79,9 +76,9 @@
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
-				<Option output="../Release/Electric Percolation Continuum" prefix_auto="1" extension_auto="1" />
+				<Option output="Release/Continuum Percolation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Release/" />
-				<Option deps_output="../Release/" />
+				<Option deps_output="Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
