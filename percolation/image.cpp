@@ -108,7 +108,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 	//close
 	fclose(imageFile);
-	free(colors);
+	delete[](colors);
 }
 
 
@@ -160,7 +160,7 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 	//close
 	fclose(imageFile);
-	free(colors);
+	delete[](colors);
 
 }
 
@@ -181,7 +181,7 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 
 	FILE* imageFile;
-	int err;
+//	int err;
 	imageFile = fopen(imageFileName, "w");
 
 	//initialize

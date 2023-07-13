@@ -38,9 +38,6 @@ void FD2DEL::current(double* icurrx, double* icurry, double* iu, double* igx, do
 void FD2DEL::ppixel(int* ipix, double* ia, int nphase, int ntot)
 {
 
-
-
-
     for (int j = 2; j <= ny + 1; j++)
         for (int i = 2; i <= nx + 1; i++)
         {
@@ -446,7 +443,7 @@ std::vector<std::string> FD2DEL::split(std::string strToSplit, char delimeter)
 }
 
 
-long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
+long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
 {
     std::string line;
     std::ifstream inputFile(filename);
@@ -465,7 +462,7 @@ long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
     return count;
 }
 
-long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
+long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
 {
     std::string line;
     std::ifstream inputFile(filename);

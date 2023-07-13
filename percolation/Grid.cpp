@@ -1234,10 +1234,10 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	std::list<smallQueueNode> singlePath;
 
 	int material = ingadients[position];
-	float currResistance = 1. / ielectricConductivities[material];
-	float currThermalResistance = 1. / ithermalConductivities[material];
-	float currYoungModulus = iYoungModulus[material];
-	float currPoissonRatio = iPoissonRatio[material];
+	//float currResistance = 1. / ielectricConductivities[material];
+	//float currThermalResistance = 1. / ithermalConductivities[material];
+	//float currYoungModulus = iYoungModulus[material];
+	//float currPoissonRatio = iPoissonRatio[material];
 
 
 	smallQueueNode s = { src, {0,0},0 }; // , currResistance, currThermalResistance, currYoungModulus, currPoissonRatio

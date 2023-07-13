@@ -110,9 +110,9 @@ public:
 
 	void readFromFile(char* inputFileName);
 	
-	long readFromImageFile(std::string filename, std::list<int>* pixels);
+	long long readFromImageFile(std::string filename, std::list<int>* pixels);
 
-	long readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y);
+	long long readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y);
 
 	//long GetFileSize(std::string filename);
 	long GetFileSize(std::string filename, int* x, int* y);
