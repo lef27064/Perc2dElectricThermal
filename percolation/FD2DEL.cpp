@@ -2,12 +2,12 @@
 #include "FD2DEL.h"
 #include <cstring>
 #include <cmath>
-void FD2DEL::current(double* currx, double* curry, double* u, double* gx, double* gy)
+void FD2DEL::current(double* icurrx, double* icurry, double* iu, double* igx, double* igy)
 {
 
     //initialize the volume averaged currents
-    *currx = 0.0;
-    *curry = 0.0;
+    *icurrx = 0.0;
+    *icurry = 0.0;
     double cur1 = 0;
     double cur2 = 0;
     int m = 0;
@@ -18,24 +18,24 @@ void FD2DEL::current(double* currx, double* curry, double* u, double* gx, double
         {
             m = nx2 * (j - 1) + i - 1;
             //cur1, cur2 are the currents in one pixel
-            cur1 = 0.5 * ((u[m - 1] - u[m]) * gx[m - 1] + (u[m] - u[m + 1]) * gx[m]);
-            cur2 = 0.5 * ((u[m - nx2] - u[m]) * gy[m - nx2] + (u[m] - u[m + nx2]) * gy[m]);
+            cur1 = 0.5 * ((iu[m - 1] - iu[m]) * igx[m - 1] + (iu[m] - iu[m + 1]) * igx[m]);
+            cur2 = 0.5 * ((iu[m - nx2] - iu[m]) * igy[m - nx2] + (iu[m] - iu[m + nx2]) * igy[m]);
 
 
             //sum pixel currents into volume averages
-            *currx = *currx + cur1;
-            *curry = *curry + cur2;
+            *icurrx = *icurrx + cur1;
+            *icurry = *icurry + cur2;
         }
     }
 
-    *currx = *currx / double(nx * ny);
-    *curry = *curry / double(nx * ny);
+    *icurrx = *icurrx / double(nx * ny);
+    *icurry = *icurry / double(nx * ny);
 
     return;
 
 }
 
-void FD2DEL::ppixel(int* pix, double* a, int nphase, int ntot)
+void FD2DEL::ppixel(int* ipix, double* ia, int nphase, int ntot)
 {
 
 
@@ -46,12 +46,12 @@ void FD2DEL::ppixel(int* pix, double* a, int nphase, int ntot)
         {
             int m=(j - 1)* (nx + 2) + i - 1;
 
-            a[pix[m]] = a[pix[m]] + 1.0;
+            ia[ipix[m]] = ia[ipix[m]] + 1.0;
         }
 
 
     for (int i = 0; i < nphase; i++)
-        a[i] = a[i] / double(nx * ny);
+        ia[i] = ia[i] / double(nx * ny);
 
     int j1,i1,m,m1;
 
@@ -79,21 +79,21 @@ void FD2DEL::ppixel(int* pix, double* a, int nphase, int ntot)
                 m = (j)*nx2 + i;
                 m1 = (j1)*nx2 + i1;
 
-                pix[m] = pix[m1];
+                ipix[m] = ipix[m1];
             }
 
 
         }
 
     // Check for wrong phase labels--less than 1 or greater than nphase
-    for (int m = 0; m < ns2 - 1; m++)
+    for (int im = 0; im < ns2 - 1; im++)
     {
-        if (pix[m] < 0)
-            std::cout << "Phase label in pix < 0--error at " << m << "\n";
+        if (ipix[im] < 0)
+            std::cout << "Phase label in pix < 0--error at " << im << "\n";
 
 
-        if (pix[m] > nphase - 1)
-            std::cout << "Phase label in pix > nphase--error at " << m << "\n";
+        if (ipix[im] > nphase - 1)
+            std::cout << "Phase label in pix > nphase--error at " << im << "\n";
     }
 
 }
@@ -450,7 +450,7 @@ long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
     std::string line;
     std::ifstream inputFile(filename);
     std::vector<std::string> strComponent;
-    long count = 0;
+    long long count = 0;
     while (getline(inputFile, line))
     {
         strComponent = split(line, ' ');

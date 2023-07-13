@@ -37,13 +37,13 @@ ShapeGenerator::~ShapeGenerator()
 
 void ShapeGenerator::initDirs(void)
 {
-	string projectDir = "./" + projectName;
-	string shapesDir = projectDir + "/shapes/";
-	string imagesDir = projectDir + "/images/";
+	string iprojectDir = "./" + projectName;
+	string ishapesDir = iprojectDir + "/shapes/";
+	string iimagesDir = iprojectDir + "/images/";
 
-	char* cprojectDir = &projectDir[0u];
-	char* cshapesDir = &shapesDir[0u];
-	char* cimagesDir = &imagesDir[0u];
+	char* cprojectDir = &iprojectDir[0u];
+	char* cshapesDir = &ishapesDir[0u];
+	char* cimagesDir = &iimagesDir[0u];
 
 	int result = 0 ;
 	
@@ -63,7 +63,7 @@ void ShapeGenerator::initDirs(void)
 		result = _mkdir(cshapesDir);
 		if (result != 0)
 		{
-			cout << "Error create directory " << shapesDir;
+			cout << "Error create directory " << ishapesDir;
 			exit(-1);
 		}
 
@@ -74,7 +74,7 @@ void ShapeGenerator::initDirs(void)
 		result = _mkdir(cimagesDir);
 		if (result != 0)
 		{
-			cout << "Error create directory " << imagesDir;
+			cout << "Error create directory " << iimagesDir;
 			exit(-1);
 		}
 	}

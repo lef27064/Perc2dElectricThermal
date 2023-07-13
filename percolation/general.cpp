@@ -33,11 +33,11 @@ std::string NowToString(void)
 
 bool dirExists(char* pathname)
 {
-	struct stat info;
+	struct stat statInfo;
 	bool result;
-	if (stat(pathname, &info) != 0)
+	if (stat(pathname, &statInfo) != 0)
 		result = false;
-	else if (info.st_mode & S_IFDIR)  // S_ISDIR() doesn't exist on my windows
+	else if (statInfo.st_mode & S_IFDIR)  // S_ISDIR() doesn't exist on my windows
 		result = true;
 	else
 		result = false;

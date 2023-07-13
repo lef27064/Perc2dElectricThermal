@@ -151,7 +151,7 @@ void Grid::set(int x, int y, int what)
 {
 
 	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
-	cell[(long long)y * width + x] = what;
+	cell[(long long)y * width + x] = (char)what;
 
 }
 // ------------------------------------------------------

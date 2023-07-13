@@ -68,7 +68,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 
 	FILE* imageFile;
-	int err;
+	//int err;
 	imageFile = fopen(imageFileName, "w");
 
 	//initialize
@@ -128,7 +128,7 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 
 	FILE* imageFile;
-	int err;
+	//int err;
 	imageFile = fopen(imageFileName, "w");
 
 	//initialize
