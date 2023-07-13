@@ -100,7 +100,7 @@ void FD2DEL::ppixel(int* ipix, double* ia, int nphase, int ntot)
 //Subroutine that determines the correct bond conductances that are used
 //to compute multiplication by the matrix A
 
-void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Matrix3D<double>* be, int nphase, int ntot)
+void FD2DEL::bond(int* ipix, double* igx, double* igy, Matrix2D<double>* isigma, Matrix3D<double>* ibe, int nphase, int ntot)
 {
     // auxiliary variables involving the system size
 
@@ -111,19 +111,19 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
 
     int i, j, m;
     // Set values of conductor for phase(i)--phase(j) interface,
-    // store in array be(i,j,m). If either phase i or j has zero conductivity,
-    // then be(i,j,m)=0.
+    // store in array ibe(i,j,m). If either phase i or j has zero conductivity,
+    // then ibe(i,j,m)=0.
     for (m = 0; m < 2; ++m) {
         for (i = 0; i < nphase; ++i) {
             for (j = 0; j < nphase; ++j) {
-                if (sigma->at(i, m) == 0.0)
-                    be->set(i, j, m, 0.0);
+                if (isigma->at(i, m) == 0.0)
+                    ibe->set(i, j, m, 0.0);
                 else
-                    if (sigma->at(j, m) == 0.0)
-                        be->set(i, j, m, 0.0);
+                    if (isigma->at(j, m) == 0.0)
+                        ibe->set(i, j, m, 0.0);
                     else
-                        be->set(i, j, m, 1. / ((0.5 / sigma->at(i, m)) + (0.5 / sigma->at(j, m))));
-                //std::cout << "be[" << i << "," << j << "," << m << "]=" << be->at(i, j, m) << "\n";
+                        ibe->set(i, j, m, 1. / ((0.5 / isigma->at(i, m)) + (0.5 / isigma->at(j, m))));
+                //std::cout << "ibe[" << i << "," << j << "," << m << "]=" << ibe->at(i, j, m) << "\n";
 
             }
         }
@@ -136,10 +136,10 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
     // in each conjugate gradient step.
     for (j = 1; j < ny2; ++j)
     {
-        gx[nx2 * (j - 1) + nx2 - 1] = 0.0;
+        igx[nx2 * (j - 1) + nx2 - 1] = 0.0;
     }
 
-    // bulk---gy
+    // bulk---igy
     for (i = 1; i <= nx2; ++i)
     {
         for (j = 1; j <= ny1; ++j)
@@ -148,29 +148,29 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
             j1 = j + 1;
             i1 = i;
             m1 = (j1 - 1) * nx2 + i1;
-            gy[m - 1] = be->at(pix[m - 1], pix[m1 - 1], 1);
-            //         std::cout << m-1 << "   " << m1 - 1 << "   "  << pix[m-1] << "   " << pix[m1 - 1] << "   " <<gy[m - 1] << "\n";
+            igy[m - 1] = ibe->at(ipix[m - 1], ipix[m1 - 1], 1);
+            //         std::cout << m-1 << "   " << m1 - 1 << "   "  << ipix[m-1] << "   " << ipix[m1 - 1] << "   " <<igy[m - 1] << "\n";
         }
     }
-    // bulk--gx
+    // bulk--igx
     for (i = 1; i <= nx1; ++i) {
         for (j = 1; j <= ny2; ++j) {
             m = (j - 1) * nx2 + i;
             i1 = i + 1;
             j1 = j;
             m1 = (j1 - 1) * nx2 + i1;
-            gx[m - 1] = be->at(pix[m - 1], pix[m1 - 1], 0);
-            //          std::cout << m - 1 << "   " << m - 1 << "   " << pix[m - 1] << "   " << pix[m - 1] << "   " << gx[m - 1] << "\n";
+            gx[m - 1] = ibe->at(ipix[m - 1], ipix[m1 - 1], 0);
+            //          std::cout << m - 1 << "   " << m - 1 << "   " << ipix[m - 1] << "   " << pix[m - 1] << "   " << gx[m - 1] << "\n";
 
         }
     }
     return;
 }
 
-void  FD2DEL::prod(double* gx, double* gy, double* xw, double* yw)
+void  FD2DEL::prod(double* igx, double* gy, double* xw, double* yw)
 {
     //using namespace std;
-    //real gx(ns2), gy(ns2), xw(ns2), yw(ns2);
+    //real igx(ns2), gy(ns2), xw(ns2), yw(ns2);
 
     // xw is the input vector, yw = (A)(xw) is the output vector
 
@@ -183,10 +183,10 @@ void  FD2DEL::prod(double* gx, double* gy, double* xw, double* yw)
 
     for (i = nx2 + 1; i <= ns2 - nx2; ++i)
     {
-        yw[i] = -xw[i] * (gx[i - 1] + gx[i] + gy[i] + gy[i - nx2]);
+        yw[i] = -xw[i] * (igx[i - 1] + igx[i] + gy[i] + gy[i - nx2]);
         //  std::cout << "stage 1 yw[i]=" << yw[i] << "\n";
 
-        yw[i] = yw[i] + gx[i - 1] * xw[i - 1] + gx[i] * xw[i + 1] + gy[i] * xw[i + nx2] + gy[i - nx2] * xw[i - nx2];
+        yw[i] = yw[i] + igx[i - 1] * xw[i - 1] + igx[i] * xw[i + 1] + gy[i] * xw[i + nx2] + gy[i - nx2] * xw[i - nx2];
 
         //   std::cout << "yw[i]=" << yw[i] << "\n";
     }
