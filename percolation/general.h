@@ -23,8 +23,8 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <string>
 #include <chrono>
 #include <time.h>
-//#include <direct.h>
-#define WINDOWS   
+#include <dirent.h>
+//#define WINDOWS   
 #ifdef WINDOWS
 #include <direct.h>
 #define GetCurrentDir _getcwd

@@ -20,7 +20,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include "Shapes.h"
 #include "Grid.h"
 #include "ShapeGenerator.h"
-#include "dirent.h"
+//#include "dirent.h"
 #include "general.h"
 
 
@@ -29,7 +29,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 class BatchMonteCarlo {
 public:
 	int total;
-	
+
 
 	string directory;
 	string inputfiles[maxFilesInDir];
@@ -41,7 +41,7 @@ public:
 	std::vector<double> casesMeanMaxClusterRadius;
 
 	//initialize
-	
+	BatchMonteCarlo(void);
 	BatchMonteCarlo(string idirectory);
 	//void singleRun(string fileName, ShapeGenerator *shapes);
 	void singleRun(string fileName, ShapeGenerator* shapes);

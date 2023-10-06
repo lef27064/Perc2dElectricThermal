@@ -33,7 +33,6 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <direct.h>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -42,7 +41,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 #include "Shapes.h"
 #include "Grid.h"
-#include "general.h"
+//#include "general.h"
 #include "Settings.h"
 #include "FD2DEL.h"
 

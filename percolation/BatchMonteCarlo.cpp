@@ -1,12 +1,24 @@
 #include "BatchMonteCarlo.h"
 
 
+BatchMonteCarlo::BatchMonteCarlo(void)
+{
+	directory = "inputs";
+	
+	exePath = GetCurrentWorkingDir();
+	cout << "\nEXE PATH " << exePath;
+	settings.readFromFile("settings.txt");
+	
+	cout << "\nReaded Setings ";
+}
+
 BatchMonteCarlo::BatchMonteCarlo(string idirectory)
 {
 	directory = idirectory;
 	exePath = GetCurrentWorkingDir();
 	settings.readFromFile("settings.txt");
 }
+
 
 void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 {
@@ -53,7 +65,7 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 
 	avgMaxClusterRadius = sumMaxClusterRadius / grid.cMaxClusterRadius.size();
 
-		
+
 	casesMeanMaxClusterRadius.push_back(avgMaxClusterRadius);
 	// Debug cout << "avgMaxClusterRadius=" << avgMaxClusterRadius <<"\n";
 
@@ -110,9 +122,10 @@ void BatchMonteCarlo::show(void)
 void BatchMonteCarlo::Run()
 {
 	show();
-	for (int i = 2; i < total; i++)
+	for (int i = 0; i < total; i++)
 	{
-		string inputfile = exePath + "\\" + directory + "\\" + inputfiles[i];
+		string inputfile = exePath + "/" + directory + "/" + inputfiles[i];
+		if (inputfiles[i][0]!='.')
 		singleRun(inputfile, &iShapes[i]);
 	}
 
@@ -122,8 +135,8 @@ void BatchMonteCarlo::Run()
 
 void BatchMonteCarlo::saveResultsWithSemicolon(void)
 {
-	
-			
+
+
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 
@@ -131,8 +144,8 @@ void BatchMonteCarlo::saveResultsWithSemicolon(void)
 	strftime(fileName, 80, "%Y-%m-%d %H %M %S-Semicolon Seperated.csv", now);
 
 	std::ofstream componentFile;
-		
-		
+
+
 	componentFile.open(fileName);
 
 
@@ -208,57 +221,57 @@ void BatchMonteCarlo::saveResults(void)
 
 
 	time_t t = time(0);   // get time now
-		struct tm* now = localtime(&t);
+	struct tm* now = localtime(&t);
 
-		char fileName[80];
-		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Comma Seperated.csv", now);
+	char fileName[80];
+	strftime(fileName, 80, "%Y-%m-%d %H %M %S-Comma Seperated.csv", now);
 
-		std::ofstream componentFile;
-
-
-		componentFile.open(fileName);
+	std::ofstream componentFile;
 
 
-		componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
-		componentFile << info.program;
-		componentFile << info.version;
-		componentFile << info.date;
-		componentFile << info.author;
-		componentFile << info.licence;
-		componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
-		componentFile << "Start at " << NowToString() << "\n";
+	componentFile.open(fileName);
 
 
-		componentFile << "Case,Mean Percolation,";
-		if (this->iShapes[2].calcStatistcs)
-			componentFile << "Max Cluster Radius ,Correlation Length,";
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << info.program;
+	componentFile << info.version;
+	componentFile << info.date;
+	componentFile << info.author;
+	componentFile << info.licence;
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << "Start at " << NowToString() << "\n";
 
-		if (this->iShapes[2].calcElectricConductivity)
-			componentFile << "Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Conductive Length,";
 
-		if (this->iShapes[2].calcElectricConductivityWithFDM)
-			componentFile << "FDM Ix,FDM Iy,FDM ro,";
+	componentFile << "Case,Mean Percolation,";
+	if (this->iShapes[2].calcStatistcs)
+		componentFile << "Max Cluster Radius ,Correlation Length,";
 
-		componentFile << "Process Time, Preperation Time, Grid(X), Grid(Y),  ppms,";
+	if (this->iShapes[2].calcElectricConductivity)
+		componentFile << "Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Conductive Length,";
 
-		for (int j = 0; j < iShapes[2].totalComponents; j++)
-			componentFile << "% Area_" << j << ",";
-		for (int j = 0; j < iShapes[2].totalComponents; j++)
-			componentFile << "Size X_" << j << ",";
+	if (this->iShapes[2].calcElectricConductivityWithFDM)
+		componentFile << "FDM Ix,FDM Iy,FDM ro,";
 
-		for (int j = 0; j < iShapes[2].totalComponents; j++)
-			componentFile << "Size Y_" << j << ",";
-		for (int j = 0; j < iShapes[2].totalComponents; j++)
-			componentFile << "Hoop" << j << ",";
+	componentFile << "Process Time, Preperation Time, Grid(X), Grid(Y),  ppms,";
 
-		componentFile << "\n";
+	for (int j = 0; j < iShapes[2].totalComponents; j++)
+		componentFile << "% Area_" << j << ",";
+	for (int j = 0; j < iShapes[2].totalComponents; j++)
+		componentFile << "Size X_" << j << ",";
+
+	for (int j = 0; j < iShapes[2].totalComponents; j++)
+		componentFile << "Size Y_" << j << ",";
+	for (int j = 0; j < iShapes[2].totalComponents; j++)
+		componentFile << "Hoop" << j << ",";
+
+	componentFile << "\n";
 
 
 	for (int i = 2; i < total; i++)
 	{
 		double meanPaths = average_element(iShapes[i].paths, 0, iShapes[i].iterations);
-			double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
-			componentFile << iShapes[i].projectName << "," << iShapes[i].meanPercolation << ",";
+		double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
+		componentFile << iShapes[i].projectName << "," << iShapes[i].meanPercolation << ",";
 		if (this->iShapes[2].calcStatistcs)
 			componentFile << casesMeanMaxClusterRadius[i - 2] << "," << iShapes[i].correleationLength << ",";
 		if (this->iShapes[2].calcElectricConductivity)

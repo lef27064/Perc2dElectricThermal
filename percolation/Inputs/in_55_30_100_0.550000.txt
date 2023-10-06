@@ -25,7 +25,7 @@ ellipse_55iter300ppmC_30width_100_Area0.55
 #Poisson Ratio
 0.3 0.32
 #width - height - depth
-20000 20000
+2000 2000
 #iterations
 300
 #pixels per min Sphere
