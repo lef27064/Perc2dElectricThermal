@@ -23,15 +23,18 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <string>
 #include <chrono>
 #include <time.h>
-#include <dirent.h>
+#include <filesystem>
+
+
+//#include <dirent.h>
 //#define WINDOWS   
-#ifdef WINDOWS
-#include <direct.h>
-#define GetCurrentDir _getcwd
-#else
-#include <unistd.h>
-#define GetCurrentDir getcwd
-#endif
+//#ifdef WINDOWS
+//#include <direct.h>
+//#define GetCurrentDir _getcwd
+//#else
+//#include <unistd.h>
+#define GetCurrentDir std::filesystem::current_path();
+//#endif
 
 
 using namespace std;
@@ -95,7 +98,8 @@ double  min_element(double values[], int first, int last);
 double  max_element(double values[], int first, int last);
 double  average_element(double values[], int first, int last);
 
-string GetCurrentWorkingDir(void); 
+//string GetCurrentWorkingDir(void); 
+std::filesystem::path GetCurrentWorkingDir(void);
 //void CreateInputFiles(void);
 
 //string ExePath(void);

@@ -86,12 +86,31 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 
 int BatchMonteCarlo::getInputFiles(void)
 {
-	DIR* dir;
+	//c++
+	total = 0;
+	
+
+	for (const auto& file : std::filesystem::directory_iterator(directory)) 
+	{
+		inputfiles[total] =  file.path().generic_string();
+		//cout << "\n Debug_2:" << inputfiles[count] << "\n";
+		//cout << "\n Debug:"<<file.path().generic_string() << "\n";
+		total++;
+		
+	}
+
+	if (total > 0)
+		return 0;
+	else
+		return EXIT_FAILURE;
+
+	/*DIR* dir;
 	int count = 0;
 	struct dirent* ent;
+
 	char* cDirectory = &directory[0u];
 	if ((dir = opendir(cDirectory)) != NULL) {
-		/* print all the files and directories within directory */
+		//print all the files and directories within directory 
 		while ((ent = readdir(dir)) != NULL) {
 			inputfiles[count] = ent->d_name;
 			count++;
@@ -100,11 +119,12 @@ int BatchMonteCarlo::getInputFiles(void)
 		total = count;
 	}
 	else {
-		/* could not open directory */
+		// could not open directory 
 		perror("");
 		return EXIT_FAILURE;
 	}
 	return 0;
+	*/
 }
 
 void BatchMonteCarlo::show(void)
@@ -124,9 +144,10 @@ void BatchMonteCarlo::Run()
 	show();
 	for (int i = 0; i < total; i++)
 	{
-		string inputfile = exePath + "/" + directory + "/" + inputfiles[i];
+		//string inputfile = exePath.generic_string() + "/" + directory + "/" + inputfiles[i];
+		string inputfile = exePath.generic_string() + "/" + inputfiles[i];
 		if (inputfiles[i][0]!='.')
-		singleRun(inputfile, &iShapes[i]);
+			singleRun(inputfile, &iShapes[i]);
 	}
 
 	saveResults();

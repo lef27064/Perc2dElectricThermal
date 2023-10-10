@@ -73,12 +73,16 @@ double  max_element(double values[], int first, int last)
 	return result;
 }
 
-string GetCurrentWorkingDir(void)
+std::filesystem::path GetCurrentWorkingDir(void)
 {
+	//c++17
+	return std::filesystem::current_path();
+/*
 		char buff[FILENAME_MAX];
-		GetCurrentDir(buff, FILENAME_MAX);
+	    std::filesystem::current_path(buff, FILENAME_MAX);
+		
 		std::string current_working_dir(buff);
-		return current_working_dir;
+		return current_working_dir;*/
 }
 
 

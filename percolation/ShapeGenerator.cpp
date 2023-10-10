@@ -38,6 +38,24 @@ ShapeGenerator::~ShapeGenerator()
 
 void ShapeGenerator::initDirs(void)
 {
+	//c++17
+	string iprojectDir = "./" + projectName;
+	string ishapesDir = iprojectDir + "/shapes/";
+	string iimagesDir = iprojectDir + "/images/";
+	
+
+
+	if (!std::filesystem::exists(iprojectDir))
+			std::filesystem::create_directory(iprojectDir);
+	
+	if (!std::filesystem::exists(ishapesDir))
+		std::filesystem::create_directory(ishapesDir);
+
+	if (!std::filesystem::exists(iimagesDir))
+		std::filesystem::create_directory(iimagesDir);
+	
+
+	/*
 	string iprojectDir = "./" + projectName;
 	string ishapesDir = iprojectDir + "/shapes/";
 	string iimagesDir = iprojectDir + "/images/";
@@ -48,6 +66,8 @@ void ShapeGenerator::initDirs(void)
 
 	int result = 0 ;
 	
+
+
 	if (!dirExists(cprojectDir))
 	{
 		
@@ -82,6 +102,7 @@ void ShapeGenerator::initDirs(void)
 	}
 	
 	return;
+	*/
 }
 
 ShapeGenerator::ShapeGenerator(int tcomp, double comp[], ShapeType compType[], SizeType compSizeType[], double sWeights[], double dimX[], double dimY[], double ihoops[], Grid* iGrid, Settings* isettings) : totalComponents(tcomp), grid(iGrid), settings(isettings)
