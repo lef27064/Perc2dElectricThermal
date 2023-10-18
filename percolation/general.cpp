@@ -86,6 +86,8 @@ std::filesystem::path GetCurrentWorkingDir(void)
 }
 
 
+
+
 double  average_element(double values[], int first, int last)
 {
 	if (first == last)

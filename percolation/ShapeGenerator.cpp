@@ -17,7 +17,6 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
 
 
-
 #include "ShapeGenerator.h"
 
 ShapeGenerator::ShapeGenerator()
@@ -56,6 +55,7 @@ void ShapeGenerator::initDirs(void)
 	
 
 	/*
+	* before c++17 compiler
 	string iprojectDir = "./" + projectName;
 	string ishapesDir = iprojectDir + "/shapes/";
 	string iimagesDir = iprojectDir + "/images/";
@@ -294,7 +294,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 		ofstream componentFile;
 		string Base = "_shapes.txt";
-		string FileName = projectName + "//shapes/case_" + to_string(caseNo) + "_component_" + to_string(i) + Base;
+		string FileName = projectName + "/shapes/case_" + to_string(caseNo) + "_component_" + to_string(i) + Base;
 
 		//open report file
 		if ((settings->saveShapes) && (componentsType[i] != ShapeType::NOTHING))
@@ -756,7 +756,7 @@ void ShapeGenerator::monteCarlo(void)
 		if (settings->saveImageFile)
 		{
 			string FileName = to_string(i) + Base;
-			FileName = projectName + "//images//" + FileName;
+			FileName = projectName + "/images/" + FileName;
 			char* cstr = &FileName[0u];
 
 
@@ -846,7 +846,7 @@ void ShapeGenerator::Report()
 {
 	ofstream File;
 
-	string FileName = projectName + "//report.txt";
+	string FileName = projectName + "/report.txt";
 
 	File.open(FileName);
 
@@ -958,7 +958,7 @@ void ShapeGenerator::ReportWithSemicolon()
 {
 	ofstream File;
 
-	string FileName = projectName + "//ReportWithSemicolon.txt";
+	string FileName = projectName + "/ReportWithSemicolon.txt";
 
 	File.open(FileName);
 
@@ -1070,7 +1070,7 @@ void ShapeGenerator::ReportStatistics(void)
 {
 	ofstream File;
 
-	string FileName = projectName + "//Statistics.csv";
+	string FileName = projectName + "/Statistics.csv";
 
 	File.open(FileName);
 
@@ -2387,5 +2387,3 @@ void ShapeGenerator::exportForFDM(char* fileName)
 
 	File.close();
 }
-
-

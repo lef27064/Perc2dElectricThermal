@@ -25,16 +25,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <time.h>
 #include <filesystem>
 
-
-//#include <dirent.h>
-//#define WINDOWS   
-//#ifdef WINDOWS
-//#include <direct.h>
-//#define GetCurrentDir _getcwd
-//#else
-//#include <unistd.h>
-#define GetCurrentDir std::filesystem::current_path();
-//#endif
+//#define GetCurrentDir std::filesystem::current_path();
 
 
 using namespace std;
@@ -83,7 +74,7 @@ struct pinfo {
 
 pinfo const info{ 
 		"Rerclolation 2d\n", 
-		"Version 1.5 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)",
+		"Version 1.5.1 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)",
 		"4/7/2023  \n",
 		"Lefteris Lamprou\n", 
 		"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n" 
@@ -99,7 +90,7 @@ double  max_element(double values[], int first, int last);
 double  average_element(double values[], int first, int last);
 
 //string GetCurrentWorkingDir(void); 
-std::filesystem::path GetCurrentWorkingDir(void);
+//std::filesystem::path GetCurrentWorkingDir(void);
 //void CreateInputFiles(void);
 
 //string ExePath(void);

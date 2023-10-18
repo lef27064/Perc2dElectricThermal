@@ -70,10 +70,7 @@ class Grid {
 	bool isValid(int x, int y);
 	int floodFill(char* mat, bool* ivisited, point2d src);
 
-	int floodFill(char* mat, unsigned char* clusterArray, unsigned char clusterID, point2d src, doublepoint2d* center, long long int* totalPoints);
-
-
-
+	
 	int percolate(void);
 	long long total;
 public:
@@ -120,58 +117,33 @@ public:
 	bool isClearSlopedRectangle(int x, int y, int dx, int dy, double slope);
 	bool isClearEllipse(int x, int y, int a, int b, double slope);
 
-	//int floodFill(char * mat, unsigned char * clusterArray, unsigned char clusterID, point2d src, doublepoint2d * center, int * totalPoints);
-
-
-
-
-
-	int findClusterExists(int totalPoints);
-
-	//int clusterInertia(char* mat, bool* clusterVisitedArray, point2d src, doublepoint2d center, long long int totalPoints, double* inertia);
-
-
-
+	
 	int DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int* distance);
 
 	long long int countPathPixels(char* mat);
 
 	int DFSRestore(char* mat, bool* ivisited, point2dShort src);
 
-	//	int DFSRestore(char* mat, bool* ivisited, point2dShort src, point2d* target, int* distance);
-
-
-
-		//void calcPropertiesAtPoint(queueNode* currentPoint);
-
-		//void calcPropertiesAtPoint(queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio);
-
+	
 	void CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio);
-//void CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio);
 
 	void calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio);
 
-	//void MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode> clusterStack, list<queueNode>* listPath);
-
+	
 	void MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clusterStack, list<smallQueueNode>* listPath);
 
-	//void MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterStack, list<queueNode>* listPath);
+	
 	int drawPath(char* mat, bool* ivisited, list<smallQueueNode> cpath);
-	//int drawPath(char* mat, bool* ivisited, list<queueNode> cpath);
+	
 	int drawPaths(char* mat, bool* ivisited);
 
 	int BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint);
 
 	int clusterCenter(point2d src, doublepoint2d* center, long long int* totalPoints);
 
-
-
-	//int clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, long long int totalPoints, double* inertia);
-
 	int clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, long long int totalPoints, double* inertia, double* radiusOfGyration);
 
 	Cluster markClusters();
-
 
 	double findCorrelationLength(std::vector<clusterStatistics> iClusters);
 
@@ -182,9 +154,7 @@ public:
 
 	int countPixelsInsidelopedRectange(int x, int y, int dx, int dy, double slope, CellState state);
 	int countPixelsInsideEllipse(int x, int y, int a, int b, double slope, CellState state);
-
-	//	int floodFill(char *p); 
-
+		
 	int percolate(double* proccessTime);
 	int percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio, double* meanResistance, double* meanThermalResistance, double* meanYoungModulus, double* MeanPoissonRatio);
 	int percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime, double* ielectricConductivities, double* omeanResistance, double* ithermalConductivities, double* omeanThermalResistance, double* iYoungModulus, double* omeanYoungModulus, double* iPoissonRatio, double* omeanPoissonRatio);

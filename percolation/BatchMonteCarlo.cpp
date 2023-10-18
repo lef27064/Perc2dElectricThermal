@@ -5,7 +5,8 @@ BatchMonteCarlo::BatchMonteCarlo(void)
 {
 	directory = "inputs";
 	
-	exePath = GetCurrentWorkingDir();
+	exePath = std::filesystem::current_path();
+		
 	cout << "\nEXE PATH " << exePath;
 	settings.readFromFile("settings.txt");
 	
@@ -15,7 +16,7 @@ BatchMonteCarlo::BatchMonteCarlo(void)
 BatchMonteCarlo::BatchMonteCarlo(string idirectory)
 {
 	directory = idirectory;
-	exePath = GetCurrentWorkingDir();
+	exePath = std::filesystem::current_path(); 
 	settings.readFromFile("settings.txt");
 }
 
