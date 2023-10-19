@@ -80,17 +80,8 @@ pinfo const info{
 		"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n" 
 };
 
-//Time now to String
 string NowToString(void);  
-//check if a directory exists
-bool dirExists(char* pathname);
-//find minimum of array 
+
 double  min_element(double values[], int first, int last);
 double  max_element(double values[], int first, int last);
 double  average_element(double values[], int first, int last);
-
-//string GetCurrentWorkingDir(void); 
-//std::filesystem::path GetCurrentWorkingDir(void);
-//void CreateInputFiles(void);
-
-//string ExePath(void);

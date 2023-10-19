@@ -3,7 +3,7 @@ ellipse_55iter300ppmC_30width_100_Area0.55
 #total component
 2
 #components % weights
-0.40 0.60
+0.32 0.68
 #Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)
 4 2
 #SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)
@@ -29,7 +29,7 @@ ellipse_55iter300ppmC_30width_100_Area0.55
 #iterations
 300
 #pixels per min Sphere
-30
+101
 #Swiss chesse case TRUE or FALSE
 FALSE
 # CALC ELECTRIC CONDUCTIVITY
