@@ -757,7 +757,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
-		mat[position] = PATH;
+		mat[position] = SIDEPATH;
 
 	} while ((material != 0) && (sameline));
 
@@ -794,7 +794,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
-		mat[position] = PATH;
+		mat[position] = SIDEPATH;
 
 
 

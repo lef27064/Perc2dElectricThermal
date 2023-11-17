@@ -1550,8 +1550,6 @@ void ShapeGenerator::digitizeEllipseDiv4(int ingradient, Ellipse iEllipse, Grid*
 					((sqInvDensity * i * i) / sqEllipsoidA) +
 					((sqInvDensity * j * j) / sqEllipsoidB);
 
-
-
 				if (distance <= 1.0)
 				{
 					if (!isCircle)
