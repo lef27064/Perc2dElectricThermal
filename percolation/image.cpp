@@ -83,7 +83,8 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 			unsigned char color = image[(long long)line*width + column];
 			switch (color)			{
 			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
-			case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
+			//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
+			case '1': setcolor(colors, 3 * column, 224, 224, 224);  break;
 			case '2':setcolor(colors, 3 * column, 0x70, 0x00, 0x40); break;
 			case '3': setcolor(colors, 3 * column, 224, 224, 224);  break;
 			case '4': setcolor(colors, 3 * column, 0x40, 0x50, 0x80);  break;
