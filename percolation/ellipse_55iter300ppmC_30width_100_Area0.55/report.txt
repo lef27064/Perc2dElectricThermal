@@ -1,5 +1,5 @@
 Rerclolation 2d
-Version 1.5.1 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)Report starting: Tue Nov 21 01:15:46 2023
+Version 1.5.1 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)Report starting: Fri Dec  8 08:34:34 2023
 
 ---------------------------------------------------------------------------------------------------
 Inputs
@@ -15,14 +15,14 @@ Grid size =[3000x3000]
 Total iterations: 3
 ---------------------------------------------------------------------------------------------------
 Realiazation No,Percolate Y[1]/N[0], Process Time, Setup Time   ,% Area Comp[0]  ,% Area Comp[1]  ,% Area Comp[2],Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
-      1,                  1,     0.375,          1.635            ,0.432358            ,0.267626            ,0.300016,      43.9414,      43.9414,  5.81745e+06,      56.2321,          115,       4805.3,  0.000872375
-      2,                  0,     0.026,          1.745            ,0.440011            ,0.259956            ,0.300033,            0,            0,       100000,          0.3,            0,            0,            0
-      3,                  1,     0.339,          1.381            ,0.453724            ,0.246026            ,0.30025,      68.9656,      68.9656,  1.12634e+07,       108.48,           75,      4616.57,  0.000362499
+      1,                  1,     0.166,          1.475            ,0.45269            ,0.246864            ,0.300447,      886.761,      886.761,      49971.2,     0.479724,            1,         4662,    3.759e-07
+      2,                  0,     0.163,          1.812            ,0.439695            ,0.259633            ,0.300672,            0,            0,       100000,          0.3,            0,            0,            0
+      3,                  0,     0.165,          1.533            ,0.451321            ,0.248121            ,0.300557,            0,            0,       100000,          0.3,            0,            0,            0
 ---------------------------------------------------------------------------------------------------
-Mean Percolation=0.666667
-Mean Processing Time=0.246667
-Mean set up time=1.587
+Mean Percolation=0.333333
+Mean Processing Time=0.164667
+Mean set up time=1.60667
 Mean correlation Length=0
-Mean Area of component[0]=0.442031
-Mean Area of component[1]=0.257869
-Mean Area of component[2]=0.300099
+Mean Area of component[0]=0.447902
+Mean Area of component[1]=0.251539
+Mean Area of component[2]=0.300559
