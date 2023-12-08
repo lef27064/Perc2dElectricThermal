@@ -10,8 +10,8 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 
 
 	FILE* pgmimg;
-	errno_t err;
-	err = fopen_s(&pgmimg, imageFileName, "w");
+	int err;
+	pgmimg = fopen(imageFileName, "w");
 
 
 	// Writing Magic Number to the File
@@ -68,8 +68,8 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	//int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -81,9 +81,17 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 		for (int column = 0; column < width ; column++)
 		{
 			unsigned char color = image[(long long)line*width + column];
-			switch (color)
-			{
-			case CellState::EMPTY:setcolor(colors, 3*column, 0x00,  0x00, 0x00); break;
+			switch (color)			{
+			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
+			//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
+			case '1': setcolor(colors, 3 * column, 224, 224, 224);  break;
+			case '2':setcolor(colors, 3 * column, 0x70, 0x00, 0x40); break;
+			case '3': setcolor(colors, 3 * column, 224, 224, 224);  break;
+			case '4': setcolor(colors, 3 * column, 0x40, 0x50, 0x80);  break;
+			case '5': setcolor(colors, 3 * column, 255, 224, 32);  break;
+			case '6': setcolor(colors, 3 * column, 0, 192, 0);  break;
+			//default:setcolor(colors, 3 * column, 0x00, 0x50, 0x100); break;
+			/*case CellState::EMPTY:setcolor(colors, 3 * column, 0x00, 0x00, 0x00); break;
 			case CellState::HARD:  setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
 			case CellState::PATH:setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
 			case PERCOLATE : setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
@@ -95,7 +103,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 			//case CellState::SIDEPATH:setcolor(colors, 3 * column, 0xFF, 0x99, 0x33);  break;
 			case CellState::SIDEPATH: setcolor(colors, 3 * column, 0x99, 0x99, 0x99);  break;
 			case CellState::SOFT:setcolor(colors, 3 * column, 0x33, 0x99, 0xFF); break;
-			//case BORDER: setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);  break;
+			//case BORDER: setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);  break;*/
 
 			}
 			//if (((line % 10) ==0) || ((column % 10) == 0))
@@ -108,7 +116,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 	//close
 	fclose(imageFile);
-	free(colors);
+	delete[](colors);
 }
 
 
@@ -128,8 +136,8 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	//int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -160,7 +168,7 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 	//close
 	fclose(imageFile);
-	free(colors);
+	delete[](colors);
 
 }
 
@@ -181,8 +189,8 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+//	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
@@ -241,8 +249,8 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 
 
 	FILE* imageFile;
-	errno_t err;
-	err = fopen_s(&imageFile, imageFileName, "w");
+	int err;
+	imageFile = fopen(imageFileName, "w");
 
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);

@@ -1,0 +1,28 @@
+Rerclolation 2d
+Version 1.5.1 (Cluster Analysis - Electric, Thermal, Mechanical properties calculation (in progress...)Report starting: Tue Nov 21 01:15:46 2023
+
+---------------------------------------------------------------------------------------------------
+Inputs
+|#  ,%Weights,%Spec. Weights,X Dimension,Y Dimension,Type,Size type,      Area,hoop Dist
+   0,      0.5,              1,       1e-08,       1e-08,    4,         3,   0.454545,        0
+   1,     0.27,              1,       1e-08,       1e-07,    3,         0,   0.245455,    1e-09
+   2,     0.33,              1,       5e-09,       5e-09,    3,         0,        0.3,    1e-09
+Pixels Per minimum Size:101
+Factor [pixelsPerMinimumCircle / minimumSize]:2.02e+10
+Maximum Dimension:1e-08
+Minimum Dimension:5e-09
+Grid size =[3000x3000]
+Total iterations: 3
+---------------------------------------------------------------------------------------------------
+Realiazation No,Percolate Y[1]/N[0], Process Time, Setup Time   ,% Area Comp[0]  ,% Area Comp[1]  ,% Area Comp[2],Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
+      1,                  1,     0.375,          1.635            ,0.432358            ,0.267626            ,0.300016,      43.9414,      43.9414,  5.81745e+06,      56.2321,          115,       4805.3,  0.000872375
+      2,                  0,     0.026,          1.745            ,0.440011            ,0.259956            ,0.300033,            0,            0,       100000,          0.3,            0,            0,            0
+      3,                  1,     0.339,          1.381            ,0.453724            ,0.246026            ,0.30025,      68.9656,      68.9656,  1.12634e+07,       108.48,           75,      4616.57,  0.000362499
+---------------------------------------------------------------------------------------------------
+Mean Percolation=0.666667
+Mean Processing Time=0.246667
+Mean set up time=1.587
+Mean correlation Length=0
+Mean Area of component[0]=0.442031
+Mean Area of component[1]=0.257869
+Mean Area of component[2]=0.300099

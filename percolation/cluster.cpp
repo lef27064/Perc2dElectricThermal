@@ -24,11 +24,11 @@ doublepoint2d::doublepoint2d(double a, double b)
 	y = b;
 }
 
-
 Cluster::Cluster(void)
 {
 	radius = 0.0;
 	totalPoints = 0;
+	inertia = 0.0;
 
 }
 

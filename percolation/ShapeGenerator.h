@@ -33,19 +33,16 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <direct.h>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <omp.h>
-
+#include <filesystem>
 
 #include "Shapes.h"
 #include "Grid.h"
-#include "general.h"
 #include "Settings.h"
 #include "FD2DEL.h"
-
 
 
 
@@ -157,25 +154,21 @@ public:
 	void SetupSizes(int i, double dimensionY, double dimensionX, double factor, std::normal_distribution<double> size, SizeType componentsSizeType, double * rectWidth, double * rectHeight, ShapeType componentsType, double * maxAngle, double * minAngle, int * totalSlopedRectangles, int * totalRectangles, int * totalCircles, int * totalEllipses);
 	void swissCheeseCheckAndDraw(int ingradient, double a, double b, Ellipse* cEllipse, double hoop);
 
-
-	//void swissCheeseCheckAndDraw(double rectWidth, double rectHeight, SlopedRectangle * sRectangle, double hoop);
 	void swissCheeseCheckAndDraw(int ingradient, double rectWidth, double rectHeight, SlopedRectangle* sRectangle, double hoop);
 	void monteCarlo(void);
 	void calcMeanCorrellationLength();
 	void Report();
 	void ReportWithSemicolon();
 	void ReportStatistics(void);
-	void ReportFDM(void);
-
+	
 	SlopedRectangle generateSlopedRectangle(Point downleft, Point upRight, double width, double height, double maxAngle, double minAngle);
 
 	Ellipse generateEllipse(Point downleft, Point upRight, double ia, double ib, double maxAngle, double minAngle);
 	void digitizeSlopedRectangle(int ingradient, SlopedRectangle sRect, Grid* iGrid, CellState state);
-//	void digitizeSlopedRectangle(SlopedRectangle sRect, Grid* iGrid, CellState state);
-//	void digitizeSlopedRectangle(SlopedRectangle sRect, Grid* iGrid, double *realArea, CellState state);
+
 	void digitizeSlopedRectangle(int ingradient, SlopedRectangle sRect, Grid* iGrid, double* realArea, CellState state);
 	void digitizeSlopedRectangleWithBorder(int ingradient, SlopedRectangle sRect, Grid* iGrid, double* realArea, CellState state);
-//	void digitizeSlopedRectangleWithBorder(SlopedRectangle sRect, Grid * iGrid, double * realArea, CellState state);
+
 	void digitizeEllipse(int ingradient, Ellipse iEllipse, Grid * iGrid, double * realArea, CellState state);
 
 	void digitizeEllipse(int ingradient, Ellipse iEllipse, Grid* iGrid, CellState state);

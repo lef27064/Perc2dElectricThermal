@@ -20,33 +20,27 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 
 
-
-string NowToString()
+/// <summary>
+/// date now to string value
+/// </summary>
+/// <param name=""></param>
+/// <returns>now (string)</returns>
+std::string NowToString(void)
 {
-	chrono::system_clock::time_point p = chrono::system_clock::now();
-	time_t t = chrono::system_clock::to_time_t(p);
-	char str[26];
+    auto endt = std::chrono::system_clock::now();
+    std::time_t end_time = std::chrono::system_clock::to_time_t(endt);
+    std::string s = std::ctime(&end_time);
 
-	ctime_s(str, sizeof str, &t);
-	return str;
+    return s;
 }
 
-
-bool dirExists(char* pathname)
-{
-	struct stat info;
-	bool result;
-	if (stat(pathname, &info) != 0)
-		result = false;
-	else if (info.st_mode & S_IFDIR)  // S_ISDIR() doesn't exist on my windows
-		result = true;
-	else
-		result = false;
-	return result;
-
-}
-
-
+/// <summary>
+/// min element of array 
+/// </summary>
+/// <param name="values">source array</param>
+/// <param name="first">first element of the array</param>
+/// <param name="last">last element of the array</param>
+/// <returns>minimum value</returns>
 double  min_element(double values[], int first, int last)
 {
 	if (first == last)
@@ -61,6 +55,13 @@ double  min_element(double values[], int first, int last)
 }
 
 
+/// <summary>
+/// max element of array 
+/// </summary>
+/// <param name="values">source array</param>
+/// <param name="first">first element of the array</param>
+/// <param name="last">last element of the array</param>
+/// <returns>maximum value</returns>
 double  max_element(double values[], int first, int last)
 {
 	if (first == last)
@@ -74,12 +75,24 @@ double  max_element(double values[], int first, int last)
 	return result;
 }
 
-string GetCurrentWorkingDir(void)
+/// <summary>
+/// Get current working directory
+/// </summary>
+/// <param name=""></param>
+/// <returns>Current working directory (std::filesystem::path)</returns>
+std::filesystem::path GetCurrentWorkingDir(void)
 {
+	//c++17
+	return std::filesystem::current_path();
+	
+	//older version 
+	/*
+	
 		char buff[FILENAME_MAX];
-		GetCurrentDir(buff, FILENAME_MAX);
+	    std::filesystem::current_path(buff, FILENAME_MAX);
+		
 		std::string current_working_dir(buff);
-		return current_working_dir;
+		return current_working_dir;*/
 }
 
 
@@ -95,12 +108,3 @@ double  average_element(double values[], int first, int last)
 		sum += values[i];
 	return sum / (last - first);
 }
-
-/*
-string ExePath()
-{
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	return string(buffer).substr(0, pos);
-}*/

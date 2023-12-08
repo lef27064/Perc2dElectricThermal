@@ -29,6 +29,7 @@
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-O0" />
 					<Add option="-Wall" />
+					<Add option="-Wextra" />
 				</Compiler>
 				<Linker>
 					<Add library="winmm.lib" />

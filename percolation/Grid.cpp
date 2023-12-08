@@ -151,7 +151,7 @@ void Grid::set(int x, int y, int what)
 {
 
 	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
-	cell[(long long)y * width + x] = what;
+	cell[(long long)y * width + x] = (char)what;
 
 }
 // ------------------------------------------------------
@@ -621,10 +621,11 @@ int Grid::DFSRestore(char* mat, bool* ivisited, point2dShort src)
 
 
 
-void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio)
+void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> path, double* resistance, double* ielectricConductivities, double* thermalResistance, double* ithermalConductivities, double* YoungModulus, double* iYoungModulus, double* PoissonRatio, double* iPoissonRatio)
 {
 
-	queueNode currentPoint = { { 0,0 }, { 0,0 }, 0, 0, 0, 0, 0 };
+	queueNode currentPoint;              // = { {0,0},{0,0},0,0,0,0 };
+	smallQueueNode smallCurrentPoint;
 	double inSeriesYoungModulus = 0;
 	double inSeriesPoissonRatio = 0;
 
@@ -632,14 +633,30 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path,
 	*thermalResistance = 0;
 	*YoungModulus = 0;
 	*PoissonRatio = 0;
-	list<queueNode> backUp;
+	list<smallQueueNode> backUp;
+	long long position;
+	int material;
+
 
 
 //	int count = 0;
 	while (!path.empty())
 	{
-		currentPoint = path.front();
+		smallCurrentPoint = path.front();
+
 		path.pop_front();
+		currentPoint.pt = smallCurrentPoint.pt;
+		currentPoint.previous = smallCurrentPoint.previous;
+		currentPoint.dist = smallCurrentPoint.dist;
+		position = (long long)currentPoint.pt.y * width + currentPoint.pt.x;
+		material = ingadients[position];
+
+		currentPoint.resistance = ielectricConductivities[material];
+		currentPoint.thermalResistance = ithermalConductivities[material];
+		currentPoint.YoungModulus= iYoungModulus[material];
+		currentPoint.PoissonRatio = iPoissonRatio[material];
+
+
 
 		calcPropertiesAtPoint(mat, ivisited, &currentPoint, ielectricConductivities, ithermalConductivities, iYoungModulus, iPoissonRatio);
 		backUp.push_back(currentPoint);
@@ -650,15 +667,22 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<queueNode> path,
 
 	while (!backUp.empty())
 	{
-		currentPoint = backUp.front();
+		smallCurrentPoint = backUp.front();
 		backUp.pop_front();
+		currentPoint.pt = smallCurrentPoint.pt;
+		currentPoint.previous = smallCurrentPoint.previous;
+		currentPoint.dist = smallCurrentPoint.dist;
 
 		inSeriesYoungModulus = currentPoint.YoungModulus;
 		inSeriesPoissonRatio = currentPoint.PoissonRatio;
 
 		while ((currentPoint.previous.y == currentPoint.pt.y) && (!backUp.empty()))
 		{
-			currentPoint = backUp.front();
+			smallCurrentPoint = backUp.front();
+			currentPoint.pt = smallCurrentPoint.pt;
+			currentPoint.previous = smallCurrentPoint.previous;
+			currentPoint.dist = smallCurrentPoint.dist;
+
 			backUp.pop_front();
 			inSeriesYoungModulus += currentPoint.YoungModulus;
 			inSeriesPoissonRatio += currentPoint.PoissonRatio;
@@ -733,7 +757,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
-		mat[position] = PATH;
+		mat[position] = SIDEPATH;
 
 	} while ((material != 0) && (sameline));
 
@@ -770,7 +794,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
-		mat[position] = PATH;
+		mat[position] = SIDEPATH;
 
 
 
@@ -1092,6 +1116,37 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 
 }*/
 
+
+void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clusterStack, list<smallQueueNode>* listPath)
+{
+
+	smallQueueNode last = clusterStack->top();
+
+	clusterStack->pop();
+	listPath->push_front(last);
+	smallQueueNode currentPoint;
+
+	while (!clusterStack->empty())
+	{
+		currentPoint = clusterStack->top();
+		clusterStack->pop();
+
+		long long index = ((long long)currentPoint.pt.y * width) + currentPoint.pt.x;
+		ivisited[index] = false;
+		mat[index] = HARD;
+
+		if ((last.previous.x == currentPoint.pt.x) && (last.previous.y == currentPoint.pt.y))
+		{
+			last = currentPoint;
+			listPath->push_front(last);
+
+		}
+
+	}
+}
+
+/*
+backup 7/7/2023
 void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterStack, list<queueNode>* listPath)
 {
 
@@ -1120,9 +1175,12 @@ void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterS
 	}
 }
 
-int Grid::drawPath(char* mat, bool* ivisited, list<queueNode> cpath)
+*/
+
+
+int Grid::drawPath(char* mat, bool* ivisited, list<smallQueueNode> cpath)
 {
-	std::list<queueNode>::iterator it;
+	std::list<smallQueueNode>::iterator it;
 
 	for (it = cpath.begin(); it != cpath.end(); ++it)
 	{
@@ -1140,7 +1198,7 @@ int Grid::drawPath(char* mat, bool* ivisited, list<queueNode> cpath)
 
 int Grid::drawPaths(char* mat, bool* ivisited)
 {
-	std::list<std::list<queueNode>>::iterator it;
+	std::list<std::list<smallQueueNode>>::iterator it;
 
 	for (it = pathsList.begin(); it != pathsList.end(); ++it)
 		drawPath(mat, ivisited, *it);
@@ -1150,6 +1208,103 @@ int Grid::drawPaths(char* mat, bool* ivisited)
 }
 
 
+int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint)
+{
+
+
+	*distance = 0;
+	*resistance = 0;
+	*thermalResistance = 0;
+	*YoungModulus = 0;
+	*PoissonRatio = 0;
+
+	long long position = (long long)src.y * width + src.x;
+	if (!mat[position])
+	{
+		cout << "Warning:Bad source point at BFS\n";
+		return false;
+	}
+
+	// Mark the source cell as visited
+	ivisited[position] = true;
+
+	// Create a queue for BFS
+	std::queue<smallQueueNode> q;
+	std::stack<smallQueueNode> backup;
+	std::list<smallQueueNode> singlePath;
+
+	int material = ingadients[position];
+	//float currResistance = 1. / ielectricConductivities[material];
+	//float currThermalResistance = 1. / ithermalConductivities[material];
+	//float currYoungModulus = iYoungModulus[material];
+	//float currPoissonRatio = iPoissonRatio[material];
+
+
+	smallQueueNode s = { src, {0,0},0 }; // , currResistance, currThermalResistance, currYoungModulus, currPoissonRatio
+
+
+	q.push(s); // Enqueue source cell
+	smallQueueNode curr;
+	// Do a BFS starting from source cell
+	while (!q.empty())
+	{
+		curr = q.front();
+		point2d pt = curr.pt;
+//		position = (long long)pt.y * width + pt.x;
+
+
+
+		// If we have reached the destination cell,
+		// we are done
+
+		if (pt.y >= (height - 1))
+		{
+			*distance = curr.dist + 1;
+			finalPoint->x = pt.x;
+			finalPoint->y = pt.y;
+			break;
+		}
+
+		// Otherwise dequeue the front cell in the queue and enqueue its adjacent cells
+
+		q.pop();
+
+
+		for (int i = 3; i > -1; i--)
+		{
+			int x = pt.x + xNum[i];
+			int y = pt.y + yNum[i];
+			position = (long long)y * width + x;
+
+			if ((isValid(x, y)) && (mat[position] == PERCOLATE) && (ivisited[position] == false))
+			{
+				// mark cell as visited and enqueue it
+
+				smallQueueNode Adjcell = { {x, y},{pt.x,pt.y},curr.dist + 1 };// , 0.0, 0.0, 0.0, 0.0
+
+
+				q.push(Adjcell);
+				backup.push(Adjcell);
+				ivisited[position] = true;
+
+			}
+
+
+		}
+	}
+
+
+	this->pathsList.push_front(singlePath);
+	MarkMinimumPath(mat, ivisited, &backup, &pathsList.front());
+	drawPath(cell, visited, pathsList.front());
+
+	// Return false if destination cannot be reached
+	// Debug cout << "fault\n";
+	return true;
+}
+
+/*
+backup 7/7/2023
 int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint)
 {
 
@@ -1243,7 +1398,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	return true;
 }
 
-
+*/
 
 
 int Grid::clusterCenter(point2d src, doublepoint2d* center, long long int* totalPoints)
@@ -1663,7 +1818,7 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 	}
 
 	sumResistance = 0;
-	std::list<std::list<queueNode>>::iterator it;
+	std::list<std::list<smallQueueNode>>::iterator it;
 	for (it = pathsList.begin(); it != pathsList.end(); ++it)
 	{
 		CalcPropetriesAtPath(cell, visited, *it, pelectricResistance, ielectricConductivities, pthermalResistance, ithermalConductivities,
@@ -1765,8 +1920,8 @@ void  Grid::saveToDisk(char* path, char* imageFileName, bool saveAsBMP)
 {
 	char* filename{ new char[strlen(path) + strlen(imageFileName) + 1] };
 
-	strcpy_s(filename, strlen(path), path);
-	strcat_s(filename, strlen(imageFileName), imageFileName);
+	strcpy(filename, path);
+	strcat(filename,  imageFileName);
 	saveToDisk(filename, saveAsBMP);
 }
 

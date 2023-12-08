@@ -2,12 +2,12 @@
 #include "FD2DEL.h"
 #include <cstring>
 #include <cmath>
-void FD2DEL::current(double* currx, double* curry, double* u, double* gx, double* gy)
+void FD2DEL::current(double* icurrx, double* icurry, double* iu, double* igx, double* igy)
 {
 
     //initialize the volume averaged currents
-    *currx = 0.0;
-    *curry = 0.0;
+    *icurrx = 0.0;
+    *icurry = 0.0;
     double cur1 = 0;
     double cur2 = 0;
     int m = 0;
@@ -18,40 +18,37 @@ void FD2DEL::current(double* currx, double* curry, double* u, double* gx, double
         {
             m = nx2 * (j - 1) + i - 1;
             //cur1, cur2 are the currents in one pixel
-            cur1 = 0.5 * ((u[m - 1] - u[m]) * gx[m - 1] + (u[m] - u[m + 1]) * gx[m]);
-            cur2 = 0.5 * ((u[m - nx2] - u[m]) * gy[m - nx2] + (u[m] - u[m + nx2]) * gy[m]);
+            cur1 = 0.5 * ((iu[m - 1] - iu[m]) * igx[m - 1] + (iu[m] - iu[m + 1]) * igx[m]);
+            cur2 = 0.5 * ((iu[m - nx2] - iu[m]) * igy[m - nx2] + (iu[m] - iu[m + nx2]) * igy[m]);
 
 
             //sum pixel currents into volume averages
-            *currx = *currx + cur1;
-            *curry = *curry + cur2;
+            *icurrx = *icurrx + cur1;
+            *icurry = *icurry + cur2;
         }
     }
 
-    *currx = *currx / double(nx * ny);
-    *curry = *curry / double(nx * ny);
+    *icurrx = *icurrx / double(nx * ny);
+    *icurry = *icurry / double(nx * ny);
 
     return;
 
 }
 
-void FD2DEL::ppixel(int* pix, double* a, int nphase, int ntot)
+void FD2DEL::ppixel(int* ipix, double* ia, int nphase, int ntot)
 {
-
-
-
 
     for (int j = 2; j <= ny + 1; j++)
         for (int i = 2; i <= nx + 1; i++)
         {
             int m=(j - 1)* (nx + 2) + i - 1;
 
-            a[pix[m]] = a[pix[m]] + 1.0;
+            ia[ipix[m]] = ia[ipix[m]] + 1.0;
         }
 
 
     for (int i = 0; i < nphase; i++)
-        a[i] = a[i] / double(nx * ny);
+        ia[i] = ia[i] / double(nx * ny);
 
     int j1,i1,m,m1;
 
@@ -79,28 +76,28 @@ void FD2DEL::ppixel(int* pix, double* a, int nphase, int ntot)
                 m = (j)*nx2 + i;
                 m1 = (j1)*nx2 + i1;
 
-                pix[m] = pix[m1];
+                ipix[m] = ipix[m1];
             }
 
 
         }
 
     // Check for wrong phase labels--less than 1 or greater than nphase
-    for (int m = 0; m < ns2 - 1; m++)
+    for (int im = 0; im < ns2 - 1; im++)
     {
-        if (pix[m] < 0)
-            std::cout << "Phase label in pix < 0--error at " << m << "\n";
+        if (ipix[im] < 0)
+            std::cout << "Phase label in pix < 0--error at " << im << "\n";
 
 
-        if (pix[m] > nphase - 1)
-            std::cout << "Phase label in pix > nphase--error at " << m << "\n";
+        if (ipix[im] > nphase - 1)
+            std::cout << "Phase label in pix > nphase--error at " << im << "\n";
     }
 
 }
 //Subroutine that determines the correct bond conductances that are used
 //to compute multiplication by the matrix A
 
-void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Matrix3D<double>* be, int nphase, int ntot)
+void FD2DEL::bond(int* ipix, double* igx, double* igy, Matrix2D<double>* isigma, Matrix3D<double>* ibe, int nphase, int ntot)
 {
     // auxiliary variables involving the system size
 
@@ -111,19 +108,19 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
 
     int i, j, m;
     // Set values of conductor for phase(i)--phase(j) interface,
-    // store in array be(i,j,m). If either phase i or j has zero conductivity,
-    // then be(i,j,m)=0.
+    // store in array ibe(i,j,m). If either phase i or j has zero conductivity,
+    // then ibe(i,j,m)=0.
     for (m = 0; m < 2; ++m) {
         for (i = 0; i < nphase; ++i) {
             for (j = 0; j < nphase; ++j) {
-                if (sigma->at(i, m) == 0.0)
-                    be->set(i, j, m, 0.0);
+                if (isigma->at(i, m) == 0.0)
+                    ibe->set(i, j, m, 0.0);
                 else
-                    if (sigma->at(j, m) == 0.0)
-                        be->set(i, j, m, 0.0);
+                    if (isigma->at(j, m) == 0.0)
+                        ibe->set(i, j, m, 0.0);
                     else
-                        be->set(i, j, m, 1. / ((0.5 / sigma->at(i, m)) + (0.5 / sigma->at(j, m))));
-                //std::cout << "be[" << i << "," << j << "," << m << "]=" << be->at(i, j, m) << "\n";
+                        ibe->set(i, j, m, 1. / ((0.5 / isigma->at(i, m)) + (0.5 / isigma->at(j, m))));
+                //std::cout << "ibe[" << i << "," << j << "," << m << "]=" << ibe->at(i, j, m) << "\n";
 
             }
         }
@@ -136,10 +133,10 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
     // in each conjugate gradient step.
     for (j = 1; j < ny2; ++j)
     {
-        gx[nx2 * (j - 1) + nx2 - 1] = 0.0;
+        igx[nx2 * (j - 1) + nx2 - 1] = 0.0;
     }
 
-    // bulk---gy
+    // bulk---igy
     for (i = 1; i <= nx2; ++i)
     {
         for (j = 1; j <= ny1; ++j)
@@ -148,29 +145,29 @@ void FD2DEL::bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Mat
             j1 = j + 1;
             i1 = i;
             m1 = (j1 - 1) * nx2 + i1;
-            gy[m - 1] = be->at(pix[m - 1], pix[m1 - 1], 1);
-            //         std::cout << m-1 << "   " << m1 - 1 << "   "  << pix[m-1] << "   " << pix[m1 - 1] << "   " <<gy[m - 1] << "\n";
+            igy[m - 1] = ibe->at(ipix[m - 1], ipix[m1 - 1], 1);
+            //         std::cout << m-1 << "   " << m1 - 1 << "   "  << ipix[m-1] << "   " << ipix[m1 - 1] << "   " <<igy[m - 1] << "\n";
         }
     }
-    // bulk--gx
+    // bulk--igx
     for (i = 1; i <= nx1; ++i) {
         for (j = 1; j <= ny2; ++j) {
             m = (j - 1) * nx2 + i;
             i1 = i + 1;
             j1 = j;
             m1 = (j1 - 1) * nx2 + i1;
-            gx[m - 1] = be->at(pix[m - 1], pix[m1 - 1], 0);
-            //          std::cout << m - 1 << "   " << m - 1 << "   " << pix[m - 1] << "   " << pix[m - 1] << "   " << gx[m - 1] << "\n";
+            igx[m - 1] = ibe->at(ipix[m - 1], ipix[m1 - 1], 0);
+            //          std::cout << m - 1 << "   " << m - 1 << "   " << ipix[m - 1] << "   " << pix[m - 1] << "   " << igx[m - 1] << "\n";
 
         }
     }
     return;
 }
 
-void  FD2DEL::prod(double* gx, double* gy, double* xw, double* yw)
+void  FD2DEL::prod(double* igx, double* igy, double* xw, double* yw)
 {
     //using namespace std;
-    //real gx(ns2), gy(ns2), xw(ns2), yw(ns2);
+    //real igx(ns2), gy(ns2), xw(ns2), yw(ns2);
 
     // xw is the input vector, yw = (A)(xw) is the output vector
 
@@ -183,10 +180,10 @@ void  FD2DEL::prod(double* gx, double* gy, double* xw, double* yw)
 
     for (i = nx2 + 1; i <= ns2 - nx2; ++i)
     {
-        yw[i] = -xw[i] * (gx[i - 1] + gx[i] + gy[i] + gy[i - nx2]);
+        yw[i] = -xw[i] * (igx[i - 1] + igx[i] + igy[i] + igy[i - nx2]);
         //  std::cout << "stage 1 yw[i]=" << yw[i] << "\n";
 
-        yw[i] = yw[i] + gx[i - 1] * xw[i - 1] + gx[i] * xw[i + 1] + gy[i] * xw[i + nx2] + gy[i - nx2] * xw[i - nx2];
+        yw[i] = yw[i] + igx[i - 1] * xw[i - 1] + igx[i] * xw[i + 1] + igy[i] * xw[i + nx2] + igy[i - nx2] * xw[i - nx2];
 
         //   std::cout << "yw[i]=" << yw[i] << "\n";
     }
@@ -210,7 +207,7 @@ void  FD2DEL::prod(double* gx, double* gy, double* xw, double* yw)
 
 
 
-void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, double* h, double* Ah, int* list, int nlist, double gtest)
+void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, double* h, double* Ah, int* list, int nlist, double gtest)
 {
     double gg, hAh, lambda, gglast, gamma, currx, curry;
     // Note:  voltage gradients are maintained because in the conjugate gradient
@@ -220,7 +217,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
     // First stage, compute initial value of gradient (gb), initialize h, the
     // conjugate gradient direction, and compute norm squared of gradient vector.
 
-    prod(gx, gy, u, gb);
+    prod(igx, igy, iu, gb);
     for (int i = 0; i < ns2; ++i)
         h[i] = gb[i];
 
@@ -240,7 +237,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
     int icc = 0;
     if (gg > gtest)
     {
-        prod(gx, gy, h, Ah);
+        prod(igx, igy, h, Ah);
 
         for (int k = 1; k <= nlist; ++k)
         {
@@ -251,7 +248,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
         lambda = gg / hAh;
         for (int i = 0; i < ns2; ++i)
         {
-            u[i] = u[i] - lambda * h[i];
+            iu[i] = iu[i] - lambda * h[i];
             gb[i] = gb[i] - lambda * Ah[i];
         }
 
@@ -281,7 +278,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
                 h[i] = gb[i] + gamma * h[i];
             }
 
-            prod(gx, gy, h, Ah);
+            prod(igx, igy, h, Ah);
             hAh = 0.0;
             for (int k = 0; k < nlist; ++k)
             {
@@ -293,7 +290,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
             // update voltage, gradient vectors
             for (int i = 0; i < ns2; ++i)
             {
-                u[i] = u[i] - (lambda * h[i]);
+                iu[i] = iu[i] - (lambda * h[i]);
                 gb[i] = gb[i] - (lambda * Ah[i]);
             }
 
@@ -310,7 +307,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
                 std::cout << icc;
                 std::cout << " gg = " << gg << "\n";
                 // call current subroutine
-                current(&currx, &curry, u, gx, gy);
+                current(&currx, &curry, iu, igx, igy);
                 std::cout << " currx = " << currx << "\n";
                 std::cout << " curry = " << curry << "\n";
                 std::cout << "number of conjugate gradient cycles needed = " << icc << "\n";
@@ -323,6 +320,7 @@ void FD2DEL::dembx(double* gx, double* gy, double* u, int* ic, double* gb, doubl
     *ic = icc;
     return;
 }
+
 void FD2DEL::initValues(int x, int y)
 {
     width = x; heigth = y;
@@ -445,12 +443,12 @@ std::vector<std::string> FD2DEL::split(std::string strToSplit, char delimeter)
 }
 
 
-long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
+long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
 {
     std::string line;
     std::ifstream inputFile(filename);
     std::vector<std::string> strComponent;
-    long count = 0;
+    long long count = 0;
     while (getline(inputFile, line))
     {
         strComponent = split(line, ' ');
@@ -464,7 +462,7 @@ long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
     return count;
 }
 
-long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
+long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
 {
     std::string line;
     std::ifstream inputFile(filename);
@@ -556,11 +554,12 @@ void FD2DEL::readFromArray(unsigned char* ingadients, double* iMaterialsElecricC
             pix[m] = ingadients[m1];
         }
 
-        for (int i = 0; i < components; i++)
-        {
-            sigma->set(i, 0, iMaterialsElecricConductivity[i]);
-            sigma->set(i, 1, iMaterialsElecricConductivity[i]);
-        }
+
+    for (int i = 0; i < components; i++)
+    {
+        sigma->set(i, 0, iMaterialsElecricConductivity[i]);
+        sigma->set(i, 1, iMaterialsElecricConductivity[i]);
+    }
 
 }
 

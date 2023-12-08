@@ -17,9 +17,8 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
 
 
-//#include "intArraytoBMP/intarraytobmp.hpp"
-
 #include "ShapeGenerator.h"
+
 ShapeGenerator::ShapeGenerator()
 {
 	totalComponents = 0;
@@ -29,7 +28,7 @@ ShapeGenerator::ShapeGenerator()
 	std::fill_n(Times, maxCases, 0.0);
 	std::fill_n(YoungModulus, maxCases, 0.0);
 	std::fill_n(componentsArea, maxCases, 0.0);
-
+	
 }
 /*
 ShapeGenerator::~ShapeGenerator()
@@ -38,24 +37,72 @@ ShapeGenerator::~ShapeGenerator()
 
 void ShapeGenerator::initDirs(void)
 {
-	string projectDir = "./" + projectName;
-	string shapesDir = projectDir + "/shapes/";
-	string imagesDir = projectDir + "/images/";
+	//c++17
+	string iprojectDir = "./" + projectName;
+	string ishapesDir = iprojectDir + "/shapes/";
+	string iimagesDir = iprojectDir + "/images/";
+	
 
-	char* cprojectDir = &projectDir[0u];
-	char* cshapesDir = &shapesDir[0u];
-	char* cimagesDir = &imagesDir[0u];
+
+	if (!std::filesystem::exists(iprojectDir))
+			std::filesystem::create_directory(iprojectDir);
+	
+	if (!std::filesystem::exists(ishapesDir))
+		std::filesystem::create_directory(ishapesDir);
+
+	if (!std::filesystem::exists(iimagesDir))
+		std::filesystem::create_directory(iimagesDir);
+	
+
+	/*
+	* before c++17 compiler
+	string iprojectDir = "./" + projectName;
+	string ishapesDir = iprojectDir + "/shapes/";
+	string iimagesDir = iprojectDir + "/images/";
+
+	char* cprojectDir = &iprojectDir[0u];
+	char* cshapesDir = &ishapesDir[0u];
+	char* cimagesDir = &iimagesDir[0u];
+
+	int result = 0 ;
+	
+
 
 	if (!dirExists(cprojectDir))
-		_mkdir(cprojectDir);
+	{
+		
+		result = mkdir(cprojectDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (result != 0)
+		{
+			cout << "Error create directory " << projectDir;
+			exit(-1);
+		}
+		
+	}
 
 	if (!dirExists(cshapesDir))
-		_mkdir(cshapesDir);
+	{
+		result = mkdir(cshapesDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (result != 0)
+		{
+			cout << "Error create directory " << ishapesDir;
+			exit(-1);
+		}
+
+	}
 
 	if (!dirExists(cimagesDir))
-		_mkdir(cimagesDir);
-
+	{
+		result = mkdir(cimagesDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (result != 0)
+		{
+			cout << "Error create directory " << iimagesDir;
+			exit(-1);
+		}
+	}
+	
 	return;
+	*/
 }
 
 ShapeGenerator::ShapeGenerator(int tcomp, double comp[], ShapeType compType[], SizeType compSizeType[], double sWeights[], double dimX[], double dimY[], double ihoops[], Grid* iGrid, Settings* isettings) : totalComponents(tcomp), grid(iGrid), settings(isettings)
@@ -247,7 +294,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 		ofstream componentFile;
 		string Base = "_shapes.txt";
-		string FileName = projectName + "\\shapes\\case_" + to_string(caseNo) + "_component_" + to_string(i) + Base;
+		string FileName = projectName + "/shapes/case_" + to_string(caseNo) + "_component_" + to_string(i) + Base;
 
 		//open report file
 		if ((settings->saveShapes) && (componentsType[i] != ShapeType::NOTHING))
@@ -709,7 +756,7 @@ void ShapeGenerator::monteCarlo(void)
 		if (settings->saveImageFile)
 		{
 			string FileName = to_string(i) + Base;
-			FileName = projectName + "\\images\\" + FileName;
+			FileName = projectName + "/images/" + FileName;
 			char* cstr = &FileName[0u];
 
 
@@ -799,7 +846,7 @@ void ShapeGenerator::Report()
 {
 	ofstream File;
 
-	string FileName = projectName + "\\report.txt";
+	string FileName = projectName + "/report.txt";
 
 	File.open(FileName);
 
@@ -911,7 +958,7 @@ void ShapeGenerator::ReportWithSemicolon()
 {
 	ofstream File;
 
-	string FileName = projectName + "\\ReportWithSemicolon.txt";
+	string FileName = projectName + "/ReportWithSemicolon.txt";
 
 	File.open(FileName);
 
@@ -1023,7 +1070,7 @@ void ShapeGenerator::ReportStatistics(void)
 {
 	ofstream File;
 
-	string FileName = projectName + "\\Statistics.csv";
+	string FileName = projectName + "/Statistics.csv";
 
 	File.open(FileName);
 
@@ -1502,8 +1549,6 @@ void ShapeGenerator::digitizeEllipseDiv4(int ingradient, Ellipse iEllipse, Grid*
 				distance =
 					((sqInvDensity * i * i) / sqEllipsoidA) +
 					((sqInvDensity * j * j) / sqEllipsoidB);
-
-
 
 				if (distance <= 1.0)
 				{
@@ -2340,5 +2385,3 @@ void ShapeGenerator::exportForFDM(char* fileName)
 
 	File.close();
 }
-
-
