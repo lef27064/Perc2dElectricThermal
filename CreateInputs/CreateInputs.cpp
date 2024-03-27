@@ -38,23 +38,23 @@ int main()
 
 	int Widths[] = { 2000 };
 	int Ppms[] = { 201 };
-	int Iters[] = { 500 };
+	int Iters[] = { 300 };
 
 		
 	
-	for (int i = 1; i <=100 ; i=i+1)
+	for (int i = 1; i <=60 ; i=i+1)
 	//for (int j = 0; j <= 0; j=j+1)
 		//	for (int j = 0; j <14; j++)
 	{
 		ofstream inputFile;
 		int iters = Iters[0];
-		int ppminCircle = 201;
+		int ppminCircle = 101;
 		//= 2 * sqrt(l);
-		int width = 2000; //Widths[j];
+		int width = 1000; //Widths[j];
 		int height = width;
 		int depth = width;
 		//double w = fi + i * deltafi;
-		fi = 0.50+(float)i / 200.0;
+		fi = 0.65+(float)i / 200.0;
 		//fj = j / 100.0;
 		double w = fi;
 		string FileName = directory + "\\in_" + to_string(i) + "_" + to_string(ppminCircle) + "_" + to_string(width) + "_" + to_string(w) + ".txt";
