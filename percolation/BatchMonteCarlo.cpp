@@ -1,18 +1,24 @@
 #include "BatchMonteCarlo.h"
 
-
+/// <summary>
+/// main routine with default input path
+/// </summary>
+/// <param name=""></param>
 BatchMonteCarlo::BatchMonteCarlo(void)
 {
+	//input directory
 	directory = "inputs";
-	
+
 	exePath = std::filesystem::current_path();
-		
 	cout << "\nEXE PATH " << exePath;
 	settings.readFromFile("settings.txt");
-	
 	cout << "\nReaded Setings ";
 }
 
+/// <summary>
+/// main routine with input path
+/// </summary>
+/// <param name="idirectory">input path</param>
 BatchMonteCarlo::BatchMonteCarlo(string idirectory)
 {
 	directory = idirectory;
@@ -20,7 +26,11 @@ BatchMonteCarlo::BatchMonteCarlo(string idirectory)
 	settings.readFromFile("settings.txt");
 }
 
-
+/// <summary>
+/// single Run of the algorithm (One Problem)
+/// </summary>
+/// <param name="fileName"></param>
+/// <param name="shapes"></param>
 void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 {
 	clock_t start = clock();
@@ -61,7 +71,7 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 	double avgMaxClusterRadius = 0;
 
 	//calc sumMaxClusterRadius
-	for (unsigned long long i = 0; i < grid.cMaxClusterRadius.size(); i++)
+	for (size_t i = 0; i < grid.cMaxClusterRadius.size(); i++)
 		sumMaxClusterRadius = sumMaxClusterRadius + grid.cMaxClusterRadius[i];
 
 	avgMaxClusterRadius = sumMaxClusterRadius / grid.cMaxClusterRadius.size();
@@ -87,10 +97,9 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 
 int BatchMonteCarlo::getInputFiles(void)
 {
-	//c++
+	//C++ 17
 	total = 0;
 	
-
 	for (const auto& file : std::filesystem::directory_iterator(directory)) 
 	{
 		inputfiles[total] =  file.path().generic_string();
@@ -105,7 +114,8 @@ int BatchMonteCarlo::getInputFiles(void)
 	else
 		return EXIT_FAILURE;
 
-	/*DIR* dir;
+	/* <C++ 17
+	DIR* dir;
 	int count = 0;
 	struct dirent* ent;
 

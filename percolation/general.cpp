@@ -95,7 +95,13 @@ std::filesystem::path GetCurrentWorkingDir(void)
 		return current_working_dir;*/
 }
 
-
+/// <summary>
+/// Average Element of an array of doubles
+/// </summary>
+/// <param name="values">source array</param>
+/// <param name="first">first element of the array</param>
+/// <param name="last">last element of the array</param>
+/// <returns>maximum value</returns>
 double  average_element(double values[], int first, int last)
 {
 	if (first == last)

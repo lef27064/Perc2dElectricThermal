@@ -30,7 +30,7 @@ Grid::Grid(int x, int y) : width(x), height(y)
 {
 
 
-	total = (long long)width * height;
+	total = (size_t)width * height;
 	//int clustersSize = int(0.5*sqrt(x * x + y * y));
 
 #pragma omp parallel
@@ -41,7 +41,7 @@ Grid::Grid(int x, int y) : width(x), height(y)
 			start = (char*)malloc(total + 1);
 			assert(start);
 			cell = start;
-			long long lastLine = width * (height - 1);
+			size_t lastLine = width * (height - 1);
 			end = start + lastLine;
 			std::fill_n(start, total, CellState::EMPTY);
 		}
@@ -101,7 +101,7 @@ void Grid::clear(void)
 char Grid::get(int x, int y)
 {
 	//if ((line < height) && (column < width) && (line >= 0) && (column >= 0))//check bounds
-	return (cell[(long long)y * width + x]);
+	return (cell[(size_t)y * width + x]);
 	//else
 	//	return 0;
 
@@ -142,7 +142,7 @@ void Grid::set(int x, int y, char what)
 {
 
 	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
-	cell[(long long)y * width + x] = what;
+	cell[(size_t)y * width + x] = what;
 
 }
 
@@ -151,7 +151,7 @@ void Grid::set(int x, int y, int what)
 {
 
 	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
-	cell[(long long)y * width + x] = (char)what;
+	cell[(size_t)y * width + x] = (char)what;
 
 }
 // ------------------------------------------------------
@@ -169,7 +169,7 @@ Rectangle Grid::cellCoordinates(int x, int y)
 void Grid::set(unsigned char* data, int x, int y, unsigned char what)
 {
 
-	data[(long long)y * width + x] = what;
+	data[(size_t)y * width + x] = what;
 
 }
 
@@ -178,7 +178,7 @@ void Grid::set(unsigned char* data, int x, int y, unsigned char what)
 unsigned char  Grid::get(unsigned char* data, int x, int y)
 {
 
-	return data[(long long)y * width + x];
+	return data[(size_t)y * width + x];
 
 }
 
@@ -472,7 +472,7 @@ int Grid::floodFill(char* mat, bool* ivisited, point2d src)
 		{
 			return 1;
 		}
-		mat[(long long)pt.y * width + pt.x] = PERCOLATE;
+		mat[(size_t)pt.y * width + pt.x] = PERCOLATE;
 
 		// Otherwise dequeue the front cell in the queue
 		// and enqueue its adjacent cells
@@ -484,11 +484,11 @@ int Grid::floodFill(char* mat, bool* ivisited, point2d src)
 
 			// if adjacent cell is valid, has path and
 			// not visited yet, enqueue it.
-			if (isValid(x, y) && (mat[(long long)y * width + x] == CellState::HARD))// &&	!ivisited[(y*width) +  x])
+			if (isValid(x, y) && (mat[(size_t)y * width + x] == CellState::HARD))// &&	!ivisited[(y*width) +  x])
 			{
 				// mark cell as visited and enqueue it
 				//ivisited[y*width + x] = true;
-				//mat[(long long )y*width + x] = PERCOLATE;
+				//mat[(size_t )y*width + x] = PERCOLATE;
 
 				q.push({ x,y });
 			}
@@ -516,7 +516,7 @@ int Grid::DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int*
 		// of the matrix have value 1
 
 		int sCounter = 0;
-		long long position = (long long)src.y * width + src.x;
+		size_t position = (size_t)src.y * width + src.x;
 		if (!mat[position])
 		{
 			cout << "Warning:Bad source point at BFS\n";
@@ -535,7 +535,7 @@ int Grid::DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int*
 		while (!s.empty())
 		{
 			point2dShort curr = s.top();
-			mat[(long long)curr.y * width + curr.x] = PERCOLATE;
+			mat[(size_t)curr.y * width + curr.x] = PERCOLATE;
 			s.pop();
 			sCounter++;
 
@@ -558,7 +558,7 @@ int Grid::DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int*
 				int x = curr.x + xNum[i];
 				int y = curr.y + yNum[i];
 
-				position = (long long)y * width + x;
+				position = (size_t)y * width + x;
 				if (isValid(x, y) && (mat[position] == CellState::HARD || mat[position] == CellState::SOFT))
 					s.push({ short(x), short(y) });
 
@@ -571,7 +571,7 @@ int Grid::DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int*
 }
 
 
-long long int Grid::countPathPixels(char* mat)
+size_t Grid::countPathPixels(char* mat)
 {
 	int result = 0;
 	for (int j = 0; j < height; j++)
@@ -590,7 +590,7 @@ int Grid::DFSRestore(char* mat, bool* ivisited, point2dShort src)
 	// check source and destination cell
 	// of the matrix have value 1
 
-	long long position = (long long)src.y * width + src.x;
+	size_t position = (size_t)src.y * width + src.x;
 	if (!mat[position])
 	{
 		cout << "Warning:Bad source point at BFS\n";
@@ -605,7 +605,7 @@ int Grid::DFSRestore(char* mat, bool* ivisited, point2dShort src)
 	while (!q.empty())
 	{
 		point2dShort curr = q.top();
-		position = (long long)curr.y * width + curr.x;
+		position = (size_t)curr.y * width + curr.x;
 
 		ivisited[position] = false;
 		mat[position] = HARD;
@@ -617,7 +617,7 @@ int Grid::DFSRestore(char* mat, bool* ivisited, point2dShort src)
 			int x = curr.x + xNum[i];
 			int y = curr.y + yNum[i];
 
-			position = (long long)y * width + x;
+			position = (size_t)y * width + x;
 			if ((isValid(x, y) && (mat[position] == PERCOLATE)) || ((isValid(x, y) && (mat[position] == PATH))))
 			{
 				q.push({ short(x), short(y) });
@@ -644,7 +644,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 	*YoungModulus = 0;
 	*PoissonRatio = 0;
 	list<smallQueueNode> backUp;
-	long long position;
+	size_t position;
 	int material;
 
 
@@ -658,7 +658,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 		currentPoint.pt = smallCurrentPoint.pt;
 		currentPoint.previous = smallCurrentPoint.previous;
 		currentPoint.dist = smallCurrentPoint.dist;
-		position = (long long)currentPoint.pt.y * width + currentPoint.pt.x;
+		position = (size_t)currentPoint.pt.y * width + currentPoint.pt.x;
 		material = ingadients[position];
 
 		currentPoint.resistance = ielectricConductivities[material];
@@ -716,7 +716,7 @@ void Grid::CalcPropetriesAtPath(char* mat, bool* ivisited, list<smallQueueNode> 
 void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
 {
 	Direction pathDirectionAtPoint;
-	long long position = (long long)currentPoint->pt.y * width + currentPoint->pt.x;
+	size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
 	int x, y;
 	int material = ingadients[position];
 	bool sameline = false;
@@ -745,7 +745,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		else
 			x--;
 
-		position = (long long)y * width + x;
+		position = (size_t)y * width + x;
 		if (isValid(x, y) && (mat[position] == HARD))
 			material = ingadients[position];
 		else
@@ -780,7 +780,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 			y++;
 		else
 			x++;
-		position = (long long)y * width + x;
+		position = (size_t)y * width + x;
 
 		if (isValid(x, y) && (mat[position] != PATH))
 			material = ingadients[position];
@@ -821,7 +821,7 @@ try to solve mechanical
 void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
 {
 Direction pathDirectionAtPoint;
-long long position = (long long)currentPoint->pt.y * width + currentPoint->pt.x;
+size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
 int x, y;
 int material = ingadients[position];
 
@@ -850,7 +850,7 @@ do
 	else
 		x--;
 
-	position = (long long)y * width + x;
+	position = (size_t)y * width + x;
 	if (isValid(x, y) && (mat[position] == HARD))
 		material = ingadients[position];
 	else
@@ -885,7 +885,7 @@ do
 		y++;
 	else
 		x++;
-	position = (long long)y * width + x;
+	position = (size_t)y * width + x;
 
 	if (isValid(x, y) && (mat[position] != PATH))
 		material = ingadients[position];
@@ -928,7 +928,7 @@ currentPoint->thermalResistance = 1.0 / currentPoint->thermalResistance;
 void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
 {
 Direction pathDirectionAtPoint;
-long long position = (long long)currentPoint->pt.y * width + currentPoint->pt.x;
+size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
 int x, y;
 int material = ingadients[position];
 
@@ -957,7 +957,7 @@ do
 	else
 		x--;
 
-	position = (long long)y * width + x;
+	position = (size_t)y * width + x;
 	if (isValid(x, y) && (mat[position] == HARD))
 		material = ingadients[position];
 	else
@@ -993,7 +993,7 @@ do
 		y++;
 	else
 		x++;
-	position = (long long)y * width + x;
+	position = (size_t)y * width + x;
 
 	if (isValid(x, y) && (mat[position] != PATH))
 		material = ingadients[position];
@@ -1032,7 +1032,7 @@ currentPoint->thermalResistance = 1.0 / currentPoint->thermalResistance;
 void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
 {
 	Direction pathDirectionAtPoint;
-	long long position = (long long)currentPoint->pt.y * width + currentPoint->pt.x;
+	size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
 	int x, y;
 	int material = ingadients[position];
 
@@ -1061,7 +1061,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		else
 			x--;
 
-		position = (long long)y * width + x;
+		position = (size_t)y * width + x;
 		if (isValid(x, y) && (mat[position] == HARD))
 			material = ingadients[position];
 		else
@@ -1092,7 +1092,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 			y++;
 		else
 			x++;
-		position = (long long)y * width + x;
+		position = (size_t)y * width + x;
 
 		if (isValid(x, y) && (mat[position] != PATH))
 			material = ingadients[position];
@@ -1141,7 +1141,7 @@ void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clu
 		currentPoint = clusterStack->top();
 		clusterStack->pop();
 
-		long long index = ((long long)currentPoint.pt.y * width) + currentPoint.pt.x;
+		size_t index = ((size_t)currentPoint.pt.y * width) + currentPoint.pt.x;
 		ivisited[index] = false;
 		mat[index] = HARD;
 
@@ -1171,7 +1171,7 @@ void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterS
 		currentPoint = clusterStack->top();
 		clusterStack->pop();
 
-		long long index = ((long long)currentPoint.pt.y * width) + currentPoint.pt.x;
+		size_t index = ((size_t)currentPoint.pt.y * width) + currentPoint.pt.x;
 		ivisited[index] = false;
 		mat[index] = HARD;
 
@@ -1195,7 +1195,7 @@ int Grid::drawPath(char* mat, bool* ivisited, list<smallQueueNode> cpath)
 	for (it = cpath.begin(); it != cpath.end(); ++it)
 	{
 
-		long long position = (long long)it->pt.y * width + it->pt.x;
+		size_t position = (size_t)it->pt.y * width + it->pt.x;
 		mat[position] = PATH;
 		ivisited[position] = true;
 
@@ -1228,7 +1228,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	*YoungModulus = 0;
 	*PoissonRatio = 0;
 
-	long long position = (long long)src.y * width + src.x;
+	size_t position = (size_t)src.y * width + src.x;
 	if (!mat[position])
 	{
 		cout << "Warning:Bad source point at BFS\n";
@@ -1260,7 +1260,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	{
 		curr = q.front();
 		point2d pt = curr.pt;
-//		position = (long long)pt.y * width + pt.x;
+//		position = (size_t)pt.y * width + pt.x;
 
 
 
@@ -1284,7 +1284,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 		{
 			int x = pt.x + xNum[i];
 			int y = pt.y + yNum[i];
-			position = (long long)y * width + x;
+			position = (size_t)y * width + x;
 
 			if ((isValid(x, y)) && (mat[position] == PERCOLATE) && (ivisited[position] == false))
 			{
@@ -1325,7 +1325,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	*YoungModulus = 0;
 	*PoissonRatio = 0;
 
-	long long position = (long long)src.y * width + src.x;
+	size_t position = (size_t)src.y * width + src.x;
 	if (!mat[position])
 	{
 		cout << "Warning:Bad source point at BFS\n";
@@ -1356,7 +1356,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	{
 		curr = q.front();
 		point2d pt = curr.pt;
-//		position = (long long)pt.y * width + pt.x;
+//		position = (size_t)pt.y * width + pt.x;
 
 
 
@@ -1380,7 +1380,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 		{
 			int x = pt.x + xNum[i];
 			int y = pt.y + yNum[i];
-			position = (long long)y * width + x;
+			position = (size_t)y * width + x;
 
 			if ((isValid(x, y)) && (mat[position] == PERCOLATE) && (ivisited[position] == false))
 			{
@@ -1411,14 +1411,14 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 */
 
 
-int Grid::clusterCenter(point2d src, doublepoint2d* center, long long int* totalPoints)
+int Grid::clusterCenter(point2d src, doublepoint2d* center, size_t* totalPoints)
 {
 
-	long long int id = (long long int)(src.y) * width + src.x;
+	size_t id = (size_t)(src.y) * width + src.x;
 	point2d s;
 	double centerX = 0;
 	double centerY = 0;
-	long long int totalP = 0;
+	size_t totalP = 0;
 
 
 	queue<point2d> q;
@@ -1447,7 +1447,7 @@ int Grid::clusterCenter(point2d src, doublepoint2d* center, long long int* total
 			int x = pt.x + xNum[i];
 			int y = pt.y + yNum[i];
 
-			id = (long long int)(y) * width + x;
+			id = (size_t)(y) * width + x;
 
 			if ((isValid(x, y) && ((cell[id] == CellState::HARD) || (cell[id] == PERCOLATE) || (cell[id] == CellState::SOFT)) && (clusterVisited[id] == false)))
 			{
@@ -1471,9 +1471,9 @@ int Grid::clusterCenter(point2d src, doublepoint2d* center, long long int* total
 // of giration of a cluster
 //
 
-int Grid::clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, long long int totalPoints, double* inertia, double* radiusOfGyration)
+int Grid::clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, size_t totalPoints, double* inertia, double* radiusOfGyration)
 {
-//	long long int totalP = 0;
+//	size_t totalP = 0;
 	double sum = 0;
 //	double sqrtSum = 0;
 	int x, y;
@@ -1481,7 +1481,7 @@ int Grid::clusterInertia(char* mat, unsigned char* clustersImage, point2d src, d
 	double distance;
 	queue<point2d> q;
 	char color = rand() % 0xC0 + 0x2F;
-	long long int id = (long long int)src.y * width + src.x;
+	size_t id = (size_t)src.y * width + src.x;
 
 	// Mark the source cell as visited
 
@@ -1512,7 +1512,7 @@ int Grid::clusterInertia(char* mat, unsigned char* clustersImage, point2d src, d
 			x = pt.x + xNum[i];
 			y = pt.y + yNum[i];
 
-			id = (long long int)(y) * width + x;
+			id = (size_t)(y) * width + x;
 
 			if ((isValid(x, y) && (clusterVisited[id] == true)))
 			{
@@ -1539,7 +1539,7 @@ Cluster Grid::markClusters()
 	int i, j;
 
 	//	int sumClusters = 1;
-	long long int id;
+	size_t id;
 	doublepoint2d center(0.0, 0.0);
 	Cluster currCluster;
 	point2d src;
@@ -1557,7 +1557,7 @@ Cluster Grid::markClusters()
 		{
 			src.x = i;
 			src.y = j;
-			id = (long long) int(j) * width + i;
+			id = (size_t) int(j) * width + i;
 
 			if ((cell[id] == CellState::HARD) && (clusterVisited[id] == false))
 			{
@@ -1615,7 +1615,7 @@ double Grid::findCorrelationLength(std::vector<clusterStatistics> iClusters)
 	double denominator = 0;
 	double weight = 0;
 
-	for (unsigned long long int i = 0; i < iClusters.size(); i++)
+	for (size_t i = 0; i < iClusters.size(); i++)
 		//if (iClusters.size()>10)
 	{
 		weight = double(iClusters[i].totalPoints) * double(iClusters[i].totalPoints);

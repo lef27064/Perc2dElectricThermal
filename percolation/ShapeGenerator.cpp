@@ -837,7 +837,7 @@ void ShapeGenerator::calcMeanCorrellationLength()
 {
 	double sum = 0;
 
-	for (unsigned long long i = 0; i < correleationLengths.size(); i++)
+	for (size_t i = 0; i < correleationLengths.size(); i++)
 		sum = sum + correleationLengths[i];
 	correleationLength = sum / correleationLengths.size();
 }
@@ -1098,7 +1098,7 @@ void ShapeGenerator::ReportStatistics(void)
 	File << "Total  Points  |Mean Radius | Inertia \n";
 
 	//clustersSize = int(0.5 * sqrt(grid->height * grid->height + grid->width* grid->width));
-	for (unsigned long long i = 0; i < grid->Clusters.size(); i++)
+	for (size_t i = 0; i < grid->Clusters.size(); i++)
 	{
 		if (grid->Clusters[i].totalPoints > 0)
 		{
@@ -1572,7 +1572,7 @@ void ShapeGenerator::digitizeEllipseDiv4(int ingradient, Ellipse iEllipse, Grid*
 					if (isInsideGrid(iRotated, iGrid))
 					{
 
-						long long where = (long long)iRotated.y * width + iRotated.x;
+						size_t where = (size_t)iRotated.y * width + iRotated.x;
 						char cPixel = iGrid->cell[where];
 						{
 							if (state == CellState::HARD)
@@ -1689,7 +1689,7 @@ void ShapeGenerator::digitizeEllipseDiv4(char ingradient, Ellipse iEllipse, Grid
 					if (isInsideGrid(iRotated, iGrid))
 					{
 
-						long long where = (long long)iRotated.y * width + iRotated.x;
+						size_t where = (size_t)iRotated.y * width + iRotated.x;
 						char cPixel = iGrid->cell[where];
 						{
 							if (state == CellState::HARD)

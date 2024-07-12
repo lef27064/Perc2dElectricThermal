@@ -443,12 +443,12 @@ std::vector<std::string> FD2DEL::split(std::string strToSplit, char delimeter)
 }
 
 
-long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
+size_t FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels)
 {
     std::string line;
     std::ifstream inputFile(filename);
     std::vector<std::string> strComponent;
-    long long count = 0;
+    size_t count = 0;
     while (getline(inputFile, line))
     {
         strComponent = split(line, ' ');
@@ -462,7 +462,7 @@ long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels
     return count;
 }
 
-long long FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
+size_t FD2DEL::readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y)
 {
     std::string line;
     std::ifstream inputFile(filename);

@@ -72,7 +72,7 @@ class Grid {
 
 	
 	int percolate(void);
-	long long total;
+	size_t total;
 public:
 	list<list<smallQueueNode>> pathsList;
 	char* cell, * start, * end;
@@ -120,7 +120,7 @@ public:
 	
 	int DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int* distance);
 
-	long long int countPathPixels(char* mat);
+	size_t countPathPixels(char* mat);
 
 	int DFSRestore(char* mat, bool* ivisited, point2dShort src);
 
@@ -139,9 +139,9 @@ public:
 
 	int BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint);
 
-	int clusterCenter(point2d src, doublepoint2d* center, long long int* totalPoints);
+	int clusterCenter(point2d src, doublepoint2d* center, size_t* totalPoints);
 
-	int clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, long long int totalPoints, double* inertia, double* radiusOfGyration);
+	int clusterInertia(char* mat, unsigned char* clustersImage, point2d src, doublepoint2d center, size_t totalPoints, double* inertia, double* radiusOfGyration);
 
 	Cluster markClusters();
 

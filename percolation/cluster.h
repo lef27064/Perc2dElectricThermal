@@ -59,7 +59,7 @@ struct Cluster
 	double radius;
 	doublepoint2d center;
 	point2d start;
-	long long int totalPoints;
+	size_t totalPoints;
 	double inertia;
 
 	//Cluster(double a);
@@ -73,7 +73,7 @@ struct clusterStatistics
 {
 	double radius;
 	double inertia;
-	long long int totalPoints;
+	size_t totalPoints;
 };
 
 /*

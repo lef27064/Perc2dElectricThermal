@@ -29,7 +29,7 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 	{
 		for (int column = 0; column < width ; column++)
 		{
-			char color = image[(long long )line*width + column];
+			char color = image[(size_t )line*width + column];
 			switch (color)
 			{
 			case CellState::EMPTY:fprintf(pgmimg, "%d ", 0); break;
@@ -80,7 +80,7 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 	{
 		for (int column = 0; column < width ; column++)
 		{
-			unsigned char color = image[(long long)line*width + column];
+			unsigned char color = image[(size_t)line*width + column];
 			switch (color)			{
 			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
 			//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
@@ -148,7 +148,7 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 	{
 		for (int column = 0; column < width; column++)
 		{
-			int color = image[(long long)line * width + column];
+			int color = image[(size_t)line * width + column];
 			if (color==1)
 				setcolor(colors, 3 * column, 0x00, 0x00, 0x00);
 			else
@@ -204,7 +204,7 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 		for (int column = 0; column < width; column++)
 		{
 
-			unsigned char color = image[(long long) line*width + column];
+			unsigned char color = image[(size_t) line*width + column];
 			switch ((int)color)
 			{
 			//case 0:setcolor(colors, 3 * column, 0x00, 0x00, 0x00); cout << "1"; break;
@@ -264,7 +264,7 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 		for (int column = 0; column < width; column++)
 		{
 
-			unsigned char color = image[(long long)line*width + column];
+			unsigned char color = image[(size_t)line*width + column];
 			trueColor = (int)color * colorWidth;
 			red = (( char)(trueColor % (0xFF)) )|0xF;//& (0xFF);
 			blue = ((char(trueColor) % 0x00FF) ) | 0xF; //(trueColor >> 8) & (0xFF);
