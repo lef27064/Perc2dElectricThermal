@@ -3,7 +3,7 @@ small-grid
 #total component
 2
 #components % weights
-0.01 0.99
+0.001 0.999
 #Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)
 4 2
 #SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)
@@ -27,7 +27,7 @@ small-grid
 #width - height - depth
 2000 2000
 #iterations
-1
+10
 #pixels per min Sphere
 50
 #Swiss chesse case TRUE or FALSE

@@ -1,24 +1,33 @@
 Rerclolation 2d
-Version 1.6 Cluster Analysis - Electric, Thermal properties - Mechanical properties calculation in progress...Report starting: Mon Jul 15 11:39:13 2024
+Version 1.6 Cluster Analysis - Electric, Thermal properties - Mechanical properties calculation in progress...Report starting: Mon Jul 15 14:10:04 2024
 
 ---------------------------------------------------------------------------------------------------
 Inputs
 |#  ,%Weights,%Spec. Weights,X Dimension,Y Dimension,Type,Size type,      Area,hoop Dist
-   0,     0.01,              1,       1e-08,       1e-08,    4,         3,       0.01,        0
-   1,     0.99,              1,       1e-08,       1e-08,    2,         0,       0.99,        0
+   0,    0.001,              1,       1e-08,       1e-08,    4,         3,      0.001,        0
+   1,    0.999,              1,       1e-08,       1e-08,    2,         0,      0.999,        0
 Pixels Per minimum Size:50
 Factor [pixelsPerMinimumCircle / minimumSize]:5e+09
 Maximum Dimension:1e-08
 Minimum Dimension:1e-08
 Grid size =[2000x2000]
-Total iterations: 1
+Total iterations: 10
 ---------------------------------------------------------------------------------------------------
 Realiazation No,Percolate Y[1]/N[0], Process Time, Setup Time   ,% Area Comp[0]  ,% Area Comp[1],Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
-      1,                  1,     1.251,          0.231            ,0.0099955            ,0.990004,      2.14347,      2.14347,  3.46379e+06,     0.221682,         1283,      2779.54,     0.299281
+      1,                  1,     1.032,          0.257            ,0.00099475            ,0.999005,      1.61584,      1.61584,  3.94326e+06,     0.252369,         1503,      2443.43,     0.465084
+      2,                  1,     1.026,          0.256            ,0.00099925            ,0.999001,      1.62352,      1.62352,  3.96608e+06,     0.253829,         1507,      2467.62,     0.464115
+      3,                  1,     1.111,          0.256            ,0.00097325            ,0.999027,       1.6453,       1.6453,  3.97201e+06,     0.254209,         1510,      2499.07,     0.458884
+      4,                  1,     1.014,          0.271            ,0.0009855            ,0.999015,      1.69629,      1.69629,  3.84385e+06,     0.246006,         1461,      2495.85,     0.430645
+      5,                  1,     1.035,          0.269            ,0.001            ,0.999,      1.62662,      1.62662,  3.98436e+06,     0.254999,         1517,      2481.08,     0.466306
+      6,                  1,     1.008,          0.265            ,0.000999            ,0.999001,      1.75912,      1.75912,  3.81895e+06,     0.244413,         1440,      2549.91,     0.409295
+      7,                  1,     1.022,          0.264            ,0.00098025            ,0.99902,      1.67154,      1.67154,   3.8976e+06,     0.249446,         1480,      2490.28,     0.442705
+      8,                  1,      1.03,          0.257            ,0.0009995            ,0.999,      1.61525,      1.61525,  4.01481e+06,     0.256948,         1525,       2475.4,     0.472064
+      9,                  1,     1.025,          0.257            ,0.00096375            ,0.999036,      1.74953,      1.74953,  3.86698e+06,     0.247487,         1461,      2571.27,     0.417541
+     10,                  1,     0.992,          0.262            ,0.00098925            ,0.999011,      1.68245,      1.68245,  3.86442e+06,     0.247323,         1470,      2491.59,     0.436863
 ---------------------------------------------------------------------------------------------------
 Mean Percolation=1
-Mean Processing Time=1.251
-Mean set up time=0.231
+Mean Processing Time=1.0295
+Mean set up time=0.2614
 Mean correlation Length=0
 Mean Area of component[0]=0
-Mean Area of component[1]=0.990004
+Mean Area of component[1]=0.999012
