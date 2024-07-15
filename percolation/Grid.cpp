@@ -722,13 +722,13 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 	bool sameline = false;
 	double currResistance = ielectricConductivities[material];
 	double currThermalResistance = ithermalConductivities[material];
-	double currYoungModulus = iYoungModulus[material] * height;
-	double currPoissonRatio = iPoissonRatio[material] * height;
+	//double currYoungModulus = iYoungModulus[material] * height;
+	//double currPoissonRatio = iPoissonRatio[material] * height;
 
 	currentPoint->resistance = currResistance;
 	currentPoint->thermalResistance = currThermalResistance;
-	currentPoint->YoungModulus = currYoungModulus;
-	currentPoint->PoissonRatio = currPoissonRatio;
+	//currentPoint->YoungModulus = currYoungModulus;
+	//currentPoint->PoissonRatio = currPoissonRatio;
 
 	x = currentPoint->pt.x;
 	y = currentPoint->pt.y;
@@ -755,7 +755,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
 		currentPoint->resistance += currResistance;
 		currentPoint->thermalResistance += currThermalResistance;
-
+      /*
 		if (pathDirectionAtPoint != HORIZONTAL)
 		{
 			currYoungModulus = iYoungModulus[ingadients[position]] * height;
@@ -763,7 +763,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 			currentPoint->YoungModulus += currYoungModulus;
 			currentPoint->PoissonRatio += currPoissonRatio;
 		}
-
+		*/
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
@@ -792,7 +792,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
 		currentPoint->resistance += currResistance;
 		currentPoint->thermalResistance += currThermalResistance;
-
+		/*
 		if (pathDirectionAtPoint != HORIZONTAL)
 		{
 			currYoungModulus = iYoungModulus[ingadients[position]] * height;
@@ -800,7 +800,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 			currentPoint->YoungModulus += currYoungModulus;
 			currentPoint->PoissonRatio += currPoissonRatio;
 		}
-
+		*/
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 

@@ -1,0 +1,24 @@
+Rerclolation 2d
+Version 1.6 Cluster Analysis - Electric, Thermal properties - Mechanical properties calculation in progress...Report starting: Mon Jul 15 11:39:13 2024
+
+---------------------------------------------------------------------------------------------------
+Inputs
+|#  ,%Weights,%Spec. Weights,X Dimension,Y Dimension,Type,Size type,      Area,hoop Dist
+   0,     0.01,              1,       1e-08,       1e-08,    4,         3,       0.01,        0
+   1,     0.99,              1,       1e-08,       1e-08,    2,         0,       0.99,        0
+Pixels Per minimum Size:50
+Factor [pixelsPerMinimumCircle / minimumSize]:5e+09
+Maximum Dimension:1e-08
+Minimum Dimension:1e-08
+Grid size =[2000x2000]
+Total iterations: 1
+---------------------------------------------------------------------------------------------------
+Realiazation No,Percolate Y[1]/N[0], Process Time, Setup Time   ,% Area Comp[0]  ,% Area Comp[1],Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
+      1,                  1,     1.251,          0.231            ,0.0099955            ,0.990004,      2.14347,      2.14347,  3.46379e+06,     0.221682,         1283,      2779.54,     0.299281
+---------------------------------------------------------------------------------------------------
+Mean Percolation=1
+Mean Processing Time=1.251
+Mean set up time=0.231
+Mean correlation Length=0
+Mean Area of component[0]=0
+Mean Area of component[1]=0.990004

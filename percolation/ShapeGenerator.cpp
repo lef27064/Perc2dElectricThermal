@@ -621,6 +621,8 @@ void ShapeGenerator::monteCarlo(void)
 	double meanRVEPaths = 0;
 	double sumPathLength = 0;
 	double meanRVEPathLength = 0;
+	double meanRVEPathWidth = 0;
+
 
 	//double sumMeanPathLength = 0;
 	cout << "-----------------------------------------------------------------------------------------\n";
@@ -796,13 +798,14 @@ void ShapeGenerator::monteCarlo(void)
 	meanSetUpTime = sumSetupTime / iterations;
 	meanElectricConductivity = (sumElectricConductivity / iterations) + ((width - meanRVEPaths) * materialsElectricConductivity[0] / width);
 	meanThermalConductivity = (sumThemalConductivity / iterations) + ((width - meanRVEPaths) * materialsThermalConductivity[0] / width);
-
+	meanRVEPathWidth = meanElectricConductivity / (meanRVEPaths * meanRVEPathLength* materialsElectricConductivity[1]);
+	/*
 	//traversal direction
 	//base properties
 	//double stiffnessOfFiber = (sumPOissonRatio / iterations) / meanRVEPaths;
 
-	double baseMeanPoissonRatio = ((meanRVEPaths * sumPOissonRatio / iterations) + (width - meanRVEPaths) * materialsPoissonRatio[0]) / width;
-	double baseMeanYoungModulus = 1/(1/(sumYoungModulus / iterations) + 1/(((width - meanRVEPaths) * materialsYoungModulus[0]) / width));
+	//double baseMeanPoissonRatio = ((meanRVEPaths * sumPOissonRatio / iterations) + (width - meanRVEPaths) * materialsPoissonRatio[0]) / width;
+	//double baseMeanYoungModulus = 1/(1/(sumYoungModulus / iterations) + 1/(((width - meanRVEPaths) * materialsYoungModulus[0]) / width));
 
 	//double baseMeanPoissonRatio = ((meanRVEPaths * stiffnessOfFiber) + (width - meanRVEPaths) * materialsPoissonRatio[0]) / width;
 	//double baseMeanYoungModulus = 1 / ((meanRVEPaths / materialsYoungModulus[1]) + ((width - meanRVEPaths) / materialsYoungModulus[0]));
@@ -811,10 +814,13 @@ void ShapeGenerator::monteCarlo(void)
 	//meanPoissonRatio = ((meanRVEPaths* stiffnessOfFiber)+((width - meanRVEPaths) * baseMeanPoissonRatio)) / width;
 	//meanYoungModulus = ((meanRVEPaths * materialsYoungModulus[1]) + (width - meanRVEPaths) * baseMeanYoungModulus) / width;
 
+	//Last Good estimation
+	//meanPoissonRatio = ((meanRVEPaths * sumPOissonRatio / iterations) + ((width - meanRVEPaths) * baseMeanPoissonRatio)) / width;
+	//meanYoungModulus = (sumYoungModulus / (iterations) + ((width - meanRVEPaths) * baseMeanYoungModulus) / width);
+	*/
 
-	meanPoissonRatio = ((meanRVEPaths * sumPOissonRatio / iterations) + ((width - meanRVEPaths) * baseMeanPoissonRatio)) / width;
-	meanYoungModulus = (sumYoungModulus / (iterations) + ((width - meanRVEPaths) * baseMeanYoungModulus) / width);
-
+	/* This estimation is based on assumption that k = (nw)^(-S/L)*/
+	meanYoungModulus = materialsYoungModulus[1] * pow((meanRVEPaths * meanRVEPathWidth), (-width / meanRVEPathLength))/(width);
 
 
 	cout << "-----------------------------------Results------------------------------------------------\n";
@@ -823,6 +829,7 @@ void ShapeGenerator::monteCarlo(void)
 	cout << "Mean SetUp Time  =" << meanSetUpTime << "\n";
 	cout << "Mean Paths per RVE=" << meanRVEPaths << "\n";
 	cout << "Mean Paths Length per RVE=" << meanRVEPathLength << "\n";
+	cout << "Mean RVE path Width=" << meanRVEPathWidth/width << " m  or " << meanRVEPathWidth*factor/width<<	" in pixels\n";
 	cout << "Mean Special Electric Counductivity =" << meanElectricConductivity << "\n";
 	cout << "Mean Special Thermal Counductivity =" << meanThermalConductivity << "\n";
 	cout << "Mean Young Modulus =" << meanYoungModulus << "\n";

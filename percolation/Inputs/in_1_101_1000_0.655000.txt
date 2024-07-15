@@ -3,7 +3,7 @@ small-grid
 #total component
 2
 #components % weights
-0.15 0.85
+0.01 0.99
 #Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)
 4 2
 #SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)
@@ -21,15 +21,15 @@ small-grid
 #Thermal Conductivities
 1.e-16 1.0
 #Young Modulus
-1.e+5 1.e+8
+1.e+5 1.e+10
 #Poisson Ratio
 0.3 0.32
 #width - height - depth
-12000 12000
+2000 2000
 #iterations
 1
 #pixels per min Sphere
-500
+50
 #Swiss chesse case TRUE or FALSE
 FALSE
 # CALC ELECTRIC CONDUCTIVITY
