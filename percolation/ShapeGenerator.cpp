@@ -820,7 +820,7 @@ void ShapeGenerator::monteCarlo(void)
 	*/
 
 	/* This estimation is based on assumption that k = (nw)^(-S/L)*/
-	meanYoungModulus = materialsYoungModulus[1] * pow((meanRVEPaths * meanRVEPathWidth), (-meanRVEPathLength/width));
+	meanYoungModulus = (materialsYoungModulus[1] * pow((meanRVEPaths * meanRVEPathWidth), (width/meanRVEPathLength)))/width;
 
 
 	cout << "-----------------------------------Results------------------------------------------------\n";
@@ -925,13 +925,13 @@ void ShapeGenerator::Report()
 		else
 			eleCondu = 0;
 		if (calcElectricConductivity)
-			File << "," << setw(13) << this->meanRVEResistances[i]
-			<< "," << setw(13) << this->meanRVEThermalResistance[i]
-			<< "," << setw(13) << this->meanRVEYoungModulus[i]
-			<< "," << setw(13) << this->meanRVEPoissoonRatio[i]
-			<< "," << setw(13) << this->paths[i]
-			<< "," << setw(13) << this->meanRealPathLength[i]
-			<< "," << setw(13) << eleCondu;
+			File << "," << setw(13) << std::fixed << std::setprecision(8)<<this->meanRVEResistances[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEThermalResistance[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEYoungModulus[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEPoissoonRatio[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->paths[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRealPathLength[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(8) << eleCondu;
 
 
 
@@ -1037,13 +1037,13 @@ void ShapeGenerator::ReportWithSemicolon()
 		else
 			eleCondu = 0;
 		if (calcElectricConductivity)
-			File << ";" << setw(13) << this->meanRVEResistances[i]
-			<< ";" << setw(13) << this->meanRVEThermalResistance[i]
-			<< ";" << setw(13) << this->meanRVEYoungModulus[i]
-			<< ";" << setw(13) << this->meanRVEPoissoonRatio[i]
-			<< ";" << setw(13) << this->paths[i]
-			<< ";" << setw(13) << this->meanRealPathLength[i]
-			<< ";" << setw(13) << eleCondu;
+			File << ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEResistances[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEThermalResistance[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEYoungModulus[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEPoissoonRatio[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->paths[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRealPathLength[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(8) << eleCondu;
 
 
 

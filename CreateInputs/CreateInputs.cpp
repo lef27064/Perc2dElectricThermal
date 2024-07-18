@@ -16,7 +16,7 @@ int main()
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
 	cout << "Percolation Setup Input Program \n";
 	cout << "version 1.0\n";
-	cout << "Jan 2022\n";
+	cout << "Jan 2024\n";
 	cout << "Lefteris Lamprou\n";
 	cout << "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n";
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
@@ -42,7 +42,7 @@ int main()
 
 		
 	
-	for (int i = 1; i <=60 ; i=i+1)
+	for (int i = 1; i <=25; i=i+1)
 	//for (int j = 0; j <= 0; j=j+1)
 		//	for (int j = 0; j <14; j++)
 	{
@@ -50,11 +50,11 @@ int main()
 		int iters = Iters[0];
 		int ppminCircle = 101;
 		//= 2 * sqrt(l);
-		int width = 1000; //Widths[j];
+		int width = 500; //Widths[j];
 		int height = width;
 		int depth = width;
 		//double w = fi + i * deltafi;
-		fi = 0.65+(float)i / 200.0;
+		fi = 0.59+(float)i /100.0;
 		//fj = j / 100.0;
 		double w = fi;
 		string FileName = directory + "\\in_" + to_string(i) + "_" + to_string(ppminCircle) + "_" + to_string(width) + "_" + to_string(w) + ".txt";
@@ -85,7 +85,7 @@ int main()
 		inputFile << "#Thermal Conductivities\n";
 		inputFile << "1.e-16 1.0\n";
 		inputFile << "#Young Modulus\n";
-		inputFile << "1.e+5 1.e+8\n";
+		inputFile << "1.e+5 1.e+10\n";
 		inputFile << "#Poisson Ratio\n";
 		inputFile << "0.3 0.32\n";
 		inputFile << "#width - height - depth\n";

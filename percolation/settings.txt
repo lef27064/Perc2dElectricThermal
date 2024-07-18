@@ -1,5 +1,5 @@
 #Save image file(s)
-FALSE
+true
 #Random Save image file(s)
 FALSE
 #Total images to save
@@ -9,4 +9,4 @@ FALSE
 #Save image as BMP,PGM
 BMP
 # Is Lattice
-false
+true

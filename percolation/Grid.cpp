@@ -417,8 +417,8 @@ bool Grid::isValid(int x, int y)
 int xNum[] = { 0, -1 ,1, 0 };
 int yNum[] = { 1,  0 ,0, -1 };
 
-best results
-int xNum[] = { -1, 0 ,0,  1 }; ***
+best results  *** *** as published in paper
+int xNum[] = { -1, 0 ,0,  1 };
 int yNum[] = { 0,  1 ,-1, 0 };
 
 int xNum[] = { -1, 0 ,1,  0 };
@@ -428,8 +428,8 @@ very good optical results
 int xNum[] = {-1, 0 ,1,  0 };
 int yNum[] = { 0, 1 ,0, -1 };
 */
-int xNum[] = { -1, 0 ,1,  0 };
-int yNum[] = { 0, 1 ,0, -1 };
+int xNum[] = { -1, 0 ,0,  1 }; 
+int yNum[] = { 0,  1 ,-1, 0 };
 
 
 // DFS

@@ -1,0 +1,17 @@
+Rerclolation 2d
+Version 1.6 Cluster Analysis - Electric, Thermal properties - Mechanical properties calculation in progress...Report starting: Thu Jul 18 13:01:51 2024
+
+---------------------------------------------------------------------------------------------------
+Inputs
+|#  |%Weights|%Spec. Weights|X Dimension|Y Dimension|Type|Size type|      Area|hoop Dist
+   0      0.2              1       1e-08       1e-08    4         3        0.2        0
+   1      0.8              1       1e-08       1e-08    2         0        0.8        0
+Pixels Per minimum Size:101
+Factor [pixelsPerMinimumCircle / minimumSize]:1.01e+10
+Maximum Dimension:,1e-08
+Minimum Dimension:,1e-08
+Grid size =[,500x,500]
+Total iterations: ,300
+---------------------------------------------------------------------------------------------------
+Total  Points  |Mean Radius | Inertia 
+---------------------------------------------------------------------------------------------------
