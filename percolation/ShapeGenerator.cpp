@@ -798,7 +798,7 @@ void ShapeGenerator::monteCarlo(void)
 	meanSetUpTime = sumSetupTime / iterations;
 	meanElectricConductivity = (sumElectricConductivity / iterations) + ((width - meanRVEPaths) * materialsElectricConductivity[0] / width);
 	meanThermalConductivity = (sumThemalConductivity / iterations) + ((width - meanRVEPaths) * materialsThermalConductivity[0] / width);
-	meanRVEPathWidth = meanElectricConductivity * meanRVEPathLength/(meanRVEPaths * materialsElectricConductivity[1]);
+	meanRVEPathWidth = (meanElectricConductivity / materialsElectricConductivity[1]) * (meanRVEPathLength/meanRVEPaths);
 	/*
 	//traversal direction
 	//base properties
@@ -820,7 +820,8 @@ void ShapeGenerator::monteCarlo(void)
 	*/
 
 	/* This estimation is based on assumption that k = (nw)^(-S/L)*/
-	meanYoungModulus = (materialsYoungModulus[1] * pow((meanRVEPaths * meanRVEPathWidth), (width/meanRVEPathLength)))/width;
+	meanYoungModulus = pow((materialsYoungModulus[1] * meanRVEPaths * meanRVEPathWidth), (width / meanRVEPathLength)) +(materialsYoungModulus[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
+	meanPoissonRatio = (materialsPoissonRatio[1] * meanRVEPaths * meanRVEPathWidth/width) +(materialsPoissonRatio[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
 
 
 	cout << "-----------------------------------Results------------------------------------------------\n";
@@ -925,13 +926,13 @@ void ShapeGenerator::Report()
 		else
 			eleCondu = 0;
 		if (calcElectricConductivity)
-			File << "," << setw(13) << std::fixed << std::setprecision(8)<<this->meanRVEResistances[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEThermalResistance[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEYoungModulus[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEPoissoonRatio[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->paths[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << this->meanRealPathLength[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(8) << eleCondu;
+			File << "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) <<this->meanRVEResistances[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEThermalResistance[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEYoungModulus[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEPoissoonRatio[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->paths[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRealPathLength[i]
+			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << eleCondu;
 
 
 
@@ -1037,13 +1038,13 @@ void ShapeGenerator::ReportWithSemicolon()
 		else
 			eleCondu = 0;
 		if (calcElectricConductivity)
-			File << ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEResistances[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEThermalResistance[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEYoungModulus[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRVEPoissoonRatio[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->paths[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << this->meanRealPathLength[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(8) << eleCondu;
+			File << ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEResistances[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEThermalResistance[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEYoungModulus[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEPoissoonRatio[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->paths[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRealPathLength[i]
+			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << eleCondu;
 
 
 

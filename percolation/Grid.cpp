@@ -1720,6 +1720,7 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 	double sumYoungModulus = 0;
 	double sumPoissonRatio = 0;
 	double sumRealLength = 0;
+	
 
 	*totalPaths = 0;
 	*meanLength = 0;
@@ -1837,8 +1838,8 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 
 		sumResistance += 1 / pelectricResistance[0];
 		sumThermalResistance += 1 / pthermalResistance[0];
-		sumYoungModulus += pYoungModulus[0];
-		sumPoissonRatio += pPoissonRatio[0];
+		//sumYoungModulus += pYoungModulus[0];
+		//sumPoissonRatio += pPoissonRatio[0];
 		//debug: cout << "sumResistance=" << sumResistance << "\n";
 
 	}
@@ -1854,10 +1855,14 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 
 		(*meanRVEResistance) = 1 / sumResistance;
 		(*meanRVEThermalResistance) = 1 / sumThermalResistance;
+		double meanRVEPathWidth = (sumResistance / ielectricConductivities[1]) * (*meanLength / (*totalPaths));
+		(*meanRVEYoungModulus) = pow((iYoungModulus[1] * (*totalPaths) * meanRVEPathWidth), (width / (*meanCalculatedLength))) + (iYoungModulus[0] * (width - ((*totalPaths) * meanRVEPathWidth)) / width);
+		(*MeanRVEPoissonRatio) = (iPoissonRatio[1] * (*totalPaths) * meanRVEPathWidth / width) + (iPoissonRatio[0] * (width - ((*totalPaths) * meanRVEPathWidth)) / width);
 
-		(*MeanRVEPoissonRatio) = sumPoissonRatio;
 
-		(*meanRVEYoungModulus) = sumYoungModulus;//(sumYoungModulus * (*totalPaths) + (width - (*totalPaths)) * iYoungModulus[0]) / width;       //sumYoungModulus; // / (*totalPaths);
+		//(*MeanRVEPoissonRatio) = sumPoissonRatio;
+
+		//(*meanRVEYoungModulus) = sumYoungModulus;//(sumYoungModulus * (*totalPaths) + (width - (*totalPaths)) * iYoungModulus[0]) / width;       //sumYoungModulus; // / (*totalPaths);
 
 	}
 	else {
