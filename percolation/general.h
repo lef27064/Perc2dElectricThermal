@@ -74,10 +74,10 @@ struct pinfo {
 
 pinfo const info{ 
 		"Rerclolation 2d\n", 
-		"Version 1.6 Cluster Analysis - Electric, Thermal properties - Mechanical properties calculation in progress...",
-		"1/7/2024\n",
-		"Lefteris Lamprou\n", 
-		"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n" 
+		"Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties estimation \n",
+		"Last update: 1/7/2024\n",
+		"Author:Eleftherios Lamprou\n", 
+		"Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n Developed during my PhD Thesis (2017-2024)\n" 
 };
 
 string NowToString(void);  
