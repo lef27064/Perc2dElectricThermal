@@ -482,13 +482,13 @@ Ellipse ShapeGenerator::addOneEllipse(int caseNo, int ingradient, std::normal_di
 
 
 void ShapeGenerator::SetupSizes(int ingradient, double dimensionY, double dimensionX, double factor, std::normal_distribution<double> size,
-	SizeType componentsSizeType, double* rectWidth, double* rectHeight, ShapeType componentsType,
+	SizeType icomponentsSizeType, double* rectWidth, double* rectHeight, ShapeType icomponentsType,
 	double* maxAngle, double* minAngle, int* totalSlopedRectangles, int* totalRectangles, int* totalCircles, int* totalEllipses)
 {
 	bool haveSlope = false;
 	//is it variable sized?
 	double shapeFactor = 1.0;
-	switch (componentsType)
+	switch (icomponentsType)
 	{
 	case RECTANGLE:
 		*totalRectangles = *totalRectangles + 1; shapeFactor = 1;  break;
@@ -509,7 +509,7 @@ void ShapeGenerator::SetupSizes(int ingradient, double dimensionY, double dimens
 
 
 
-	if (componentsSizeType == VARIABLE)
+	if (icomponentsSizeType == VARIABLE)
 	{
 		//width = random 
 		*rectWidth = size(eng) * shapeFactor;
@@ -632,8 +632,8 @@ void ShapeGenerator::monteCarlo(void)
 	cout << "-----------------------------------------------------------------------------------------\n";
 
 
-	std::seed_seq 	seed({ r(), r(), r(), r(),r(), r(), r(), r(), r() });
-	eng.seed(seed);
+	//std::seed_seq 	seed({ r(), r(), r(), r(),r(), r(), r(), r(), r() });
+	//eng.seed(seed);
 
 	for (int i = 0; i < iterations; i++)
 	{
@@ -1128,7 +1128,7 @@ void ShapeGenerator::ReportStatistics(void)
 
 
 
-SlopedRectangle ShapeGenerator::generateSlopedRectangle(Point downleft, Point upRight, double width, double height, double maxAngle, double minAngle)
+SlopedRectangle ShapeGenerator::generateSlopedRectangle(Point downleft, Point upRight, double iwidth, double iheight, double maxAngle, double minAngle)
 {
 	double angle;
 	Point center(std::uniform_real_distribution<>{downleft.x, upRight.x }(eng), std::uniform_real_distribution<> {downleft.y, upRight.y }(eng));
@@ -1142,7 +1142,7 @@ SlopedRectangle ShapeGenerator::generateSlopedRectangle(Point downleft, Point up
 
 	angle = angle * M_PI / (180);
 
-	SlopedRectangle Result(center, width, height, angle);
+	SlopedRectangle Result(center, iwidth, iheight, angle);
 
 
 	return Result;
@@ -2358,9 +2358,9 @@ void ShapeGenerator::readFromFile(char* inputFileName)
 		//initialize
 
 
-		min = min_element(dimensionY, 0, totalComponents); 
+		min = minElement(dimensionY, 0, totalComponents); 
 		//minimum element
-		max = max_element(dimensionX, 0, totalComponents);
+		max = maxElement(dimensionX, 0, totalComponents);
 		
 		//pixelsPerMinimumCircle = sqrt(width*min / max);
 		//pixelsPerMinimumCircle =38;

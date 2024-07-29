@@ -86,6 +86,6 @@ pinfo const info{
 
 string NowToString(void);  
 
-double  min_element(double values[], int first, int last);
-double  max_element(double values[], int first, int last);
+double  minElement(double values[], int first, int last);
+double  maxElement(double values[], int first, int last);
 double  average_element(double values[], int first, int last);

@@ -41,7 +41,7 @@ std::string NowToString(void)
 /// <param name="first">first element of the array</param>
 /// <param name="last">last element of the array</param>
 /// <returns>minimum value</returns>
-double  min_element(double values[], int first, int last)
+double  minElement(double values[], int first, int last)
 {
 	if (first == last)
 		return values[last - 1];
@@ -62,7 +62,7 @@ double  min_element(double values[], int first, int last)
 /// <param name="first">first element of the array</param>
 /// <param name="last">last element of the array</param>
 /// <returns>maximum value</returns>
-double  max_element(double values[], int first, int last)
+double  maxElement(double values[], int first, int last)
 {
 	if (first == last)
 		return values[last - 1];

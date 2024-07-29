@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
 
-#pragma once
+
 #include <filesystem>
 
 #include "Shapes.h"
@@ -31,7 +31,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 class BatchMonteCarlo {
 public:
-	int total;
+	int total=0;
 
 
 	string directory;

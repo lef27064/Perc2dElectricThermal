@@ -59,10 +59,10 @@ struct queueNode: smallQueueNode {
 	//point2d previous;
 	//int dist;			    // cell's distance  from the source
 	
-	float resistance;	// cell's resistance from the source
-	float thermalResistance;
-	float YoungModulus;
-	float PoissonRatio;
+	float resistance=0;	// cell's resistance from the source
+	float thermalResistance=0;
+	float YoungModulus=0;
+	float PoissonRatio=0;
 
 };
 

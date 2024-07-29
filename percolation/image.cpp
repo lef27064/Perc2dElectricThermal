@@ -10,7 +10,7 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 
 
 	FILE* pgmimg;
-	int err;
+	
 	pgmimg = fopen(imageFileName, "w");
 
 
@@ -41,7 +41,9 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 		}
 		fprintf(pgmimg, "\n");
 	}
-	err = fclose(pgmimg);
+	int err  = fclose(pgmimg);
+	if (err != 0)
+		cout <<"*** Warning: Error writing at PGM Image  ****\n";
 }
 
 //only for internal proposes code clearnce
@@ -226,7 +228,7 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 	//close
 	fclose(imageFile);
-	free(colors);
+	delete [] colors;
 }
 
 //create bitmap from array
