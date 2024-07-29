@@ -70,6 +70,8 @@ struct pinfo {
 	string date;
 	string author;
 	string licence;
+	int mayorVersion;
+	int minorVersion;
 };
 
 pinfo const info{ 
@@ -77,7 +79,9 @@ pinfo const info{
 		"Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties estimation \n",
 		"Last update: 1/7/2024\n",
 		"Author:Eleftherios Lamprou\n", 
-		"Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n Developed during my PhD Thesis (2017-2024)\n" 
+		"Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n Developed during my PhD Thesis (2017-2024)\n",
+		2,
+		0
 };
 
 string NowToString(void);  

@@ -79,6 +79,7 @@
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <TargetName>ETMPEWPT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -151,7 +152,7 @@
       <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)Percolation\Inputs" "$(TargetDir)Inputs\" /S</Command>
+      <Command>XCOPY "$(SolutionDir)Percolation\Inputs" "$(TargetDir)Inputs\" /S /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
