@@ -1,5 +1,5 @@
 #Save image file(s)
-false
+TRUE
 #Random Save image file(s)
 FALSE
 #Total images to save
@@ -7,6 +7,6 @@ FALSE
 #Save shapes
 FALSE
 #Save image as BMP,PGM
-BMP
+PGM
 # Is Lattice
 true

@@ -481,7 +481,7 @@ Ellipse ShapeGenerator::addOneEllipse(int caseNo, int ingradient, std::normal_di
 
 
 
-void ShapeGenerator::SetupSizes(int ingradient, double dimensionY, double dimensionX, double factor, std::normal_distribution<double> size,
+void ShapeGenerator::SetupSizes(int ingradient, double idimensionY, double idimensionX, double ifactor, std::normal_distribution<double> size,
 	SizeType icomponentsSizeType, double* rectWidth, double* rectHeight, ShapeType icomponentsType,
 	double* maxAngle, double* minAngle, int* totalSlopedRectangles, int* totalRectangles, int* totalCircles, int* totalEllipses)
 {
@@ -515,13 +515,13 @@ void ShapeGenerator::SetupSizes(int ingradient, double dimensionY, double dimens
 		*rectWidth = size(eng) * shapeFactor;
 
 		//height = width * aspect ratio
-		*rectHeight = *rectWidth * dimensionY / dimensionX;
+		*rectHeight = *rectWidth * idimensionY / idimensionX;
 	}
 	else
 	{
-		*rectWidth = dimensionX * factor * shapeFactor;
+		*rectWidth = idimensionX * ifactor * shapeFactor;
 
-		*rectHeight = dimensionY * factor * shapeFactor;
+		*rectHeight = idimensionY * ifactor * shapeFactor;
 	}
 
 	//have slope ?
@@ -616,7 +616,7 @@ void ShapeGenerator::monteCarlo(void)
 	double sumElectricConductivity = 0;
 	double sumThemalConductivity = 0;
 	double sumYoungModulus = 0;
-	double sumPOissonRatio = 0;
+	double sumPoissonRatio = 0;
 	double sumPaths = 0;
 	double meanRVEPaths = 0;
 	double sumPathLength = 0;
@@ -713,7 +713,7 @@ void ShapeGenerator::monteCarlo(void)
 		sumElectricConductivity += electricConductivity[i];
 		sumThemalConductivity += thermalConductivities[i];
 		sumYoungModulus += YoungModulus[i];
-		sumPOissonRatio += PoissonRatio[i];
+		sumPoissonRatio += PoissonRatio[i];
 
 		if (calcElectricConductivityWithFDM)
 		{
@@ -729,7 +729,6 @@ void ShapeGenerator::monteCarlo(void)
 			char out[] = "out.bmp";
 
 			fd2Del.run(m, out, totalComponents);
-
 
 			generateBitmapImageFortranStyle(fd2Del.pix, height + 2, width + 2, out);
 
