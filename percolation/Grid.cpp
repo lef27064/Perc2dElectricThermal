@@ -1243,7 +1243,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	std::stack<smallQueueNode> backup;
 	std::list<smallQueueNode> singlePath;
 
-	int material = ingadients[position];
+	//int material = ingadients[position];
 	//float currResistance = 1. / ielectricConductivities[material];
 	//float currThermalResistance = 1. / ithermalConductivities[material];
 	//float currYoungModulus = iYoungModulus[material];
@@ -1688,10 +1688,10 @@ int  Grid::percolate(void)
 int Grid::percolate(double* proccessTime)
 {
 	int result;
-	clock_t start = clock();
+	clock_t istart = clock();
 	result = percolate();
-	clock_t end = clock();
-	*proccessTime = ((double)(end - start)) / CLOCKS_PER_SEC;
+	clock_t iend = clock();
+	*proccessTime = ((double)(iend - istart)) / CLOCKS_PER_SEC;
 	return result;
 }
 
@@ -1717,8 +1717,8 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 
 	double sumResistance = 0;
 	double sumThermalResistance = 0;
-	double sumYoungModulus = 0;
-	double sumPoissonRatio = 0;
+	//double sumYoungModulus = 0;
+	//double sumPoissonRatio = 0;
 	double sumRealLength = 0;
 	
 

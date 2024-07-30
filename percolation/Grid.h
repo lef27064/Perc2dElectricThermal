@@ -51,7 +51,7 @@ struct smallQueueNode
 {
 	point2d pt;			// The cordinates of a cell
 	point2d previous;
-	int dist;			// cell's distance  from the source
+	int dist=0;			// cell's distance  from the source
 };
 
 struct queueNode: smallQueueNode {
@@ -59,10 +59,10 @@ struct queueNode: smallQueueNode {
 	//point2d previous;
 	//int dist;			    // cell's distance  from the source
 	
-	float resistance=0;	// cell's resistance from the source
-	float thermalResistance=0;
-	float YoungModulus=0;
-	float PoissonRatio=0;
+	float resistance=0.0;	// cell's resistance from the source
+	float thermalResistance=0.0;
+	float YoungModulus=0.0;
+	float PoissonRatio=0.0;
 
 };
 
@@ -87,7 +87,7 @@ public:
 	Grid(int x, int y);
 
 	void clear(void);
-	double VerticalYoungModulus[maxDimension];
+	//double VerticalYoungModulus[maxDimension];
 	vector<clusterStatistics> Clusters;
 
 	vector<double> cMaxClusterRadius;

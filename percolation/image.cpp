@@ -29,14 +29,16 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 	{
 		for (int column = 0; column < width ; column++)
 		{
-			char color = image[(size_t )line*width + column];
+			unsigned char color = image[(size_t)line * width + column];
 			switch (color)
 			{
-			case CellState::EMPTY:fprintf(pgmimg, "%d ", 0); break;
-			case CellState::HARD: fprintf(pgmimg, "%d ", 64); break;
-			case PERCOLATE: fprintf(pgmimg, "%d ", 128); break;
-			case CellState::SOFT: fprintf(pgmimg, "%d ", 200); break;
-			case BORDER:fprintf(pgmimg, "%d ", 255); break;
+			case '0':fprintf(pgmimg, "%d ", 0); break;
+			case '1': fprintf(pgmimg, "%d ", 64); break;
+			case '2': fprintf(pgmimg, "%d ", 128); break;
+			case '3': fprintf(pgmimg, "%d ", 164); break;
+			case '4':fprintf(pgmimg, "%d ", 200); break;
+			case '5':fprintf(pgmimg, "%d ", 222); break;
+			case '6':fprintf(pgmimg, "%d ", 254); break;
 			}
 		}
 		fprintf(pgmimg, "\n");
@@ -197,9 +199,10 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 	//initialize
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
 	fwrite(infoHeader, 1, infoHeaderSize, imageFile);
-	unsigned char red = 557756 & 0xFF;
-	unsigned char blue = (557756 >> 8) & 0xFF;
-	unsigned char green = (557756 >> 16) & 0xFF;
+	//unsigned char red = 557756 & 0xFF;
+	//unsigned char blue = (557756 >> 8) & 0xFF;
+	//unsigned char green = (557756 >> 16) & 0xFF;
+	// 
 	//from botom to up
 	for (int line = height - 1; line >= 0; line--)
 	{
@@ -284,7 +287,10 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 	}
 
 	//close
-	fclose(imageFile);
+	err=fclose(imageFile);
+	delete[] colors;
+	if (err != 0)
+		cout << "*** Warning: Error writing at Image File  ****\n";
 }
 
 
@@ -293,7 +299,7 @@ unsigned char* createBitmapFileHeader(int height, int width) {
 	int fileSize = fileHeaderSize + infoHeaderSize + bytesPerPixel * height*width;
 
 	static unsigned char fileHeader[] = {
-		0,0, /// signature
+		0,0,     /// signature
 		0,0,0,0, /// image file size in bytes
 		0,0,0,0, /// reserved
 		0,0,0,0, /// start of pixel array
@@ -315,8 +321,8 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 		0,0,0,0, /// header size
 		0,0,0,0, /// image width
 		0,0,0,0, /// image height
-		0,0, /// number of color planes
-		0,0, /// bits per pixel
+		0,0,     /// number of color planes
+		0,0,     /// bits per pixel
 		0,0,0,0, /// compression
 		0,0,0,0, /// image size
 		0,0,0,0, /// horizontal resolution

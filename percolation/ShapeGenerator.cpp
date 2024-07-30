@@ -117,23 +117,20 @@ ShapeGenerator::ShapeGenerator(int tcomp, double comp[], ShapeType compType[], S
 		componentsArea[i] = comp[i];
 		hoops[i] = ihoops[i];
 		componentsSizeType[i] = compSizeType[i];
-
 	}
-
-
 
 }
 
 void ShapeGenerator::areaSolve(void)
 {
 
-	double sum;
-	double sumError;
+	double sum=0.0;
+	double sumError=0.0;
 	double epsilon = 1.e-10;
 
 //	double maxError = 0;
 //	double totalWeight = 0;
-	double sumAreas = 0;
+	double sumAreas = 0.0;
 //	int whereMaxError = 0;
 	int iter = 0;
 
@@ -2369,7 +2366,12 @@ void ShapeGenerator::readFromFile(char* inputFileName)
 	else
 
 	{
-		cout << "Error cannot find " << *inputFileName << "Program halted..." << '\n';
+		cout << "*************************************************************************************\n";
+		cout << " Error cannot find ";
+		std::cout.write(inputFileName, strlen(inputFileName)); 
+		cout << " Program halted..." << '\n';
+		cout << "*************************************************************************************\n";
+
 		char resp;
 		cin.get(resp);
 		exit(-1);

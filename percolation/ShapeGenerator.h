@@ -66,68 +66,68 @@ public:
 	string projectName;
 	string projectDir;
 	bool swissCheese=true;
-	int iterations;
+	int iterations=0;
 	bool calcElectricConductivity = false;
 	bool calcElectricConductivityWithFDM = false;
 	bool calcStatistcs = false;
 
-	int width;
-	int height;
-	int totalComponents;
-	double realComponentAreas[maxComponents*maxCases];
+	int width=0;
+	int height=0;
+	int totalComponents=0;
+	double realComponentAreas[maxComponents*maxCases] = {};
 
-	double components[maxComponents];			// % weights
-	double specialWeights[maxComponents];		// % special Weights
-	double dimensionX[maxComponents];			// Dimension x of Shape
-	double dimensionY[maxComponents];			// Simension y of Shape
-	ShapeType componentsType[maxComponents];    // type of components
-	SizeType  componentsSizeType[maxComponents];
-	double componentsArea[maxComponents];       // area of components
-	double hoops[maxComponents];				// Hoops distance;
-	double materialsElectricConductivity[maxComponents]; // Electric Conductivities
-	double materialsThermalConductivity[maxComponents];
-	double materialsYoungModulus[maxComponents];
-	double materialsPoissonRatio[maxComponents];
+	double components[maxComponents] = {};			// % weights
+	double specialWeights[maxComponents] = {};		// % special Weights
+	double dimensionX[maxComponents] = {};			// Dimension x of Shape
+	double dimensionY[maxComponents] = {};			// Simension y of Shape
+	ShapeType componentsType[maxComponents] = {};    // type of components
+	SizeType  componentsSizeType[maxComponents] = {};
+	double componentsArea[maxComponents] = {};       // area of components
+	double hoops[maxComponents] = {};				// Hoops distance;
+	double materialsElectricConductivity[maxComponents] = {}; // Electric Conductivities
+	double materialsThermalConductivity[maxComponents] = {};
+	double materialsYoungModulus[maxComponents] = {};
+	double materialsPoissonRatio[maxComponents] = {};
 
 	Grid* grid;
-	int Results[maxCases];
-	float FDResults[maxCases * 2];
-	double Times[maxCases];
-	double setUpTimes[maxCases];
-	double calcComponents[maxComponents];
-	double paths[maxCases];
-	double meanPathLength[maxCases];
-	double meanRealPathLength[maxCases];
+	int Results[maxCases] = {};
+	float FDResults[maxCases * 2] = {};
+	double Times[maxCases] = {};
+	double setUpTimes[maxCases] = {};
+	double calcComponents[maxComponents] = {};
+	double paths[maxCases] = {};
+	double meanPathLength[maxCases] = {};
+	double meanRealPathLength[maxCases] = {};
 
-	double electricConductivity[maxCases];
-	double thermalConductivities[maxCases];
-	double YoungModulus[maxCases];
-	double PoissonRatio[maxCases];
+	double electricConductivity[maxCases] = {};
+	double thermalConductivities[maxCases] = {};
+	double YoungModulus[maxCases] = {};
+	double PoissonRatio[maxCases] = {};
 
-	double meanRVEResistances[maxCases];
-	double meanRVEThermalResistance[maxCases];
-	double meanRVEYoungModulus[maxCases];
-	double meanRVEPoissoonRatio[maxCases];
+	double meanRVEResistances[maxCases] = {};
+	double meanRVEThermalResistance[maxCases] = {};
+	double meanRVEYoungModulus[maxCases] = {};
+	double meanRVEPoissoonRatio[maxCases] = {};
 
-	double meanElectricConductivity;
-	double meanThermalConductivity;
-	double meanYoungModulus;
-	double meanPoissonRatio;
-	double meanYoungModulusInLayers;
+	double meanElectricConductivity=0;
+	double meanThermalConductivity=0;
+	double meanYoungModulus=0;
+	double meanPoissonRatio=0;
+	//double meanYoungModulusInLayers=0;
 
 	int pixelsPerMinimumCircle;
-	double min;
-	double max;
-	double factor;
+	double min=0;
+	double max=0;
+	double factor=0;
 
-	double meanPercolation;
-	double meanTime;
-	double meanSetUpTime;
+	double meanPercolation=0;
+	double meanTime=0;
+	double meanSetUpTime=0;
 	Settings* settings;
 	vector<double> correleationLengths;
-	double correleationLength;
+	double correleationLength=0;
 
-	double thresh;
+	double thresh=0;
 public:
 	void initDirs(void);
 	//initialize
