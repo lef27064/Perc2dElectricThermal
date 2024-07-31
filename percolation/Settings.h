@@ -23,7 +23,8 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <iostream>     
 #include <fstream>   
 #include <string>
-
+#include "general.h"
+#include <cstring>
 using namespace std;
 class Settings {
 	

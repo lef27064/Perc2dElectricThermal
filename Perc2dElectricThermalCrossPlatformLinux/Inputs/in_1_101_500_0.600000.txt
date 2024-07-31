@@ -27,7 +27,7 @@ ellipse_1iter300ppmC_101width_500_Area0.6
 #width - height - depth
 1000 1000
 #iterations
-3
+300
 #pixels per min Sphere
 101
 #Swiss chesse case TRUE or FALSE

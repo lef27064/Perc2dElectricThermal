@@ -22,7 +22,7 @@
     <ProjectGuid>{CE784617-0D8C-4CFA-ADF4-3E04C055ABAD}</ProjectGuid>
     <RootNamespace>Percolation</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Electric Percolation Continuum</ProjectName>
+    <ProjectName>ETMPEWPT</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

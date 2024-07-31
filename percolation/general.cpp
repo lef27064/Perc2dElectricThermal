@@ -20,6 +20,19 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 
 
+void delay(int number_of_seconds)
+{
+	// Converting time into milli_seconds
+	int milli_seconds = 1000 * number_of_seconds;
+
+	// Storing start time
+	clock_t start_time = clock();
+
+	// looping till required time is not achieved
+	while (clock() < start_time + milli_seconds)
+		;
+}
+
 /// <summary>
 /// date now to string value
 /// </summary>
@@ -85,7 +98,7 @@ std::filesystem::path GetCurrentWorkingDir(void)
 	//c++17
 	return std::filesystem::current_path();
 	
-	//older version 
+	//before c++17 version not multiplatform
 	/*
 	
 		char buff[FILENAME_MAX];

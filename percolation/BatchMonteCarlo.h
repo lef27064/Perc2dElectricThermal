@@ -53,6 +53,7 @@ public:
 	int getInputFiles(void);
 	void show(void);
 	void Run();
+	void saveResultstoReport(ReportType ireportType);
 	void saveResultsWithSemicolon(void);
 	void saveResults();
 };

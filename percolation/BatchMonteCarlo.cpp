@@ -164,7 +164,111 @@ void BatchMonteCarlo::Run()
 	saveResults();
 	saveResultsWithSemicolon();
 }
+void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
+{
+	string seperator;
+	
 
+	time_t t = time(0);   // get time now
+	struct tm* now = localtime(&t);
+
+	char fileName[80];
+	if (ireportType == SEMICOLON)
+	{
+		seperator = ";";
+		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Semicolon Seperated.csv", now);
+	}
+	else
+	{
+		seperator = ",";
+		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Comma Seperated.csv", now);
+
+	}
+	
+	std::ofstream componentFile;
+
+
+	componentFile.open(fileName);
+
+
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << info.program;
+	componentFile << info.version;
+	componentFile << info.date;
+	componentFile << info.author;
+	componentFile << info.licence;
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << "Start at " << NowToString() << "\n";
+
+
+	componentFile << "Case" << seperator << "Mean Percolation" << seperator;
+	if (this->iShapes[0].calcStatistcs)
+		componentFile << "Max Cluster Radius" << seperator << "Correlation" << seperator << "Length" << seperator;
+
+	if (this->iShapes[0].calcElectricConductivity)
+		componentFile << "Electric Conductivity" << seperator << "Thermal Conductivity" << seperator << "Young Modulus"
+		<< seperator<< "Poisson Ratio" << seperator << "Total Conductive Paths" << seperator << "Mean Conductive Length"<< seperator;
+
+	if (this->iShapes[0].calcElectricConductivityWithFDM)
+		componentFile << "FDM Ix" << seperator<< "FDM Iy" << seperator << "FDM ro" << seperator;
+
+	componentFile << "Process Time" << seperator <<  "Preperation Time" << seperator << "Grid(X)" << seperator <<  "Grid(Y)" << seperator << "ppms" << seperator;
+
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "% Area_" << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Size X_" << j << seperator;
+
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Size Y_" << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Hoop" << j << seperator;
+
+	componentFile << "\n";
+
+
+	for (int i = 0; i < total; i++)
+	{
+		double meanPaths = average_element(iShapes[i].paths, 0, iShapes[i].iterations);
+		double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
+		componentFile << iShapes[i].projectName << seperator << iShapes[i].meanPercolation << seperator;
+		if (this->iShapes[0].calcStatistcs)
+			componentFile << casesMeanMaxClusterRadius[i] << seperator << iShapes[i].correleationLength << seperator;
+		if (this->iShapes[0].calcElectricConductivity)
+			componentFile << iShapes[i].meanElectricConductivity << seperator << iShapes[i].meanThermalConductivity << seperator
+			<< iShapes[i].meanYoungModulus << seperator << iShapes[i].meanPoissonRatio << seperator << meanPaths << seperator << meanPathsLength << seperator;
+
+		componentFile << iShapes[i].meanSetUpTime << seperator << iShapes[i].meanTime << seperator << iShapes[i].width << seperator << iShapes[i].height << seperator
+			<< iShapes[i].pixelsPerMinimumCircle;
+
+		for (int j = 0; j < iShapes[i].totalComponents; j++)
+			componentFile << seperator << iShapes[i].componentsArea[j];
+		for (int j = 0; j < iShapes[i].totalComponents; j++)
+			componentFile << seperator << iShapes[i].dimensionX[j];
+
+		for (int j = 0; j < iShapes[i].totalComponents; j++)
+			componentFile << seperator << iShapes[i].dimensionY[j];
+
+		for (int j = 0; j < iShapes[i].totalComponents; j++)
+			componentFile << seperator << iShapes[i].hoops[j];
+		componentFile << "\n";
+
+	}
+
+	componentFile.close();
+
+}
+void BatchMonteCarlo::saveResultsWithSemicolon(void)
+{
+	saveResultstoReport(SEMICOLON);
+}
+
+void BatchMonteCarlo::saveResults(void)
+{
+	saveResultstoReport(COMMA);
+}
+
+/*
 void BatchMonteCarlo::saveResultsWithSemicolon(void)
 {
 
@@ -203,27 +307,27 @@ void BatchMonteCarlo::saveResultsWithSemicolon(void)
 
 	componentFile << "Process Time; Preperation Time; Grid(X); Grid(Y);  ppms;";
 
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "% Area_" << j << ";";
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Size X_" << j << ";";
 
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Size Y_" << j << ";";
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Hoop" << j << ";";
 
 	componentFile << "\n";
 
 
-	for (int i = 2; i < total; i++)
+	for (int i = 0; i < total; i++)
 	{
 		double meanPaths = average_element(iShapes[i].paths, 0, iShapes[i].iterations);
 		double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
 		componentFile << iShapes[i].projectName << ";" << iShapes[i].meanPercolation << ";";
-		if (this->iShapes[2].calcStatistcs)
-			componentFile << casesMeanMaxClusterRadius[i - 2] << ";" << iShapes[i].correleationLength << ";";
-		if (this->iShapes[2].calcElectricConductivity)
+		if (this->iShapes[0].calcStatistcs)
+			componentFile << casesMeanMaxClusterRadius[i] << ";" << iShapes[i].correleationLength << ";";
+		if (this->iShapes[0].calcElectricConductivity)
 			componentFile << iShapes[i].meanElectricConductivity << ";" << iShapes[i].meanThermalConductivity << ";"
 			<< iShapes[i].meanYoungModulus << ";" << iShapes[i].meanPoissonRatio << ";" << meanPaths << ";" << meanPathsLength << ";";
 
@@ -286,26 +390,26 @@ void BatchMonteCarlo::saveResults(void)
 
 	componentFile << "Process Time, Preperation Time, Grid(X), Grid(Y),  ppms,";
 
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "% Area_" << j << ",";
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Size X_" << j << ",";
 
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Size Y_" << j << ",";
-	for (int j = 0; j < iShapes[2].totalComponents; j++)
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
 		componentFile << "Hoop" << j << ",";
 
 	componentFile << "\n";
 
 
-	for (int i = 2; i < total; i++)
+	for (int i = 0; i < total; i++)
 	{
 		double meanPaths = average_element(iShapes[i].paths, 0, iShapes[i].iterations);
 		double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
 		componentFile << iShapes[i].projectName << "," << iShapes[i].meanPercolation << ",";
 		if (this->iShapes[2].calcStatistcs)
-			componentFile << casesMeanMaxClusterRadius[i - 2] << "," << iShapes[i].correleationLength << ",";
+			componentFile << casesMeanMaxClusterRadius[i] << "," << iShapes[i].correleationLength << ",";
 		if (this->iShapes[2].calcElectricConductivity)
 			componentFile << iShapes[i].meanElectricConductivity << "," << iShapes[i].meanThermalConductivity << ","
 			<< iShapes[i].meanYoungModulus << "," << iShapes[i].meanPoissonRatio << "," << meanPaths << "," << meanPathsLength << ",";
@@ -328,4 +432,4 @@ void BatchMonteCarlo::saveResults(void)
 	}
 
 	componentFile.close();
-}
+}*/

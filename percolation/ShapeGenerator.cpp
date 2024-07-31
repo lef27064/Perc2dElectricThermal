@@ -21,7 +21,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 ShapeGenerator::ShapeGenerator()
 {
-	totalComponents = 0;
+	//totalComponents = 0;
 	iterations = 400;
 	std::fill_n(PoissonRatio, maxCases, 0);
 	std::fill_n(Results, maxCases, 0);
@@ -2367,13 +2367,14 @@ void ShapeGenerator::readFromFile(char* inputFileName)
 
 	{
 		cout << "*************************************************************************************\n";
-		cout << " Error cannot find ";
+		cout << "Error cannot find ";
 		std::cout.write(inputFileName, strlen(inputFileName)); 
 		cout << " Program halted..." << '\n';
 		cout << "*************************************************************************************\n";
-
-		char resp;
-		cin.get(resp);
+		//Some delay
+		delay(4);
+		/*char resp;
+		cin.get(resp);*/
 		exit(-1);
 	}
 }

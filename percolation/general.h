@@ -52,6 +52,12 @@ enum  Direction
 	VERTICAL=1
 };
 
+enum  ReportType
+{
+	COMMA     = 0,
+	SEMICOLON = 1
+};
+
 enum ShapeType
 {
 	RECTANGLE = 0,			  // normal rectangle	
@@ -89,3 +95,4 @@ string NowToString(void);
 double  minElement(double values[], int first, int last);
 double  maxElement(double values[], int first, int last);
 double  average_element(double values[], int first, int last);
+void delay(int number_of_seconds);
