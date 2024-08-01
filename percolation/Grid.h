@@ -85,7 +85,7 @@ public:
 
 	//init
 	Grid(int x, int y);
-
+	
 	void clear(void);
 	//double VerticalYoungModulus[maxDimension];
 	vector<clusterStatistics> Clusters;

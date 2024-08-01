@@ -21,28 +21,13 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 ShapeGenerator::ShapeGenerator()
 {
-	totalComponents = 0;
+	//totalComponents = 0;
 	iterations = 400;
-#pragma omp parallel sections
-	{
-		#pragma omp section
-				std::fill_n(PoissonRatio, maxCases, 0.0);
-		#pragma omp section
-				std::fill_n(Results, maxCases, 0.0);
-		#pragma omp section
-				std::fill_n(Times, maxCases, 0.0);
-		#pragma omp section
-				std::fill_n(YoungModulus, maxCases, 0.0);
-		#pragma omp section
-				std::fill_n(componentsArea, maxCases, 0.0);
-
-	}
-	
-	
-	
-	
-	
-
+	std::fill_n(PoissonRatio, maxCases, 0);
+	std::fill_n(Results, maxCases, 0);
+	std::fill_n(Times, maxCases, 0.0);
+	std::fill_n(YoungModulus, maxCases, 0.0);
+	std::fill_n(componentsArea, maxCases, 0.0);
 	
 }
 /*
@@ -1087,6 +1072,7 @@ void ShapeGenerator::ReportWithSemicolon()
 
 void ShapeGenerator::ReportStatistics(void)
 {
+	string seperator = seperator;
 	ofstream File;
 
 	string FileName = projectName + "/Statistics.csv";
@@ -1108,10 +1094,10 @@ void ShapeGenerator::ReportStatistics(void)
 	File << "Pixels Per minimum Size:" << pixelsPerMinimumCircle << "\n";
 
 	File << "Factor [pixelsPerMinimumCircle / minimumSize]:" << factor << "\n";
-	File << "Maximum Dimension:" << "," << max << "\n";
-	File << "Minimum Dimension:" << "," << min << "\n";
-	File << "Grid size =[" << "," << grid->width << "x" << "," << grid->height << "]" << "\n";
-	File << "Total iterations: " << "," << iterations << "\n";
+	File << "Maximum Dimension:" << seperator << max << "\n";
+	File << "Minimum Dimension:" << seperator << min << "\n";
+	File << "Grid size =[" << seperator << grid->width << "x" << seperator << grid->height << "]" << "\n";
+	File << "Total iterations: " << seperator << iterations << "\n";
 
 	File << "---------------------------------------------------------------------------------------------------\n";
 	File << "Total  Points  |Mean Radius | Inertia \n";
@@ -1123,8 +1109,8 @@ void ShapeGenerator::ReportStatistics(void)
 		{
 
 			File << grid->Clusters[i].totalPoints;
-			File << "," << setw(10) << grid->Clusters[i].radius;
-			File << "," << setw(10) << grid->Clusters[i].inertia;
+			File << seperator << setw(10) << grid->Clusters[i].radius;
+			File << seperator << setw(10) << grid->Clusters[i].inertia;
 		}
 
 		File << "\n";
@@ -1484,7 +1470,9 @@ void ShapeGenerator::digitizeEllipse(int ingradient, Ellipse iEllipse, Grid* iGr
 	*realArea = 0;
 	double subsum[4];
 
-#pragma omp parallel sections 
+#pragma omp parallel   //, iEllipsoid, iGrid, realArea, state,isShpere, invDensity, distance, i, j, k)
+
+#pragma omp sections nowait
 	{
 #pragma omp section
 		digitizeEllipseDiv4(ingradient, iEllipse, iGrid, &subsum[0], state, true, true);

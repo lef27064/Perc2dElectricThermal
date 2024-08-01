@@ -74,22 +74,21 @@ Grid::Grid(int x, int y) : width(x), height(y)
 };
 
 
-
 //clear all values in cell
 void Grid::clear(void)
 {
 #pragma omp parallel sections
 	{
-#pragma omp section
-		std::fill_n(cell, total, CellState::EMPTY);
-#pragma omp section
-		std::fill_n(visited, total, false);
-#pragma omp section
-		std::fill_n(ingadients, total, 0);
-#pragma omp section
-		std::fill_n(cluster, total, 0);
-#pragma omp section
-		std::fill_n(clusterVisited, total, 0);
+	#pragma omp section
+			std::fill_n(cell, total, CellState::EMPTY);
+	#pragma omp section
+			std::fill_n(visited, total, false);
+	#pragma omp section
+			std::fill_n(ingadients, total, 0);
+	#pragma omp section
+			std::fill_n(cluster, total, 0);
+	#pragma omp section
+			std::fill_n(clusterVisited, total, 0);
 	}
 
 }
@@ -101,10 +100,9 @@ char Grid::get(int x, int y)
 	return (cell[(size_t)y * width + x]);
 	//else
 	//	return 0;
-
-
-
 }
+
+
 
 
 //Make Swiss cheese
@@ -117,8 +115,8 @@ void Grid::inverse(void)
 
 			switch (get(x, y))
 			{
-			case CellState::EMPTY: set(x, y, CellState::HARD); break;
-			case CellState::HARD:  set(x, y, CellState::EMPTY); break;
+				case CellState::EMPTY: set(x, y, CellState::HARD); break;
+				case CellState::HARD:  set(x, y, CellState::EMPTY); break;
 			}
 		}
 	}
