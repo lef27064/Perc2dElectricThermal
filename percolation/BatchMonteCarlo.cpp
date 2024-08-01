@@ -201,13 +201,15 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 	componentFile << "Start at " << NowToString() << "\n";
 
 
-	componentFile << "Case" << seperator << "Mean Percolation" << seperator;
+	componentFile << "Case" << seperator << "Mean Percolation Probability" << seperator;
 	if (this->iShapes[0].calcStatistcs)
 		componentFile << "Max Cluster Radius" << seperator << "Correlation" << seperator << "Length" << seperator;
 
 	if (this->iShapes[0].calcElectricConductivity)
 		componentFile << "Electric Conductivity" << seperator << "Thermal Conductivity" << seperator << "Young Modulus"
-		<< seperator<< "Poisson Ratio" << seperator << "Total Conductive Paths" << seperator << "Mean Conductive Length"<< seperator;
+		<< seperator<< "Poisson Ratio" << seperator << "Total Conductive Paths" << seperator << "Mean Conductive Length"<< seperator
+		<< "Log Electric Conductivity" << seperator << "Log Thermal Conductivity" << seperator << "Log Young Modulus"
+		<< seperator << "Log Poisson Ratio" << seperator << "Log Total Conductive Paths" << seperator << "Log Mean Conductive Length" << seperator;
 
 	if (this->iShapes[0].calcElectricConductivityWithFDM)
 		componentFile << "FDM Ix" << seperator<< "FDM Iy" << seperator << "FDM ro" << seperator;
@@ -236,7 +238,11 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 			componentFile << casesMeanMaxClusterRadius[i] << seperator << iShapes[i].correleationLength << seperator;
 		if (this->iShapes[0].calcElectricConductivity)
 			componentFile << iShapes[i].meanElectricConductivity << seperator << iShapes[i].meanThermalConductivity << seperator
-			<< iShapes[i].meanYoungModulus << seperator << iShapes[i].meanPoissonRatio << seperator << meanPaths << seperator << meanPathsLength << seperator;
+			<< iShapes[i].meanYoungModulus << seperator << iShapes[i].meanPoissonRatio << seperator << meanPaths << seperator << meanPathsLength << seperator
+			<< log(iShapes[i].meanElectricConductivity) << seperator << log(iShapes[i].meanThermalConductivity) << seperator
+			<< log(iShapes[i].meanYoungModulus) << seperator << log(iShapes[i].meanPoissonRatio) << seperator << log(meanPaths) << seperator << log(meanPathsLength) << seperator;
+		if (this->iShapes[0].calcElectricConductivityWithFDM)
+			componentFile << setw(13) << iShapes[i].FDResults[2 * i] << seperator << setw(13) << iShapes[i].FDResults[2 * i + 1] << seperator << setw(13) << (1 / iShapes[i].FDResults[2 * i])<< seperator;
 
 		componentFile << iShapes[i].meanSetUpTime << seperator << iShapes[i].meanTime << seperator << iShapes[i].width << seperator << iShapes[i].height << seperator
 			<< iShapes[i].pixelsPerMinimumCircle;

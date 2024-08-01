@@ -1906,7 +1906,6 @@ void  Grid::show() const
 		}
 		cout << "\n";
 	}
-
 	cout << "\n";
 
 }
@@ -1947,7 +1946,6 @@ Grid::~Grid() {
 
 	Clusters.~vector();
 	cMaxClusterRadius.~vector();
-
 
 	start = 0;
 	end = 0;

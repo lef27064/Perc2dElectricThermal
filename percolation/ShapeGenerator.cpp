@@ -715,7 +715,7 @@ void ShapeGenerator::monteCarlo(void)
 		if (calcElectricConductivityWithFDM)
 		{
 			cout << "-----------------------------------------------------------------------------------------\n";
-			cout << "Calculate Electric conductivity with Finite Differences Method..\n,";
+			cout << "Calculate Electric conductivity with Finite Differences Method..\n";
 			int x = this->grid->width;
 			int y = x;
 			FD2DEL fd2Del(totalComponents, maxComponents);
@@ -895,7 +895,7 @@ void ShapeGenerator::Report()
 		File << ",Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity";
 
 	if (calcElectricConductivityWithFDM)
-		File << ",FDM Ix       ,FDM Iy,       FDM  ro";
+		File << ",FDM Ix       ,FDM Iy,       FDM  ro_x,  FDM  ro_y, ";
 
 	File << "\n";
 
@@ -933,7 +933,11 @@ void ShapeGenerator::Report()
 
 
 		if (calcElectricConductivityWithFDM)
-			File << "," << setw(13) << this->FDResults[2 * i] << "," << setw(13) << this->FDResults[2 * i + 1] << "," << setw(13) << (1 / this->FDResults[2 * i]);
+			File << "," << setw(13) << this->FDResults[2 * i] << "," << setw(13) << this->FDResults[(2 * i) + 1] << ",";
+			if (this->FDResults[2 * i]!=0)
+				File << setw(13) << (1.0/this->FDResults[(2 * i)]);
+			if (this->FDResults[2 * i+1] != 0)
+				File << setw(13) << (1.0 / this->FDResults[(2 * i)+1]);
 
 		File << "\n";
 	}
@@ -961,7 +965,6 @@ void ShapeGenerator::Report()
 void ShapeGenerator::ReportWithSemicolon()
 {
 	ofstream File;
-
 	string FileName = projectName + "/ReportWithSemicolon.txt";
 
 	File.open(FileName);

@@ -207,19 +207,19 @@ void  FD2DEL::prod(double* igx, double* igy, double* xw, double* yw)
 
 
 
-void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, double* h, double* Ah, int* list, int nlist, double gtest)
+void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* iigb, double* h, double* Ah, int* list, int nlist, double gtest)
 {
     double gg, hAh, lambda, gglast, gamma, currx, curry;
     // Note:  voltage gradients are maintained because in the conjugate gradient
     // relaxation algorithm, the voltage vector is only modified by adding a
     // periodic vector to it.
 
-    // First stage, compute initial value of gradient (gb), initialize h, the
+    // First stage, compute initial value of gradient (iigb), initialize h, the
     // conjugate gradient direction, and compute norm squared of gradient vector.
 
-    prod(igx, igy, iu, gb);
+    prod(igx, igy, iu, iigb);
     for (int i = 0; i < ns2; ++i)
-        h[i] = gb[i];
+        h[i] = iigb[i];
 
 
     // Variable gg is the norm squared of the gradient vector
@@ -227,13 +227,13 @@ void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, do
     for (int k = 0; k < nlist; ++k)
     {
         int m = list[k];
-        gg = (gb[m - 1] * gb[m - 1]) + gg;
+        gg = (iigb[m - 1] * iigb[m - 1]) + gg;
 
 
     }
     hAh = 0;
     // Second stage, initialize Ah variable, compute parameter lamdba,
-    // make first change in voltage array, update gradient (gb) vector
+    // make first change in voltage array, update gradient (iigb) vector
     int icc = 0;
     if (gg > gtest)
     {
@@ -249,7 +249,7 @@ void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, do
         for (int i = 0; i < ns2; ++i)
         {
             iu[i] = iu[i] - lambda * h[i];
-            gb[i] = gb[i] - lambda * Ah[i];
+            iigb[i] = iigb[i] - lambda * Ah[i];
         }
 
         // third stage:  iterate conjugate gradient solution process until
@@ -267,7 +267,7 @@ void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, do
             for (int k = 0; k < nlist; ++k)
             {
                 int m = list[k];
-                gg = (gb[m - 1] * gb[m - 1]) + gg;
+                gg = (iigb[m - 1] * iigb[m - 1]) + gg;
             }
 
 
@@ -275,7 +275,7 @@ void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, do
             // update conjugate gradient direction
             for (int i = 0; i < ns2; ++i)
             {
-                h[i] = gb[i] + gamma * h[i];
+                h[i] = iigb[i] + gamma * h[i];
             }
 
             prod(igx, igy, h, Ah);
@@ -291,7 +291,7 @@ void FD2DEL::dembx(double* igx, double* igy, double* iu, int* ic, double* gb, do
             for (int i = 0; i < ns2; ++i)
             {
                 iu[i] = iu[i] - (lambda * h[i]);
-                gb[i] = gb[i] - (lambda * Ah[i]);
+                iigb[i] = iigb[i] - (lambda * Ah[i]);
             }
 
             // (USER) This piece of code forces dembx to write out the total current and
@@ -328,35 +328,60 @@ void FD2DEL::initValues(int x, int y)
     ns2 = nx2 * ny2;
 }
 
-void FD2DEL::intitArrays() {
+void FD2DEL::intitArrays() 
+{
     //allocate memory
 
-    gx = new double[ns2];
-    std::memset(gx, 0, ns2);
-
-    gy = new double[ns2];
-    memset(gy, 0, ns2);
-
-    u = new double[ns2];
-    memset(u, 0, ns2);
-
-    gb = new double[ns2];
-    memset(gb, 0, ns2);
-
-    h = new double[ns2];
-    memset(h, 0, ns2);
-
-    ah = new double[ns2];
-    memset(ah, 0, ns2);
-
-    a = new double[ns2];
-    memset(a, 0, ns2);
-
-    pix = new int[ns2];;
-    memset(pix, 0, ns2);
-
-    list = new int[ns2];
-    memset(list, 0, ns2);
+    #pragma omp parallel sections
+        {
+    #pragma omp section
+            {
+                gx = new double[ns2];
+                std::memset(gx, 0, ns2);
+            }
+    #pragma omp section
+            {
+                gy = new double[ns2];
+                memset(gy, 0, ns2);
+            }
+    #pragma omp section
+            {
+                u = new double[ns2];
+                memset(u, 0, ns2);
+            }
+    #pragma omp section
+            {
+                gb = new double[ns2];
+                memset(gb, 0, ns2);
+            }
+    #pragma omp section
+            {
+                h = new double[ns2];
+                memset(h, 0, ns2);
+            }
+    #pragma omp section
+            {
+                ah = new double[ns2];
+                memset(ah, 0, ns2);
+            }
+    #pragma omp section
+            {
+                a = new double[ns2];
+                memset(a, 0, ns2);
+            }
+    #pragma omp section
+            {
+                pix = new int[ns2];;
+                memset(pix, 0, ns2);
+            }
+    #pragma omp section
+            {
+                list = new int[ns2];
+                memset(list, 0, ns2);
+            }
+        }
+    
+    
 }
 
 FD2DEL::FD2DEL(int x, int y, int icomponents, int i_maxComponents) :width(x), heigth(y),
@@ -644,10 +669,7 @@ void FD2DEL::readFromFile(char* inputFileName, int* x, int* y)
 void FD2DEL::run(char* inputFileName, char* outputFileName, int inphase)
 {
 
-
     std::cout << "image is " << nx << " x " << ny << " no of real sites =" << nx * ny << "\n";
-
-
 
 
     // (USER) nphase is the number of phases being considered in the problem.

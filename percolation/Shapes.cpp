@@ -151,8 +151,6 @@ Line::Line(Point start, Point end) : start(start), end(end)
 	}
 
 
-
-
 //initialize
 Ellipse::Ellipse(Point c, double ia, double ib, double iSlope) : center(c), a(ia), b(ib), slope(iSlope)
 	{
