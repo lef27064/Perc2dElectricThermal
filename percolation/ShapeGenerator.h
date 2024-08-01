@@ -98,12 +98,10 @@ public:
 	double paths[maxCases] = {};
 	double meanPathLength[maxCases] = {};
 	double meanRealPathLength[maxCases] = {};
-
 	double electricConductivity[maxCases] = {};
 	double thermalConductivities[maxCases] = {};
 	double YoungModulus[maxCases] = {};
 	double PoissonRatio[maxCases] = {};
-
 	double meanRVEResistances[maxCases] = {};
 	double meanRVEThermalResistance[maxCases] = {};
 	double meanRVEYoungModulus[maxCases] = {};

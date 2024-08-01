@@ -63,7 +63,7 @@ int main() {
 	cout << "Press any key to exit...";
 	delay(5);
 	//Read key for exit
-	char resp;
+	//char resp;
 	//cin.get(resp);
 
 	return EXIT_SUCCESS;

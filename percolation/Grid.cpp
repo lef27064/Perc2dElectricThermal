@@ -33,8 +33,7 @@ Grid::Grid(int x, int y) : width(x), height(y)
 	total = (size_t)width * height;
 	//int clustersSize = int(0.5*sqrt(x * x + y * y));
 
-#pragma omp parallel
-#pragma omp sections
+#pragma omp parallel sections
 	{
 #pragma omp section
 		{
@@ -79,10 +78,8 @@ Grid::Grid(int x, int y) : width(x), height(y)
 //clear all values in cell
 void Grid::clear(void)
 {
-#pragma omp parallel
-#pragma omp sections
+#pragma omp parallel sections
 	{
-
 #pragma omp section
 		std::fill_n(cell, total, CellState::EMPTY);
 #pragma omp section

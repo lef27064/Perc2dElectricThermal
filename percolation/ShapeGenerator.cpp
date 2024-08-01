@@ -21,13 +21,28 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 ShapeGenerator::ShapeGenerator()
 {
-	//totalComponents = 0;
+	totalComponents = 0;
 	iterations = 400;
-	std::fill_n(PoissonRatio, maxCases, 0);
-	std::fill_n(Results, maxCases, 0);
-	std::fill_n(Times, maxCases, 0.0);
-	std::fill_n(YoungModulus, maxCases, 0.0);
-	std::fill_n(componentsArea, maxCases, 0.0);
+#pragma omp parallel sections
+	{
+		#pragma omp section
+				std::fill_n(PoissonRatio, maxCases, 0.0);
+		#pragma omp section
+				std::fill_n(Results, maxCases, 0.0);
+		#pragma omp section
+				std::fill_n(Times, maxCases, 0.0);
+		#pragma omp section
+				std::fill_n(YoungModulus, maxCases, 0.0);
+		#pragma omp section
+				std::fill_n(componentsArea, maxCases, 0.0);
+
+	}
+	
+	
+	
+	
+	
+
 	
 }
 /*
@@ -1469,9 +1484,7 @@ void ShapeGenerator::digitizeEllipse(int ingradient, Ellipse iEllipse, Grid* iGr
 	*realArea = 0;
 	double subsum[4];
 
-#pragma omp parallel   //, iEllipsoid, iGrid, realArea, state,isShpere, invDensity, distance, i, j, k)
-
-#pragma omp sections nowait
+#pragma omp parallel sections 
 	{
 #pragma omp section
 		digitizeEllipseDiv4(ingradient, iEllipse, iGrid, &subsum[0], state, true, true);

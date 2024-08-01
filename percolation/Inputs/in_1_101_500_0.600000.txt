@@ -25,9 +25,9 @@ ellipse_1iter300ppmC_101width_500_Area0.6
 #Poisson Ratio
 0.3 0.32
 #width - height - depth
-1000 1000
+10000 10000
 #iterations
-3
+30
 #pixels per min Sphere
 101
 #Swiss chesse case TRUE or FALSE
