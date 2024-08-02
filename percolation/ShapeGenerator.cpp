@@ -23,12 +23,21 @@ ShapeGenerator::ShapeGenerator()
 {
 	//totalComponents = 0;
 	iterations = 400;
-	std::fill_n(PoissonRatio, maxCases, 0);
-	std::fill_n(Results, maxCases, 0);
-	std::fill_n(Times, maxCases, 0.0);
-	std::fill_n(YoungModulus, maxCases, 0.0);
-	std::fill_n(componentsArea, maxCases, 0.0);
-	
+#pragma omp parallel   //, iEllipsoid, iGrid, realArea, state,isShpere, invDensity, distance, i, j, k)
+
+#pragma omp sections nowait
+	{
+#pragma omp section
+		std::fill_n(PoissonRatio, maxCases, 0);
+#pragma omp section
+		std::fill_n(Results, maxCases, 0);
+#pragma omp section
+		std::fill_n(Times, maxCases, 0.0);
+#pragma omp section
+		std::fill_n(YoungModulus, maxCases, 0.0);
+#pragma omp section
+		std::fill_n(componentsArea, maxCases, 0.0);
+	}
 }
 /*
 ShapeGenerator::~ShapeGenerator()
@@ -374,19 +383,19 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			if (swissCheese)
 				grid->inverse();
 
-			cout << "Component[" << i << "]";
+			cout << "Component[" << i << "]: ";
 			if (totalCircles > 0)
-				cout << "Total Circles = " << totalCircles;
+				cout << " Total Circles = " << totalCircles;
 			if (totalEllipses > 0)
 				cout << " Total Ellipses = " << totalEllipses;
 			if (totalRectangles > 0)
 				cout << " Total Rectangles = " << totalRectangles;
 			if (totalSlopedRectangles > 0)
 				cout << " Total Sloped Rectangles = " << totalSlopedRectangles;
-			cout << "\n";
+			//cout << "\n";
 
 			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
-			cout << "Component[" << i << "] Real area   [on " << grid->width << "x" << grid->height << "]" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\n";
+			cout << " / Real area  in Lattice[" << grid->width << "x" << grid->height << "]" << "=" << realComponentAreas[caseNo * totalComponents + i] << "%\n";
 			// Debug cout << "total CellState::HARD pixels for all components " << 1.0*grid->countArea() / (grid->width*grid->height) << " %\n";
 
 			if (settings->saveShapes)
