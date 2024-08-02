@@ -219,30 +219,30 @@ void ShapeGenerator::scale(Point orig, Point* scaled, double scaleX, double scal
 
 void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 {
-
-	{
-
-
+	
 		clock_t start = clock();
 		int i, j;
 		double what;
-
+		long long int totalSites = 0;
 
 		std::random_device rd;  //Will be used to obtain a seed for the random number engine
 		std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-		std::uniform_real_distribution<> dis(0.0, 1.0);
+		std::uniform_real_distribution<> dis(0.000, 1.00000);
 
 
 		thresh = componentsArea[1];
-		for (i = 0; i < width; i++) {
-#pragma omp parallel for
+		for (i = 0; i < width; i++) 
+		{
+#pragma omp parallel shared (totalSites)
+#pragma omp for  
 			for (j = 0; j < height; j++)
 			{
 				what = dis(gen);
-				if (what <= thresh)
+				if (what < thresh)
 				{
 					grid->set(i, j, CellState::HARD);
 					grid->set(grid->ingadients, i, j, 1);
+					totalSites++;
 				}
 				else
 				{
@@ -259,7 +259,9 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 		clock_t end = clock();
 		*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-	}
+	realComponentAreas[caseNo * 2] = 1.0 * totalSites / (width * height);
+	realComponentAreas[caseNo * 2+1] = 1.0 - realComponentAreas[caseNo * 2];
+	cout << "% Real component Area[0]=" << realComponentAreas[caseNo * 2] << "\n";
 
 }
 
@@ -517,7 +519,6 @@ void ShapeGenerator::SetupSizes(int ingradient, double idimensionY, double idime
 	else
 	{
 		*rectWidth = idimensionX * ifactor * shapeFactor;
-
 		*rectHeight = idimensionY * ifactor * shapeFactor;
 	}
 
@@ -846,236 +847,161 @@ void ShapeGenerator::calcMeanCorrellationLength()
 	correleationLength = sum / correleationLengths.size();
 }
 
-void ShapeGenerator::Report()
+void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 {
+	string seperator;
+	string FileName;
 	ofstream File;
 
-	string FileName = projectName + "/report.txt";
-
+	if (ireportType == SEMICOLON)
+	{
+		seperator = ";";
+		FileName = projectName + "/ReportWithSemicolon.csv";
+	}
+	else
+	{
+		seperator = ",";
+		FileName = projectName + "/report.csv";
+	}
 	File.open(FileName);
 
 	File << info.program;
 	File << info.version;
 
-	File << "Report starting: " << NowToString() << "\n";
+	File << "Report starting: " << seperator << NowToString() << "\n";
 
 	File << "---------------------------------------------------------------------------------------------------\n";
 	File << "Inputs\n";
-	File << "|#  ,%Weights,%Spec. Weights,X Dimension,Y Dimension,Type,Size type,      Area,hoop Dist\n";
+	File << setw(6) << "|#"  << seperator<<
+		setw(9) << " % Weights" << seperator <<
+		setw(15) << " % Spec.Weights" << seperator <<
+		setw(12) << "X Dimension" << seperator <<
+		setw(12) << "Y Dimension" << seperator <<
+		setw(5) << "Type" << seperator <<
+		setw(10) << "Size type" << seperator <<
+		setw(11) << "Area" << seperator <<
+		setw(9) << "hoop" << seperator<<
+		//setw(9) << "Dist" <<
+		"\n";
 	for (int i = 0; i < totalComponents; i++)
-		File << setw(4) << i << "," <<
-		setw(9) << components[i] << "," <<
-		setw(15) << specialWeights[i] << "," <<
-		setw(12) << dimensionX[i] << "," <<
-		setw(12) << dimensionY[i] << "," <<
-		setw(5) << componentsType[i] << "," <<
-		setw(10) << componentsSizeType[i] << "," <<
-		setw(11) << componentsArea[i] << "," <<
+		File << setw(6) << i <<  seperator <<
+		setw(9) << components[i] << seperator <<
+		setw(15) << specialWeights[i] << seperator <<
+		setw(12) << dimensionX[i] << seperator <<
+		setw(12) << dimensionY[i] << seperator <<
+		setw(5) << componentsType[i] << seperator <<
+		setw(10) << componentsSizeType[i] << seperator <<
+		setw(11) << componentsArea[i] << seperator <<
 		setw(9) << hoops[i] << "\n";
+	File << "Pixels Per minimum Size:" << seperator << pixelsPerMinimumCircle << "\n";
 
-
-	File << "Pixels Per minimum Size:" << pixelsPerMinimumCircle << "\n";
-
-	File << "Factor [pixelsPerMinimumCircle / minimumSize]:" << factor << "\n";
-	File << "Maximum Dimension:" << max << "\n";
-	File << "Minimum Dimension:" << min << "\n";
-	File << "Grid size =[" << grid->width << "x" << grid->height << "]" << "\n";
-	File << "Total iterations: " << iterations << "\n";
+	File << "Factor [pixelsPerMinimumSize / minimumSize]:" << seperator << factor << "\n";
+	File << "Maximum Dimension:" << seperator << max << "\n";
+	File << "Minimum Dimension:" << seperator << min << "\n";
+	File << "Grid size" << seperator << grid->width << seperator << "x" << seperator << grid->height <<  "\n";
+	File << "Total iterations: " << seperator << iterations << "\n";
 
 	File << "---------------------------------------------------------------------------------------------------\n";
 
-	File << "Realiazation No,Percolate Y[1]/N[0], Process Time, Setup Time ";
+	File << "Realiazation No" << seperator  << "Percolate" "Y[1]/N[0]" << seperator  << "Process Time" << seperator << "Setup Time ";
 	for (int i = 0; i < totalComponents; i++)
-		File << setw(15) << ",% Area Comp[" << i << "]";
+		File << setw(15) << seperator << "% Area Comp[" << i << "]";
 
 	if (calcStatistcs)
-		File << ",Max Cluster Radius ,Correlation Length";
+		File << seperator << "Max" << seperator << "Cluster Radius" << seperator <<  "Correlation Length";
 
 	if (calcElectricConductivity)
-		File << ",Electric Conductivity, Thermal Conductivity, Young Modulus, Poisson Ratio ,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity";
+		File << seperator << "Electric Conductivity" << seperator << "Thermal Conductivity" << seperator << "Young Modulus" << seperator << "Poisson Ratio" 
+		<< seperator << "Total Conductive Paths" << seperator << "Mean Real Path Length" << seperator << "Current Electric Conductivity";
 
 	if (calcElectricConductivityWithFDM)
-		File << ",FDM Ix       ,FDM Iy,       FDM  ro_x,  FDM  ro_y, ";
+		File << seperator << "FDM Ix" << seperator << "FDM Iy" << seperator << "FDM  ro";
 
 	File << "\n";
 
 
 	for (int i = 0; i < iterations; i++)
 	{
-		File << setw(7) << i + 1 << setw(1) << "," << setw(19) << Results[i] << setw(1) << "," << setw(10) << Times[i] << "," << setw(15) << setUpTimes[i];
+		File << setw(7) << i + 1 << setw(1) << seperator << setw(19) << Results[i] <<seperator << setw(10) << Times[i] << seperator << setw(15) << setUpTimes[i];
+		//double SumRealComponentsArea = 0;
+		//for (int k = (i * totalComponents); k < (i + 1) * totalComponents; k++)
+		//	SumRealComponentsArea = SumRealComponentsArea + realComponentAreas[k];
+
 		for (int j = 0; j < totalComponents; j++)
 		{
-			double SumRealComponentsArea = 0;
-			for (int k = (i * totalComponents); k < (i + 1) * totalComponents; k++)
-				SumRealComponentsArea = SumRealComponentsArea + realComponentAreas[k];
+			//realComponentAreas[i * totalComponents] = (long(grid->width) * grid->height) - SumRealComponentsArea;
 
-			realComponentAreas[i * totalComponents] = (long(grid->width) * grid->height) - SumRealComponentsArea;
-
-			File << setw(13) << "," << realComponentAreas[i * totalComponents + j] / (long(grid->width) * grid->height);
+			File << setw(13) << seperator << realComponentAreas[(i * totalComponents) + j]; // (long(grid->width) * grid->height);
 		}
 		if (calcStatistcs)
-			File << "," << setw(13) << this->grid->cMaxClusterRadius[i]
-			<< "," << setw(13) << correleationLengths[i];
+			File << seperator << setw(13) << this->grid->cMaxClusterRadius[i]
+			<< seperator << setw(13) << correleationLengths[i];
 		double eleCondu;
 		if (paths[i] > 0)
 			eleCondu = (1 / this->meanRVEResistances[i]) * this->paths[i] / width;
 		else
 			eleCondu = 0;
 		if (calcElectricConductivity)
-			File << "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) <<this->meanRVEResistances[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEThermalResistance[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEYoungModulus[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEPoissoonRatio[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->paths[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRealPathLength[i]
-			<< "," << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << eleCondu;
-
+			File << seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEResistances[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEThermalResistance[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEYoungModulus[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEPoissoonRatio[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->paths[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRealPathLength[i]
+			<< seperator << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << eleCondu;
 
 
 		if (calcElectricConductivityWithFDM)
-			File << "," << setw(13) << this->FDResults[2 * i] << "," << setw(13) << this->FDResults[(2 * i) + 1] << ",";
-			if (this->FDResults[2 * i]!=0)
-				File << setw(13) << (1.0/this->FDResults[(2 * i)]);
-			if (this->FDResults[2 * i+1] != 0)
-				File << setw(13) << (1.0 / this->FDResults[(2 * i)+1]);
+		{
+			File << seperator << setw(13) << this->FDResults[2 * i] << seperator << setw(13) << this->FDResults[(2 * i) + 1] << seperator;
+			if (this->FDResults[2 * i] != 0)
+				File << setw(13) << (1.0 / this->FDResults[(2 * i)]);
+			else
+				File << setw(13) << 0.0;
 
+			if (this->FDResults[2 * i + 1] != 0)
+				File << setw(13) << (1.0 / this->FDResults[(2 * i) + 1]);
+			else
+				File << setw(13) << 0.0;
+		}
 		File << "\n";
 	}
 	File << "---------------------------------------------------------------------------------------------------\n";
 
-	File << "Mean Percolation=" << meanPercolation << "\n";
-	File << "Mean Processing Time=" << meanTime << "\n";
-	File << "Mean set up time=" << meanSetUpTime << "\n";
-	File << "Mean correlation Length=" << correleationLength << "\n";
+	File << "Mean Percolation=" << seperator << meanPercolation << "\n";
+	File << "Mean Processing Time=" << seperator << meanTime << "\n";
+	File << "Mean set up time=" << seperator << meanSetUpTime << "\n";
+	if (calcStatistcs)
+		File << "Mean correlation Length=" << correleationLength << "\n";
 
 	for (int j = 0; j < totalComponents; j++)
 	{
 		double mean = 0;
 		for (int i = 0; i < iterations; i++)
-			mean = mean + realComponentAreas[i * totalComponents + j] / (grid->width * grid->height);
+			mean = mean + realComponentAreas[i * totalComponents + j]; // (grid->width * grid->height);
+		mean = mean / iterations;
 
-		File << "Mean Area of component[" << j << "]=" << mean / iterations << "\n";
+		File << "Mean Area of component[" << j << "]=" << seperator << mean << "\n";
 	}
 	File.close();
 
+}
 
+void ShapeGenerator::Report()
+{
+	saveResultstoReport(COMMA);
 }
 
 
 void ShapeGenerator::ReportWithSemicolon()
 {
-	ofstream File;
-	string FileName = projectName + "/ReportWithSemicolon.txt";
-
-	File.open(FileName);
-
-	File << info.program;
-	File << info.version;
-
-	File << "Report starting: " << NowToString() << "\n";
-
-	File << "---------------------------------------------------------------------------------------------------\n";
-	File << "Inputs\n";
-	File << "|#  ;%Weights;%Spec. Weights;X Dimension;Y Dimension;Type;Size type;      Area;hoop Dist\n";
-	for (int i = 0; i < totalComponents; i++)
-		File << setw(4) << i << ";" <<
-		setw(9) << components[i] << ";" <<
-		setw(15) << specialWeights[i] << ";" <<
-		setw(12) << dimensionX[i] << ";" <<
-		setw(12) << dimensionY[i] << ";" <<
-		setw(5) << componentsType[i] << ";" <<
-		setw(10) << componentsSizeType[i] << ";" <<
-		setw(11) << componentsArea[i] << ";" <<
-		setw(9) << hoops[i] << "\n";
-
-
-	File << "Pixels Per minimum Size:" << pixelsPerMinimumCircle << "\n";
-
-	File << "Factor [pixelsPerMinimumCircle / minimumSize]:" << factor << "\n";
-	File << "Maximum Dimension:" << max << "\n";
-	File << "Minimum Dimension:" << min << "\n";
-	File << "Grid size =[" << grid->width << "x" << grid->height << "]" << "\n";
-	File << "Total iterations: " << iterations << "\n";
-
-	File << "---------------------------------------------------------------------------------------------------\n";
-
-	File << "Realiazation No;Percolate Y[1]/N[0]; Process Time; Setup Time ";
-	for (int i = 0; i < totalComponents; i++)
-		File << setw(15) << ";% Area Comp[" << i << "]";
-
-	if (calcStatistcs)
-		File << ";Max Cluster Radius ;Correlation Length";
-
-	if (calcElectricConductivity)
-		File << ";Electric Conductivity; Thermal Conductivity; Young Modulus; Poisson Ratio ;Total Conductive Paths;Mean Real Path Length;Current Electric Conductivity";
-
-	if (calcElectricConductivityWithFDM)
-		File << ";FDM Ix       ;FDM Iy;       FDM ñ";
-
-	File << "\n";
-
-
-	for (int i = 0; i < iterations; i++)
-	{
-		File << setw(7) << i + 1 << setw(1) << ";" << setw(19) << Results[i] << setw(1) << ";" << setw(10) << Times[i] << ";" << setw(15) << setUpTimes[i];
-		for (int j = 0; j < totalComponents; j++)
-		{
-			double SumRealComponentsArea = 0;
-			for (int k = (i * totalComponents); k < (i + 1) * totalComponents; k++)
-				SumRealComponentsArea = SumRealComponentsArea + realComponentAreas[k];
-
-			realComponentAreas[i * totalComponents] = (long(grid->width) * grid->height) - SumRealComponentsArea;
-
-			File << setw(13) << ";" << realComponentAreas[i * totalComponents + j] / (long(grid->width) * grid->height);
-		}
-		if (calcStatistcs)
-			File << ";" << setw(13) << this->grid->cMaxClusterRadius[i]
-			<< ";" << setw(13) << correleationLengths[i];
-		double eleCondu;
-		if (paths[i] > 0)
-			eleCondu = (1 / this->meanRVEResistances[i]) * this->paths[i] / width;
-		else
-			eleCondu = 0;
-		if (calcElectricConductivity)
-			File << ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEResistances[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEThermalResistance[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEYoungModulus[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRVEPoissoonRatio[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->paths[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << this->meanRealPathLength[i]
-			<< ";" << setw(13) << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << eleCondu;
-
-
-
-		if (calcElectricConductivityWithFDM)
-			File << ";" << setw(13) << this->FDResults[2 * i] << ";" << setw(13) << this->FDResults[2 * i + 1] << ";" << setw(13) << (1 / this->FDResults[2 * i]);
-
-		File << "\n";
-	}
-	File << "---------------------------------------------------------------------------------------------------\n";
-
-	File << "Mean Percolation=" << meanPercolation << "\n";
-	File << "Mean Processing Time=" << meanTime << "\n";
-	File << "Mean set up time=" << meanSetUpTime << "\n";
-	File << "Mean correlation Length=" << correleationLength << "\n";
-
-	for (int j = 0; j < totalComponents; j++)
-	{
-		double mean = 0;
-		for (int i = 0; i < iterations; i++)
-			mean = mean + realComponentAreas[i * totalComponents + j] / (grid->width * grid->height);
-
-		File << "Mean Area of component[" << j << "]=" << mean / iterations << "\n";
-	}
-	File.close();
-
-
+	saveResultstoReport(SEMICOLON);
 }
 
 
-void ShapeGenerator::ReportStatistics(void)
+void ShapeGenerator::ReportStatistics(string seperator)
 {
-	string seperator = seperator;
+	//string seperator = ",";
 	ofstream File;
 
 	string FileName = projectName + "/Statistics.csv";
@@ -1122,11 +1048,14 @@ void ShapeGenerator::ReportStatistics(void)
 	File.close();
 
 
-
-
 }
 
 
+
+void ShapeGenerator::ReportStatistics(void)
+{
+	ReportStatistics(";");
+}
 
 SlopedRectangle ShapeGenerator::generateSlopedRectangle(Point downleft, Point upRight, double iwidth, double iheight, double maxAngle, double minAngle)
 {

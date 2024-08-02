@@ -49,8 +49,8 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 using namespace std;
 
 
-#define maxComponents   20
-#define maxCases		5000
+#define maxComponents   5
+#define maxCases		15000
 
 
 class ShapeGenerator {
@@ -157,8 +157,10 @@ public:
 	void swissCheeseCheckAndDraw(int ingradient, double rectWidth, double rectHeight, SlopedRectangle* sRectangle, double hoop);
 	void monteCarlo(void);
 	void calcMeanCorrellationLength();
+	void saveResultstoReport(ReportType ireportType);
 	void Report();
 	void ReportWithSemicolon();
+	void ReportStatistics(string seperator);
 	void ReportStatistics(void);
 	
 	SlopedRectangle generateSlopedRectangle(Point downleft, Point upRight, double width, double height, double maxAngle, double minAngle);
