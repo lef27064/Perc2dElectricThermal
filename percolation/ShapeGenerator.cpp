@@ -286,7 +286,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 	clock_t start = clock();
 
 
-
+	double realComponentsArea = 0;
 	for (int i = 0; i < totalComponents; i++)
 	{
 
@@ -300,7 +300,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			componentFile.open(FileName);
 
 
-
+		
 		//initialize
 		totalEllipses = 0;
 		totalCircles = 0;
@@ -374,23 +374,40 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			if (swissCheese)
 				grid->inverse();
 
-			cout << "Component[" << i << "] Total Circles=" << totalCircles << " Total Ellipses=" << totalEllipses << " Total Rectangles=" << totalRectangles << " Total Sloped Rectangles=" << totalSlopedRectangles << "\n";
-			cout << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]" << "%=" << realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height) << "\n";
+			cout << "Component[" << i << "]";
+			if (totalCircles > 0)
+				cout << "Total Circles = " << totalCircles;
+			if (totalEllipses > 0)
+				cout << " Total Ellipses = " << totalEllipses;
+			if (totalRectangles > 0)
+				cout << " Total Rectangles = " << totalRectangles;
+			if (totalSlopedRectangles > 0)
+				cout << " Total Sloped Rectangles = " << totalSlopedRectangles;
+			cout << "\n";
+
+			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
+			cout << "Component[" << i << "] Real area   [on " << grid->width << "x" << grid->height << "]" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\n";
 			// Debug cout << "total CellState::HARD pixels for all components " << 1.0*grid->countArea() / (grid->width*grid->height) << " %\n";
 
 			if (settings->saveShapes)
 			{
 				componentFile << "------------------------------------------------------------------------------\n";
 				componentFile << "Component[" << i << "] Total Circles=" << totalCircles << " Total Ellipses=" << totalEllipses << " Total Rectangles=" << totalRectangles << " Total Sloped Rectangles=" << totalSlopedRectangles << "\n";
-				componentFile << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]=" << "%=" << realComponentAreas[caseNo * totalComponents + i] / (grid->width * grid->height) << "\n";
+				componentFile << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]=" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\"n";
 				componentFile << "------------------------------------------------------------------------------\n";
 			}
+			realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
 		}
+		
+			
+
 		componentFile.close();
+		
+
 	}
 	clock_t end = clock();
 	*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
-
+	realComponentAreas[caseNo * totalComponents] = 1.0 - realComponentsArea;
 
 }
 

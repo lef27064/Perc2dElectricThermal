@@ -34,7 +34,8 @@ using namespace std;
 
 
 int main() {
-	
+	//setlocale(LC_NUMERIC,".OCP"); // ".OCP" if you want to use system settings "French_Canada.1252"
+
 	cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
 	cout << info.program;
 	cout << info.version;
