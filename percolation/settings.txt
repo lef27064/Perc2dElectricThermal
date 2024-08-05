@@ -5,7 +5,7 @@ FALSE
 #Total images to save
 1
 #Save shapes
-FALSE
+true
 #Save image as BMP,PGM
 BMP
 # Is Lattice

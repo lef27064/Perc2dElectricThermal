@@ -5,11 +5,11 @@ ellipse_1iter300ppmC_101width_500_Area0.6
 #components % weights
 0.4 0.6
 #Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)
-4 2
+4 3
 #SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)
 3 0
 #Special Weights
-1.0 1.0
+1.6532 1.327
 #Dimension X
 10.0e-09 10.0e-09
 #Dimension Y
@@ -25,9 +25,9 @@ ellipse_1iter300ppmC_101width_500_Area0.6
 #Poisson Ratio
 0.3 0.32
 #width - height - depth
-500 500
+1000 1000
 #iterations
-300
+3
 #pixels per min Sphere
 101
 #Swiss chesse case TRUE or FALSE

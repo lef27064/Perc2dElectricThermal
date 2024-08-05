@@ -21,24 +21,11 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 ShapeGenerator::ShapeGenerator()
 {
-	//totalComponents = 0;
-	iterations = 400;
-#pragma omp parallel   //, iEllipsoid, iGrid, realArea, state,isShpere, invDensity, distance, i, j, k)
-
-#pragma omp sections nowait
-	{
-#pragma omp section
-		std::fill_n(PoissonRatio, maxCases, 0);
-#pragma omp section
-		std::fill_n(Results, maxCases, 0);
-#pragma omp section
-		std::fill_n(Times, maxCases, 0.0);
-#pragma omp section
-		std::fill_n(YoungModulus, maxCases, 0.0);
-#pragma omp section
-		std::fill_n(componentsArea, maxCases, 0.0);
-	}
+  totalComponents = 0;
+  iterations = 400;
 }
+
+
 /*
 ShapeGenerator::~ShapeGenerator()
 {
@@ -190,9 +177,9 @@ void ShapeGenerator::areaSolve(void)
 		componentsArea[i] = componentsArea[i] / sumAreas;
 		cout << "COMPONENT[" << i << "] % Area=" << componentsArea[i] << " Error=" << calcComponents[i] - components[i] << " Weights%=" << components[i] << "\n";
 	}
+	cout << "Error solving non - linear system of equations=" << sumError << "\n";
 	cout << "-----------------------------------------------------------------------------------------\n";
 }
-
 
 
 //Is point inside Grid
@@ -330,16 +317,16 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			//print some headers in file
 			if (settings->saveShapes)
 			{
-				componentFile << "Component " << i << " maximum area=" << maxComp << " [on " << grid->width << "x" << grid->height << "]\n";
+				componentFile << "Component " << i << " maximum area=" << float(1.0*maxComp/(grid->width*grid->height)) << " [on " << grid->width << "x" << grid->height << "]\n";
 				if ((componentsType[i] == ShapeType::SLOPEDRECTANGLE) || (componentsType[i] == ShapeType::RECTANGLE))
 					componentFile << "Component type: Sloped Rectangle - Rectangle\n";
 				else
 					componentFile << "Component type: Ellipse - Circle\n";
 
-				componentFile << "------------------------------------------------------------------------------\n";
-				componentFile << "------------------- Center------------- dimensions----------------------------\n";
-				componentFile << "component| id|    X    |     Y   |  Width/a | height/b |   hoop   |   Slope   \n";
-				componentFile << "------------------------------------------------------------------------------\n";
+				componentFile << "---------------------------------------------------------------------------------------\n";
+				componentFile << "--------------|------- Center-----|----- dimensions---------|----------------------\n";
+				componentFile << "component| id|    X       |     Y      |  Width/a     | height/b |   hoop   |   Slope   \n";
+				componentFile << "---------------------------------------------------------------------------------------\n";
 			}
 
 			//initialize total real area of component
@@ -355,12 +342,17 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 				{
 
 					double hoop;
-					addOneSlopedRectangle(caseNo, i, size, &totalRectangles, &totalSlopedRectangles, &totalEllipses, &totalCircles, &hoop);
+					sRectangle=addOneSlopedRectangle(caseNo, i, size, &totalRectangles, &totalSlopedRectangles, &totalEllipses, &totalCircles, &hoop);
 
 					//save some information if it must
 					if (settings->saveShapes)
-						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalSlopedRectangles << setw(1) << "," << setw(11) << sRectangle.center.x << setw(1) << "," << setw(11) << sRectangle.center.y << setw(1) << "," << setw(11) << sRectangle.width << setw(1) << "," << setw(11) << sRectangle.height << setw(1) << "," << setw(11) << hoop << setw(1) << "," << setw(11) << sRectangle.slope << "\n";
+						if (totalRectangles > 0)
+							componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalRectangles << setw(1) << "," << setw(11) << sRectangle.center.x << setw(1) << "," << setw(11) << sRectangle.center.y << setw(1) << "," << setw(11) << sRectangle.width << setw(1) << "," << setw(11) << sRectangle.height << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << sRectangle.slope << "\n";
+					if (totalSlopedRectangles > 0)
+						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalSlopedRectangles << setw(1) << "," << setw(11) << sRectangle.center.x << setw(1) << "," << setw(11) << sRectangle.center.y << setw(1) << "," << setw(11) << sRectangle.width << setw(1) << "," << setw(11) << sRectangle.height << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << sRectangle.slope << "\n";
 
+
+						
 				}
 
 				//is it circle or ellipse ?
@@ -373,7 +365,11 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 					//save some information if it must
 					if (settings->saveShapes)
-						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalEllipses << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(1) << "," << setw(11) << cEllipse.slope << "\n";
+						if (totalCircles > 0)
+						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalCircles << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << cEllipse.slope << "\n";
+					if (totalEllipses > 0)
+						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalEllipses << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << cEllipse.slope << "\n";
+					
 
 
 				}
@@ -392,30 +388,41 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 				cout << " Total Rectangles = " << totalRectangles;
 			if (totalSlopedRectangles > 0)
 				cout << " Total Sloped Rectangles = " << totalSlopedRectangles;
-			//cout << "\n";
+			
 
 			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
 			cout << " / Real area  in Lattice[" << grid->width << "x" << grid->height << "]" << "=" << realComponentAreas[caseNo * totalComponents + i] << "%\n";
-			// Debug cout << "total CellState::HARD pixels for all components " << 1.0*grid->countArea() / (grid->width*grid->height) << " %\n";
+			
+			
 
 			if (settings->saveShapes)
 			{
 				componentFile << "------------------------------------------------------------------------------\n";
-				componentFile << "Component[" << i << "] Total Circles=" << totalCircles << " Total Ellipses=" << totalEllipses << " Total Rectangles=" << totalRectangles << " Total Sloped Rectangles=" << totalSlopedRectangles << "\n";
-				componentFile << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]=" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\"n";
+				componentFile << "Component[" << i << "]";
+				if (totalCircles > 0)
+					componentFile << " Total Circles = " << totalCircles;
+				if (totalEllipses > 0)
+					componentFile << " Total Ellipses = " << totalEllipses;
+				if (totalRectangles > 0)
+					componentFile << " Total Rectangles = " << totalRectangles;
+				if (totalSlopedRectangles > 0)
+					componentFile << " Total Sloped Rectangles = " << totalSlopedRectangles;
+							
+				componentFile << "\n";
+				componentFile << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]=" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\n";
 				componentFile << "------------------------------------------------------------------------------\n";
 			}
 			realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
 		}
 		
-			
-
 		componentFile.close();
 		
 
 	}
 	clock_t end = clock();
 	*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
+	
+	//calculate component 0 the remaining
 	realComponentAreas[caseNo * totalComponents] = 1.0 - realComponentsArea;
 
 }

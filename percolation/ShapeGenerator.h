@@ -38,7 +38,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <iomanip>
 #include <omp.h>
 #include <filesystem>
-
+#include <vector>
 #include "Shapes.h"
 #include "Grid.h"
 #include "Settings.h"
@@ -70,6 +70,7 @@ public:
 	bool calcElectricConductivity = false;
 	bool calcElectricConductivityWithFDM = false;
 	bool calcStatistcs = false;
+	static int objectCount;
 
 	int width=0;
 	int height=0;
@@ -90,6 +91,7 @@ public:
 	double materialsPoissonRatio[maxComponents] = {};
 
 	Grid* grid;
+
 	int Results[maxCases] = {};
 	float FDResults[maxCases * 2] = {};
 	double Times[maxCases] = {};
