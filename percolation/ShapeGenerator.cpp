@@ -114,7 +114,6 @@ ShapeGenerator::ShapeGenerator(int tcomp, double comp[], ShapeType compType[], S
 		hoops[i] = ihoops[i];
 		componentsSizeType[i] = compSizeType[i];
 	}
-
 }
 
 void ShapeGenerator::areaSolve(void)
@@ -126,8 +125,9 @@ void ShapeGenerator::areaSolve(void)
 
 //	double maxError = 0;
 //	double totalWeight = 0;
-	double sumAreas = 0.0;
 //	int whereMaxError = 0;
+	double sumAreas = 0.0;
+
 	int iter = 0;
 
 	//initialize
@@ -136,7 +136,7 @@ void ShapeGenerator::areaSolve(void)
 
 	do
 	{
-		iter++;
+	    iter++;
 		sum = 0;
 //		maxError = 0;
 
@@ -171,13 +171,13 @@ void ShapeGenerator::areaSolve(void)
 	} while (sumError > epsilon);
 	cout << "Solve from % Weights to % Area\n";
 	//print some information
-
+	cout << "Component           %Area         %Weight        Estimation Error \n";
 	for (int i = 0; i < totalComponents; i++)
 	{
 		componentsArea[i] = componentsArea[i] / sumAreas;
-		cout << "COMPONENT[" << i << "] % Area=" << componentsArea[i] << " Error=" << calcComponents[i] - components[i] << " Weights%=" << components[i] << "\n";
+		cout << setw(13) << i << setw(13) << componentsArea[i] << setw(13) << components[i] << setw(25)  << calcComponents[i] - components[i] <<"\n";
 	}
-	cout << "Error solving non - linear system of equations=" << sumError << "\n";
+	cout << "Total error e=" << sumError <<  "- Total iterations= "<<iter<< "\n";
 	cout << "-----------------------------------------------------------------------------------------\n";
 }
 
@@ -185,8 +185,7 @@ void ShapeGenerator::areaSolve(void)
 //Is point inside Grid
 bool ShapeGenerator::isInsideGrid(Point cPoint, Grid* iGrid)
 {
-	if ((cPoint.x >= 0 && cPoint.x < iGrid->width) &&
-		(cPoint.y >= 0 && cPoint.y < iGrid->height))
+	if ((cPoint.x >= 0 && cPoint.x < iGrid->width) && (cPoint.y >= 0 && cPoint.y < iGrid->height))
 		return true;
 	else
 		return false;
@@ -197,9 +196,7 @@ bool ShapeGenerator::isInsideGrid(Point cPoint, Grid* iGrid)
 //to do:mayby needs template
 bool ShapeGenerator::isInsideGrid(iPoint cPoint, Grid* iGrid)
 {
-	if ((cPoint.x >= 0 && cPoint.x < iGrid->width) &&
-		(cPoint.y >= 0 && cPoint.y < iGrid->height))
-
+	if ((cPoint.x >= 0 && cPoint.x < iGrid->width) && (cPoint.y >= 0 && cPoint.y < iGrid->height))
 		return true;
 	else
 		return false;
@@ -219,7 +216,7 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 		clock_t start = clock();
 		int i, j;
 		double what;
-		long long int totalSites = 0;
+		size_t totalSites = 0;
 
 		std::random_device rd;  //Will be used to obtain a seed for the random number engine
 		std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
@@ -249,9 +246,6 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 			}
 		}
 
-
-
-
 		clock_t end = clock();
 		*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 
@@ -270,7 +264,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 	int totalRectangles;
 	int totalSlopedRectangles;
 
-	double area = 0;
+	//double area = 0;
 
 
 	Ellipse cEllipse(Point(0, 0), 0, 0, 0);
@@ -283,10 +277,10 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 
 	double realComponentsArea = 0;
+	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice %\n";
 	for (int i = 0; i < totalComponents; i++)
 	{
-
-
+		//float totalRSEArea = 0.0;
 		ofstream componentFile;
 		string Base = "_shapes.txt";
 		string FileName = projectName + "/shapes/case_" + to_string(caseNo) + "_component_" + to_string(i) + Base;
@@ -306,7 +300,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 		//initialize random engine
 		std::normal_distribution<double> size(dimensionX[i] * factor, 0.25 * dimensionX[i] * factor); //mean followed by stdiv
 
-
+		
 		//if it is particle
 		if (componentsType[i] != ShapeType::NOTHING)
 		{
@@ -335,7 +329,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			do //do while area < max area for current compound
 			{
 				//init area
-				area = 0;
+				//area = 0;
 
 				//is it rect or rect with slope ?
 				if ((componentsType[i] == ShapeType::SLOPEDRECTANGLE) || (componentsType[i] == ShapeType::RECTANGLE))
@@ -374,24 +368,29 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 				}
 			}// while (abs(realComponentAreas[caseNo*totalComponents + i] - (maxComp)<maxComp/1000));
+			
 			while (realComponentAreas[caseNo * totalComponents + i] < maxComp);
 
 			if (swissCheese)
 				grid->inverse();
 
-			cout << "Component[" << i << "]: ";
+			cout << setw(10) << i;
 			if (totalCircles > 0)
-				cout << " Total Circles = " << totalCircles;
+				cout << setw(21) << "Circles" << setw(12) <<totalCircles;
 			if (totalEllipses > 0)
-				cout << " Total Ellipses = " << totalEllipses;
+				cout << setw(21) << "Ellipses" << setw(12) << totalEllipses;
 			if (totalRectangles > 0)
-				cout << " Total Rectangles = " << totalRectangles;
+				cout << setw(21) << "Rectangles" << setw(12) << totalRectangles;
 			if (totalSlopedRectangles > 0)
-				cout << " Total Sloped Rectangles = " << totalSlopedRectangles;
+				cout << setw(21) << "Sloped Rectangles" << setw(12) <<totalSlopedRectangles;
 			
-
+			
 			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
-			cout << " / Real area  in Lattice[" << grid->width << "x" << grid->height << "]" << "=" << realComponentAreas[caseNo * totalComponents + i] << "%\n";
+			cout << setw(25)<<realComponentAreas[caseNo * totalComponents + i] << "\n";
+			//totalRSEArea = totalRSEArea + realComponentAreas[caseNo * totalComponents + i];
+			
+			
+			//cout << " / Real area  in Lattice[" << grid->width << "x" << grid->height << "]" << "=" << realComponentAreas[caseNo * totalComponents + i] << "%\n";
 			
 			
 
@@ -413,6 +412,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 				componentFile << "------------------------------------------------------------------------------\n";
 			}
 			realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
+			
 		}
 		
 		componentFile.close();
@@ -421,7 +421,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 	}
 	clock_t end = clock();
 	*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
-	
+	cout << setw(10) << 0 << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << 1 - realComponentsArea << "\n";
 	//calculate component 0 the remaining
 	realComponentAreas[caseNo * totalComponents] = 1.0 - realComponentsArea;
 
@@ -850,8 +850,16 @@ void ShapeGenerator::monteCarlo(void)
 	*/
 
 	/* This estimation is based on assumption that k = (nw)^(-S/L)*/
-	meanYoungModulus = pow((materialsYoungModulus[1] * meanRVEPaths * meanRVEPathWidth), (width / meanRVEPathLength)) +(materialsYoungModulus[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
-	meanPoissonRatio = (materialsPoissonRatio[1] * meanRVEPaths * meanRVEPathWidth/width) +(materialsPoissonRatio[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
+	if (meanPercolation > 0)
+	{
+		meanYoungModulus = pow((materialsYoungModulus[1] * meanRVEPaths * meanRVEPathWidth), (width / meanRVEPathLength)) + (materialsYoungModulus[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
+		meanPoissonRatio = (materialsPoissonRatio[1] * meanRVEPaths * meanRVEPathWidth / width) + (materialsPoissonRatio[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
+	}
+	else
+	{
+		meanYoungModulus = materialsYoungModulus[0];
+		meanPoissonRatio = materialsPoissonRatio[0];
+	}
 
 
 	cout << "-----------------------------------Results------------------------------------------------\n";
