@@ -23,6 +23,10 @@ ShapeGenerator::ShapeGenerator()
 {
   totalComponents = 0;
   iterations = 400;
+  pixelsPerMinimumCircle = 10;
+  settings = NULL;
+  grid = NULL;
+
 }
 
 
@@ -763,7 +767,6 @@ void ShapeGenerator::monteCarlo(void)
 
 			generateBitmapImageFortranStyle(fd2Del.pix, height + 2, width + 2, out);
 
-
 			/*
 			*/
 			FDResults[i * 2] = fd2Del.currx;
@@ -1441,7 +1444,7 @@ void ShapeGenerator::digitizeEllipse(int ingradient, Ellipse iEllipse, Grid* iGr
 {
 	//		omp_set_num_threads(4);
 	*realArea = 0;
-	double subsum[4];
+	double subsum[4] = {};
 
 #pragma omp parallel   //, iEllipsoid, iGrid, realArea, state,isShpere, invDensity, distance, i, j, k)
 
