@@ -147,6 +147,8 @@ public:
 
 	void scale(Point orig, Point* scaled, double scaleX, double scaleY);
 	void setupCaseLattice(int caseNo, double* setUpTime);
+	
+	void printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent);
 	void setupCase(int caseNo, double* setUpTime);
 
 	SlopedRectangle addOneSlopedRectangle(int caseNo, int i, std::normal_distribution<double> size, int * totalRectangles, int * totalSlopedRectangles, int * totalEllipses, int * totalCircles, double * hoop);

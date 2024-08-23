@@ -259,6 +259,28 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 
 }
 
+void ShapeGenerator::printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent)
+{
+	float matrixRealArea = 0;
+	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice % | Goal Area % |  Error %   \n";
+	for (int i = 0; i < totalComponents-1; i++)
+	{
+		matrixRealArea = matrixRealArea + realComponentAreas[caseNo * totalComponents + i];
+		cout << setw(10) << i+1;
+		if (totalCirclesPerComponent[i]>0)
+			cout << setw(21) << "Circles" << setw(12) << totalCirclesPerComponent[i];
+		if (totalEllipsesPerComponent[i] > 0)
+			cout << setw(21) << "Ellipses" << setw(12) << totalEllipsesPerComponent[i];
+		if (totalRectanglesPerComponent[i] > 0)
+			cout << setw(21) << "Recatngles" << setw(12) << totalRectanglesPerComponent[i];
+		if (totalSlopedRectanglesPerComponent[i] > 0)
+			cout << setw(21) << "Sloped Recatngles" << setw(12) << totalSlopedRectanglesPerComponent[i];
+		cout << setw(25) << realComponentAreas[caseNo * totalComponents + i] << setw(22)<< componentsArea[i]<< setw(17) << componentsArea[i] - realComponentAreas[caseNo * totalComponents + i] << "\n";
+	}
+	matrixRealArea = 1.0 - matrixRealArea;
+	cout << setw(10) << 0 << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[totalComponents - 1] << setw(17) << componentsArea[totalComponents - 1] - matrixRealArea <<  "\n";
+}
+
 
 void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 {
@@ -268,6 +290,11 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 	int totalRectangles;
 	int totalSlopedRectangles;
 
+	vector<int> totalEllipsesPerComponent;
+	vector<int> totalCirclesPerComponent;
+	vector<int> totalRectanglesPerComponent;
+	vector<int> totalSlopedRectanglesPerComponent;
+	
 	//double area = 0;
 
 
@@ -281,7 +308,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 
 	double realComponentsArea = 0;
-	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice %\n";
+	//cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice %\n";
 	for (int i = 0; i < totalComponents; i++)
 	{
 		//float totalRSEArea = 0.0;
@@ -377,26 +404,48 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 			if (swissCheese)
 				grid->inverse();
-
-			cout << setw(10) << i;
-			if (totalCircles > 0)
-				cout << setw(21) << "Circles" << setw(12) <<totalCircles;
-			if (totalEllipses > 0)
-				cout << setw(21) << "Ellipses" << setw(12) << totalEllipses;
-			if (totalRectangles > 0)
-				cout << setw(21) << "Rectangles" << setw(12) << totalRectangles;
-			if (totalSlopedRectangles > 0)
-				cout << setw(21) << "Sloped Rectangles" << setw(12) <<totalSlopedRectangles;
-			
-			
+							
 			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
-			cout << setw(25)<<realComponentAreas[caseNo * totalComponents + i] << "\n";
-			//totalRSEArea = totalRSEArea + realComponentAreas[caseNo * totalComponents + i];
-			
-			
-			//cout << " / Real area  in Lattice[" << grid->width << "x" << grid->height << "]" << "=" << realComponentAreas[caseNo * totalComponents + i] << "%\n";
-			
-			
+			if (totalCircles > 0)
+			{
+				totalCirclesPerComponent.push_back(totalCircles);
+				totalEllipsesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(0);
+			}
+
+			if (totalEllipses > 0)
+			{
+				totalCirclesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(totalEllipses);
+			}
+
+			if (totalRectangles > 0)
+			{
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(totalRectangles);
+			}
+
+			if (totalSlopedRectangles > 0)
+			{
+				totalSlopedRectanglesPerComponent.push_back(totalSlopedRectangles);
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(0);
+
+			}
+
+			if ((totalCircles + totalEllipses + totalRectangles + totalSlopedRectangles) == 0)
+			{
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(0);
+			}
 
 			if (settings->saveShapes)
 			{
@@ -425,10 +474,8 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 	}
 	clock_t end = clock();
 	*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
-	cout << setw(10) << 0 << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << 1 - realComponentsArea << "\n";
-	//calculate component 0 the remaining
 	realComponentAreas[caseNo * totalComponents] = 1.0 - realComponentsArea;
-
+	printParticles(caseNo, totalEllipsesPerComponent, totalCirclesPerComponent, totalRectanglesPerComponent, totalSlopedRectanglesPerComponent);
 }
 
 SlopedRectangle ShapeGenerator::addOneSlopedRectangle(int caseNo, int ingradient, std::normal_distribution<double> size, int* totalRectangles, int* totalSlopedRectangles, int* totalEllipses, int* totalCircles, double* hoop)
