@@ -47,7 +47,7 @@ int main() {
 
 
 
-	cout << "Batch mode\n";
+	//cout << "Batch mode\n";
 
 	BatchMonteCarlo* batchMonteCarlo = new BatchMonteCarlo();
 

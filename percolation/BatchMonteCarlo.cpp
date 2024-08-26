@@ -10,9 +10,9 @@ BatchMonteCarlo::BatchMonteCarlo(void)
 	directory = "inputs";
 
 	exePath = std::filesystem::current_path();
-	cout << "\nEXE PATH " << exePath;
+	//cout << "\nEXE PATH " << exePath;
 	settings.readFromFile("settings.txt");
-	cout << "\nReaded Setings ";
+	//cout << "\nReaded Setings ";
 }
 
 /// <summary>
@@ -37,10 +37,10 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 
 	char* cInputFile = &fileName[0u];
 	cout << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	//cout << "--------------------------------------------------------------------------------------------------------------\n";
 	cout << "Input File: " << fileName << "\n";
 	cout << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
 	shapes->readFromFile(cInputFile);
 
 	//create output dirs for this project
@@ -141,12 +141,12 @@ int BatchMonteCarlo::getInputFiles(void)
 void BatchMonteCarlo::show(void)
 {
 	cout << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
 	cout << "Files in working directory " << directory << "\n";
 	for (int i = 0; i < total; i++)
 		cout << inputfiles[i] << "\n";
 	cout << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
 	return;
 }
 

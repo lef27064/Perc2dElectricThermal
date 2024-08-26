@@ -182,7 +182,7 @@ void ShapeGenerator::areaSolve(void)
 		cout << setw(13) << i << setw(13) << componentsArea[i] << setw(13) << components[i] << setw(25)  << calcComponents[i] - components[i] <<"\n";
 	}
 	cout << "Total error e=" << sumError <<  "- Total iterations= "<<iter<< "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
 }
 
 
@@ -262,23 +262,31 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 void ShapeGenerator::printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent)
 {
 	float matrixRealArea = 0;
+	int whereMatrix=0;
 	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice % | Goal Area % |  Error %   \n";
-	for (int i = 0; i < totalComponents-1; i++)
+	for (int i = 0; i < totalComponents; i++)
 	{
-		matrixRealArea = matrixRealArea + realComponentAreas[caseNo * totalComponents + i];
-		cout << setw(10) << i+1;
-		if (totalCirclesPerComponent[i]>0)
-			cout << setw(21) << "Circles" << setw(12) << totalCirclesPerComponent[i];
-		if (totalEllipsesPerComponent[i] > 0)
-			cout << setw(21) << "Ellipses" << setw(12) << totalEllipsesPerComponent[i];
-		if (totalRectanglesPerComponent[i] > 0)
-			cout << setw(21) << "Recatngles" << setw(12) << totalRectanglesPerComponent[i];
-		if (totalSlopedRectanglesPerComponent[i] > 0)
-			cout << setw(21) << "Sloped Recatngles" << setw(12) << totalSlopedRectanglesPerComponent[i];
-		cout << setw(25) << realComponentAreas[caseNo * totalComponents + i] << setw(22)<< componentsArea[i]<< setw(17) << componentsArea[i] - realComponentAreas[caseNo * totalComponents + i] << "\n";
+		if (componentsType[i] != ShapeType::NOTHING)
+		{
+			matrixRealArea = matrixRealArea + realComponentAreas[caseNo * totalComponents + i];
+			cout << setw(10) << i;
+			if (totalCirclesPerComponent[i] > 0)
+				cout << setw(21) << "Circles" << setw(12) << totalCirclesPerComponent[i];
+			if (totalEllipsesPerComponent[i] > 0)
+				cout << setw(21) << "Ellipses" << setw(12) << totalEllipsesPerComponent[i];
+			if (totalRectanglesPerComponent[i] > 0)
+				cout << setw(21) << "Recatngles" << setw(12) << totalRectanglesPerComponent[i];
+			if (totalSlopedRectanglesPerComponent[i] > 0)
+				cout << setw(21) << "Sloped Recatngles" << setw(12) << totalSlopedRectanglesPerComponent[i];
+			cout << setw(25) << realComponentAreas[caseNo * totalComponents + i] << setw(22) << componentsArea[i] << setw(17) << componentsArea[i] - realComponentAreas[caseNo * totalComponents + i] << "\n";
+		}
+		else 
+			
+			whereMatrix = i;
+		
 	}
 	matrixRealArea = 1.0 - matrixRealArea;
-	cout << setw(10) << 0 << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[totalComponents - 1] << setw(17) << componentsArea[totalComponents - 1] - matrixRealArea <<  "\n";
+	cout << setw(10) << whereMatrix << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[totalComponents - 1] << setw(17) << componentsArea[totalComponents - 1] - matrixRealArea <<  "\n";
 }
 
 
@@ -439,13 +447,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 
 			}
 
-			if ((totalCircles + totalEllipses + totalRectangles + totalSlopedRectangles) == 0)
-			{
-				totalCirclesPerComponent.push_back(0);
-				totalEllipsesPerComponent.push_back(0);
-				totalRectanglesPerComponent.push_back(0);
-				totalSlopedRectanglesPerComponent.push_back(0);
-			}
+			
 
 			if (settings->saveShapes)
 			{
@@ -466,6 +468,12 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			}
 			realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
 			
+		}else
+		{
+			totalCirclesPerComponent.push_back(0);
+			totalEllipsesPerComponent.push_back(0);
+			totalRectanglesPerComponent.push_back(0);
+			totalSlopedRectanglesPerComponent.push_back(0);
 		}
 		
 		componentFile.close();
@@ -707,11 +715,11 @@ void ShapeGenerator::monteCarlo(void)
 
 
 	//double sumMeanPathLength = 0;
-	cout << "-----------------------------------------------------------------------------------------\n";
-	cout << "Pixels Per minimum Circle=" << pixelsPerMinimumCircle << "\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
+	cout << "Pixels Per minimum Size (ppms)=" << pixelsPerMinimumCircle << "\n";
 	cout << "Minimum Size " << min << "\n";
-	cout << "Factor [pixelsPerMinimumCircle / minimumSize]" << factor << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "Factor [ppms/ minimumSize]" << factor << "\n";
+	//cout << "--------------------------------------------------------------------------------------------------------------\n";
 
 
 	//std::seed_seq 	seed({ r(), r(), r(), r(),r(), r(), r(), r(), r() });
@@ -719,8 +727,9 @@ void ShapeGenerator::monteCarlo(void)
 
 	for (int i = 0; i < iterations; i++)
 	{
-		cout << "-----------------------------------------------------------------------------------------\n";
-		cout << "Case " << i + 1 << " of " << iterations << "\n";
+		cout << "\n--------------------------------------------";
+		cout << "Case " << setw(6) <<(i + 1) << " of " << setw(6)<< iterations;
+		cout << "--------------------------------------------\n";
 		string  Base;
 		std::seed_seq seed{ r(), r(), r(), r(),r(), r(), r(), r(), r() };
 		eng.seed(seed);
@@ -799,7 +808,7 @@ void ShapeGenerator::monteCarlo(void)
 
 		if (calcElectricConductivityWithFDM)
 		{
-			cout << "-----------------------------------------------------------------------------------------\n";
+			cout << "--------------------------------------------------------------------------------------------------------------\n";
 			cout << "Calculate Electric conductivity with Finite Differences Method..\n";
 			int x = this->grid->width;
 			int y = x;
@@ -822,7 +831,7 @@ void ShapeGenerator::monteCarlo(void)
 
 		if (this->calcStatistcs)
 		{
-			cout << "-----------------------------------------------------------------------------------------\n";
+			cout << "--------------------------------------------------------------------------------------------------------------\n";
 			cout << "Calculate Statistics.. Mark Clusters,";
 
 //			Cluster cCluster = grid->markClusters();
@@ -912,7 +921,7 @@ void ShapeGenerator::monteCarlo(void)
 	}
 
 
-	cout << "-----------------------------------Results------------------------------------------------\n";
+	cout << "-----------------------------------Results-------------------------------------------------------------------\n";
 	cout << "Mean Percolation  =" << meanPercolation << "\n";
 	cout << "Mean Proccess Time  =" << meanTime << "\n";
 	cout << "Mean SetUp Time  =" << meanSetUpTime << "\n";
@@ -923,7 +932,7 @@ void ShapeGenerator::monteCarlo(void)
 	cout << "Mean Special Thermal Counductivity =" << meanThermalConductivity << "\n";
 	cout << "Mean Young Modulus =" << meanYoungModulus << "\n";
 	cout << "Mean Poisson Ratio " << meanPoissonRatio << "\n";
-	cout << "-----------------------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------------------------------------------------------------------\n";
 
 	grid->clear();
 
