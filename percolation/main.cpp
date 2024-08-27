@@ -35,6 +35,10 @@ using namespace std;
 
 int main() {
 	//setlocale(LC_NUMERIC,".OCP"); // ".OCP" if you want to use system settings "French_Canada.1252"
+	
+	//Change to local locale
+	std::locale cpploc{ "" };
+	std::cout.imbue(cpploc);
 
 	cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
 	cout << info.program;

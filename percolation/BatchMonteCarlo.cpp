@@ -173,24 +173,23 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 	struct tm* now = localtime(&t);
 
 	char fileName[80];
+	std::ofstream componentFile;
+
 	if (ireportType == SEMICOLON)
 	{
 		seperator = ";";
 		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Semicolon Seperated.csv", now);
+		std::locale cpploc{ "" };
+		componentFile.imbue(cpploc);
+		componentFile.open(fileName);
 	}
 	else
 	{
 		seperator = ",";
 		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Comma Seperated.csv", now);
-
+		componentFile.open(fileName);
 	}
 	
-	std::ofstream componentFile;
-
-
-	componentFile.open(fileName);
-
-
 	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
 	componentFile << info.program;
 	componentFile << info.version;

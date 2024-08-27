@@ -957,14 +957,18 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 	{
 		seperator = ";";
 		FileName = projectName + "/ReportWithSemicolon.csv";
+		File.open(FileName);
+		std::locale cpploc{ "" };
+		File.imbue(cpploc);
 	}
 	else
 	{
 		seperator = ",";
 		FileName = projectName + "/report.csv";
+		File.open(FileName);
 	}
-	File.open(FileName);
-
+	
+	
 	File << info.program;
 	File << info.version;
 
@@ -1089,13 +1093,13 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 
 void ShapeGenerator::Report()
 {
-	saveResultstoReport(COMMA);
+	saveResultstoReport(ReportType::COMMA);
 }
 
 
 void ShapeGenerator::ReportWithSemicolon()
 {
-	saveResultstoReport(SEMICOLON);
+	saveResultstoReport(ReportType::SEMICOLON);
 }
 
 

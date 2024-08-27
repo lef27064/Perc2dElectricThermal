@@ -61,7 +61,7 @@ int main()
 		// Debug cout << FileName << "\n";
 		inputFile.open(FileName);
 		inputFile << "#name\n";
-		inputFile << "ellipse_" << i << "iter" << iters << "ppmC_" << ppminCircle << "width_" << width << "_Area" << w << "\n";
+		inputFile << "ellipse_" << i << "_iter_" << iters << "_ppms_" << ppminCircle << "_width_" << width << "_Area_" << w << "\n";
 		inputFile << "#total component\n";
 		inputFile << "2\n";
 		inputFile << "#components % weights\n";
