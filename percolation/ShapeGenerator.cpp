@@ -892,7 +892,7 @@ void ShapeGenerator::monteCarlo(void)
 				if ((rand() % iterations) < settings->totalImagesToSave)
 				{
 					cout << "Save images files .. " << FileName << "\n";
-					grid->saveToDisk(cstr, settings->saveAsBmpImage);
+					grid->saveToDisk(&FileName[0u], settings->saveAsBmpImage);
 
 				}
 			}
