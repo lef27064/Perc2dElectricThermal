@@ -165,10 +165,7 @@ void BatchMonteCarlo::Run()
 	saveResultsWithSemicolon();
 }
 void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
-{
-	string seperator;
-	
-
+{	string seperator;
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 

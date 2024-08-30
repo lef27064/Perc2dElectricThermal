@@ -9,4 +9,4 @@ true
 #Save image as BMP,PGM
 BMP
 # Is Lattice
-FALSE
+false

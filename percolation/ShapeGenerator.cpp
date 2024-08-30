@@ -126,10 +126,6 @@ void ShapeGenerator::areaSolve(void)
 	double sum=0.0;
 	double sumError=0.0;
 	double epsilon = 1.e-10;
-
-//	double maxError = 0;
-//	double totalWeight = 0;
-//	int whereMaxError = 0;
 	double sumAreas = 0.0;
 
 	int iter = 0;
@@ -142,7 +138,6 @@ void ShapeGenerator::areaSolve(void)
 	{
 	    iter++;
 		sum = 0;
-//		maxError = 0;
 
 		//compute ÓAi*ñi 
 		for (int i = 0; i < totalComponents; i++)
@@ -150,9 +145,6 @@ void ShapeGenerator::areaSolve(void)
 			sum = sum + components[i] * specialWeights[i];
 
 		}
-
-//		maxError = 0;
-
 		//calculate  current Wi = Ai*ñi/ ÓAj*ñj and compute errors
 		//
 		sumError = 0;
@@ -160,7 +152,7 @@ void ShapeGenerator::areaSolve(void)
 		{
 			calcComponents[i] = (componentsArea[i] * specialWeights[i]) / sum;
 			sumError = sumError + abs(calcComponents[i] - components[i]);
-			// debug cout <<"COMPONENT["<<i<<"] Area="<< componentsArea[i] <<" Error="<< calcComponents[i] - components[i] <<"\n";
+			//debug cout <<"COMPONENT["<<i<<"] Area="<< componentsArea[i] <<" Error="<< calcComponents[i] - components[i] <<"\n";
 
 		}
 		sumAreas = 0;
@@ -181,7 +173,7 @@ void ShapeGenerator::areaSolve(void)
 		componentsArea[i] = componentsArea[i] / sumAreas;
 		cout << setw(13) << i << setw(13) << componentsArea[i] << setw(13) << components[i] << setw(25)  << calcComponents[i] - components[i] <<"\n";
 	}
-	cout << "Total error e=" << sumError <<  "- Total iterations= "<<iter<< "\n";
+	cout << "Total error e=" << sumError <<  " - Total iterations= "<<iter<< "\n";
 	cout << "--------------------------------------------------------------------------------------------------------------\n";
 }
 
@@ -214,6 +206,8 @@ void ShapeGenerator::scale(Point orig, Point* scaled, double scaleX, double scal
 	scaled->y = orig.y * scaleY;
 }
 
+//this function is implemented only for binary media
+//will be fixed for multi phase (3) and above media.
 void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 {
 	
@@ -261,51 +255,59 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 
 void ShapeGenerator::printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent)
 {
-	float matrixRealArea = 0;
+	float matrixRealArea = 1.0;
 	int whereMatrix=0;
 	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice % | Goal Area % |  Error %   \n";
 	for (int i = 0; i < totalComponents; i++)
 	{
 		if (componentsType[i] != ShapeType::NOTHING)
 		{
-			matrixRealArea = matrixRealArea + realComponentAreas[caseNo * totalComponents + i];
+			matrixRealArea = matrixRealArea - realComponentAreas[caseNo * totalComponents + i];
 			cout << setw(10) << i;
-			if (totalCirclesPerComponent[i] > 0)
-				cout << setw(21) << "Circles" << setw(12) << totalCirclesPerComponent[i];
-			if (totalEllipsesPerComponent[i] > 0)
-				cout << setw(21) << "Ellipses" << setw(12) << totalEllipsesPerComponent[i];
-			if (totalRectanglesPerComponent[i] > 0)
-				cout << setw(21) << "Recatngles" << setw(12) << totalRectanglesPerComponent[i];
-			if (totalSlopedRectanglesPerComponent[i] > 0)
+			switch (componentsType[i]) {
+			case ShapeType::SLOPEDRECTANGLE:
 				cout << setw(21) << "Sloped Recatngles" << setw(12) << totalSlopedRectanglesPerComponent[i];
+				break;
+			case ShapeType::RECTANGLE:
+				cout << setw(21) << "Recatngles" << setw(12) << totalRectanglesPerComponent[i];
+				break;
+			case ShapeType::ELLIPSE:
+				cout << setw(21) << "Ellipses" << setw(12) << totalEllipsesPerComponent[i];
+				break;
+			case ShapeType::CIRCLE:
+				cout << setw(21) << "Circles" << setw(12) << totalCirclesPerComponent[i];
+				break;
+			}
+							
 			cout << setw(25) << realComponentAreas[caseNo * totalComponents + i] << setw(22) << componentsArea[i] << setw(17) << componentsArea[i] - realComponentAreas[caseNo * totalComponents + i] << "\n";
 		}
 		else 
-			
 			whereMatrix = i;
 		
 	}
-	matrixRealArea = 1.0 - matrixRealArea;
-	cout << setw(10) << whereMatrix << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[totalComponents - 1] << setw(17) << componentsArea[totalComponents - 1] - matrixRealArea <<  "\n";
+	
+	//cout << setw(10) << whereMatrix << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[totalComponents - 1] << setw(17) << componentsArea[totalComponents - 1] - matrixRealArea <<  "\n";
+	cout << setw(10) << whereMatrix << setw(21) << "Matrix" << setw(12) << "N/A" << setw(25) << matrixRealArea << setw(22) << componentsArea[whereMatrix] << setw(17) << componentsArea[whereMatrix] - matrixRealArea << "\n";
+
 }
 
 
 void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 {
-	//int pixelsPerMinimumCircle = 3;
+	vector<int> totalEllipsesPerComponent;
+	vector<int> totalCirclesPerComponent;
+	vector<int> totalRectanglesPerComponent;
+	vector<int> totalSlopedRectanglesPerComponent;
+
 	int totalEllipses;
 	int totalCircles;
 	int totalRectangles;
 	int totalSlopedRectangles;
 
-	vector<int> totalEllipsesPerComponent;
-	vector<int> totalCirclesPerComponent;
-	vector<int> totalRectanglesPerComponent;
-	vector<int> totalSlopedRectanglesPerComponent;
-	
+
 	//double area = 0;
 
-
+	//Initialize base components
 	Ellipse cEllipse(Point(0, 0), 0, 0, 0);
 	iPoint iCircle(0, 0);
 	Rectangle cRectangle(Point(0, 0), Point(0, 0));
@@ -329,7 +331,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			componentFile.open(FileName);
 
 
-		
+
 		//initialize
 		totalEllipses = 0;
 		totalCircles = 0;
@@ -339,7 +341,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 		//initialize random engine
 		std::normal_distribution<double> size(dimensionX[i] * factor, 0.25 * dimensionX[i] * factor); //mean followed by stdiv
 
-		
+
 		//if it is particle
 		if (componentsType[i] != ShapeType::NOTHING)
 		{
@@ -350,11 +352,21 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 			//print some headers in file
 			if (settings->saveShapes)
 			{
-				componentFile << "Component " << i << " maximum area=" << float(1.0*maxComp/(grid->width*grid->height)) << " [on " << grid->width << "x" << grid->height << "]\n";
-				if ((componentsType[i] == ShapeType::SLOPEDRECTANGLE) || (componentsType[i] == ShapeType::RECTANGLE))
-					componentFile << "Component type: Sloped Rectangle - Rectangle\n";
-				else
-					componentFile << "Component type: Ellipse - Circle\n";
+				componentFile << "Component " << i << " maximum area=" << componentsArea[i] << " [on " << grid->width << "x" << grid->height << "]\n";
+				switch (componentsType[i]) {
+				case ShapeType::SLOPEDRECTANGLE:
+					componentFile << "Component type: Sloped rectangle\n";
+					break;
+				case ShapeType::RECTANGLE:
+					componentFile << "Component type: Rectangle\n";
+					break;
+				case ShapeType::ELLIPSE:
+					componentFile << "Component type: Ellipse\n";
+					break;
+				case ShapeType::CIRCLE:
+					componentFile << "Component type: Circle\n";
+					break;
+				}
 
 				componentFile << "---------------------------------------------------------------------------------------\n";
 				componentFile << "--------------|------- Center-----|----- dimensions---------|----------------------\n";
@@ -375,7 +387,7 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 				{
 
 					double hoop;
-					sRectangle=addOneSlopedRectangle(caseNo, i, size, &totalRectangles, &totalSlopedRectangles, &totalEllipses, &totalCircles, &hoop);
+					sRectangle = addOneSlopedRectangle(caseNo, i, size, &totalRectangles, &totalSlopedRectangles, &totalEllipses, &totalCircles, &hoop);
 
 					//save some information if it must
 					if (settings->saveShapes)
@@ -384,8 +396,6 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 					if (totalSlopedRectangles > 0)
 						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalSlopedRectangles << setw(1) << "," << setw(11) << sRectangle.center.x << setw(1) << "," << setw(11) << sRectangle.center.y << setw(1) << "," << setw(11) << sRectangle.width << setw(1) << "," << setw(11) << sRectangle.height << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << sRectangle.slope << "\n";
 
-
-						
 				}
 
 				//is it circle or ellipse ?
@@ -399,87 +409,93 @@ void ShapeGenerator::setupCase(int caseNo, double* setUpTime)
 					//save some information if it must
 					if (settings->saveShapes)
 						if (totalCircles > 0)
-						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalCircles << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << cEllipse.slope << "\n";
+							componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalCircles << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << cEllipse.slope << "\n";
 					if (totalEllipses > 0)
 						componentFile << setw(11) << i << setw(1) << "," << setw(5) << totalEllipses << setw(1) << "," << setw(11) << cEllipse.center.x << setw(1) << "," << setw(11) << cEllipse.center.y << setw(1) << "," << setw(11) << cEllipse.a << setw(1) << "," << setw(11) << cEllipse.b << setw(1) << "," << setw(11) << hoop << setw(4) << "," << setw(11) << cEllipse.slope << "\n";
-					
+
 
 
 				}
 			}// while (abs(realComponentAreas[caseNo*totalComponents + i] - (maxComp)<maxComp/1000));
-			
+
 			while (realComponentAreas[caseNo * totalComponents + i] < maxComp);
 
 			if (swissCheese)
-				grid->inverse();
-							
-			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
-			if (totalCircles > 0)
 			{
+				grid->inverse();
+				cout << "Inverting array for solving Swiss Chesse problem...\n";
+			}
+
+			realComponentAreas[caseNo * totalComponents + i] = realComponentAreas[caseNo * totalComponents + i] / ((grid->width) * grid->height);
+
+			switch (componentsType[i])
+			{
+			case ShapeType::SLOPEDRECTANGLE:
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(totalSlopedRectangles);
+				break;
+			case ShapeType::RECTANGLE:
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(0);
+				totalRectanglesPerComponent.push_back(totalRectangles);
+				totalSlopedRectanglesPerComponent.push_back(0);
+				break;
+			case ShapeType::ELLIPSE:
+				totalCirclesPerComponent.push_back(0);
+				totalEllipsesPerComponent.push_back(totalEllipses);
+				totalRectanglesPerComponent.push_back(0);
+				totalSlopedRectanglesPerComponent.push_back(0);
+				break;
+			case ShapeType::CIRCLE:
 				totalCirclesPerComponent.push_back(totalCircles);
 				totalEllipsesPerComponent.push_back(0);
 				totalRectanglesPerComponent.push_back(0);
 				totalSlopedRectanglesPerComponent.push_back(0);
-			}
-
-			if (totalEllipses > 0)
-			{
-				totalCirclesPerComponent.push_back(0);
-				totalRectanglesPerComponent.push_back(0);
-				totalSlopedRectanglesPerComponent.push_back(0);
-				totalEllipsesPerComponent.push_back(totalEllipses);
-			}
-
-			if (totalRectangles > 0)
-			{
-				totalCirclesPerComponent.push_back(0);
-				totalEllipsesPerComponent.push_back(0);
-				totalSlopedRectanglesPerComponent.push_back(0);
-				totalRectanglesPerComponent.push_back(totalRectangles);
-			}
-
-			if (totalSlopedRectangles > 0)
-			{
-				totalSlopedRectanglesPerComponent.push_back(totalSlopedRectangles);
-				totalCirclesPerComponent.push_back(0);
-				totalEllipsesPerComponent.push_back(0);
-				totalRectanglesPerComponent.push_back(0);
+				break;
 
 			}
 
-			
 
 			if (settings->saveShapes)
 			{
 				componentFile << "------------------------------------------------------------------------------\n";
 				componentFile << "Component[" << i << "]";
-				if (totalCircles > 0)
-					componentFile << " Total Circles = " << totalCircles;
-				if (totalEllipses > 0)
-					componentFile << " Total Ellipses = " << totalEllipses;
-				if (totalRectangles > 0)
-					componentFile << " Total Rectangles = " << totalRectangles;
-				if (totalSlopedRectangles > 0)
-					componentFile << " Total Sloped Rectangles = " << totalSlopedRectangles;
-							
-				componentFile << "\n";
-				componentFile << "Component[" << i << "] Real area=" << realComponentAreas[caseNo * totalComponents + i] << " [on " << grid->width << "x" << grid->height << "]=" << "%=" << realComponentAreas[caseNo * totalComponents + i] << "\n";
-				componentFile << "------------------------------------------------------------------------------\n";
+
+				switch (componentsType[i]) {
+				case ShapeType::SLOPEDRECTANGLE:
+					componentFile << " Total Sloped Parallelepiped = " << totalSlopedRectangles;
+					break;
+				case ShapeType::RECTANGLE:
+					componentFile << " Total total Parallelepiped = " << totalRectangles;
+					break;
+				case ShapeType::ELLIPSE:
+					componentFile << " Total Ellipsoids = " << totalEllipses;
+					break;
+				case ShapeType::CIRCLE:
+					componentFile << " Total Spheres = " << totalCircles;
+					break;
+					componentFile << "\n";
+					componentFile << "Component[" << i << "] Real area in [" << grid->width << "x" << grid->height << "]= " << realComponentAreas[caseNo * totalComponents + i] << "%=\n";
+					componentFile << "------------------------------------------------------------------------------\n";
+				}
+				realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
+
 			}
-			realComponentsArea = realComponentsArea + realComponentAreas[caseNo * totalComponents + i];
-			
-		}else
+
+			componentFile.close();
+
+		}
+		else
 		{
+			totalSlopedRectanglesPerComponent.push_back(0);
 			totalCirclesPerComponent.push_back(0);
 			totalEllipsesPerComponent.push_back(0);
 			totalRectanglesPerComponent.push_back(0);
-			totalSlopedRectanglesPerComponent.push_back(0);
 		}
-		
-		componentFile.close();
-		
-
 	}
+
 	clock_t end = clock();
 	*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 	realComponentAreas[caseNo * totalComponents] = 1.0 - realComponentsArea;
@@ -493,7 +509,7 @@ SlopedRectangle ShapeGenerator::addOneSlopedRectangle(int caseNo, int ingradient
 	Point dCenter(0, 0);
 	double maxAngle = 0;
 	double minAngle = 0;
-//	double sharedArea = 0;
+
 	double rectWidth;
 	double rectHeight;
 
@@ -773,12 +789,18 @@ void ShapeGenerator::monteCarlo(void)
 
 
 		if (!Results[i])
+		{
 			paths[i] = 0;
+			cout << "RSE not percolated\n";
+		}
 		else
+		{
 			sumPathLength += (meanRealPathLength[i] * paths[i]);
+			sumPaths += paths[i];
+			sumPercolation += Results[i];
+			cout << "RSE percolated\n";
+		}
 
-		sumPaths += paths[i];
-		sumPercolation += Results[i];
 		sumTime += Times[i];
 		sumSetupTime += setUpTimes[i];
 
@@ -789,7 +811,7 @@ void ShapeGenerator::monteCarlo(void)
 		else
 			meanRVEPathLength = 0;
 
-		int totalConductivesRVE = 0;
+		int totalConductivesRSE = 0;
 		if (paths[i] > 0)
 		{
 
@@ -797,9 +819,10 @@ void ShapeGenerator::monteCarlo(void)
 			thermalConductivities[i] = 1 / meanRVEThermalResistance[i];
 			YoungModulus[i] = meanRVEYoungModulus[i];
 			PoissonRatio[i] = meanRVEPoissoonRatio[i];
-			totalConductivesRVE++;
+			totalConductivesRSE++;
 
 		}
+		cout << "Percolation Probability:" << (1.0 * totalConductivesRSE / (i + 1)) * 100 << "% \n";
 
 		sumElectricConductivity += electricConductivity[i];
 		sumThemalConductivity += thermalConductivities[i];
@@ -848,18 +871,15 @@ void ShapeGenerator::monteCarlo(void)
 		{
 			string FileName = to_string(i) + Base;
 			FileName = projectName + "/images/" + FileName;
-			char* cstr = &FileName[0u];
+			
 
 
 			if (!settings->RandomSaveImageFile)
 			{
 				if (i % (iterations / settings->totalImagesToSave) == 0)
 				{
-
-
-
 					cout << "Save image file .. " << FileName << "\n";
-					grid->saveToDisk(cstr, settings->saveAsBmpImage);
+					grid->saveToDisk(&FileName[0u], settings->saveAsBmpImage);
 					if (calcStatistcs)
 					{
 						saveClustersAsBitmapImage(grid->cluster, grid->height, grid->width, 0xAA, fileName);
@@ -921,7 +941,7 @@ void ShapeGenerator::monteCarlo(void)
 	}
 
 
-	cout << "-----------------------------------Results-------------------------------------------------------------------\n";
+	cout << "-----------------------------------Results (RSE)-------------------------------------------------------------\n";
 	cout << "Mean Percolation  =" << meanPercolation << "\n";
 	cout << "Mean Proccess Time  =" << meanTime << "\n";
 	cout << "Mean SetUp Time  =" << meanSetUpTime << "\n";
@@ -971,7 +991,6 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 	
 	File << info.program;
 	File << info.version;
-
 	File << "Report starting: " << seperator << NowToString() << "\n";
 
 	File << "---------------------------------------------------------------------------------------------------\n";
@@ -997,9 +1016,9 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 		setw(10) << componentsSizeType[i] << seperator <<
 		setw(11) << componentsArea[i] << seperator <<
 		setw(9) << hoops[i] << "\n";
-	File << "Pixels Per minimum Size:" << seperator << pixelsPerMinimumCircle << "\n";
+	File << "Pixels Per minimum Size (ppms):" << seperator << pixelsPerMinimumCircle << "\n";
 
-	File << "Factor [pixelsPerMinimumSize / minimumSize]:" << seperator << factor << "\n";
+	File << "Factor [ppms / minimumSize]:" << seperator << factor << "\n";
 	File << "Maximum Dimension:" << seperator << max << "\n";
 	File << "Minimum Dimension:" << seperator << min << "\n";
 	File << "Grid size" << seperator << grid->width << seperator << "x" << seperator << grid->height <<  "\n";
@@ -1007,7 +1026,7 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 
 	File << "---------------------------------------------------------------------------------------------------\n";
 
-	File << "Realiazation No" << seperator  << "Percolate" "Y[1]/N[0]" << seperator  << "Process Time" << seperator << "Setup Time ";
+	File << "Realization No" << seperator  << "Percolate" "Y[1]/N[0]" << seperator  << "Process Time" << seperator << "Setup Time ";
 	for (int i = 0; i < totalComponents; i++)
 		File << setw(15) << seperator << "% Area Comp[" << i << "]";
 
@@ -1022,7 +1041,6 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 		File << seperator << "FDM Ix" << seperator << "FDM Iy" << seperator << "FDM  ro";
 
 	File << "\n";
-
 
 	for (int i = 0; i < iterations; i++)
 	{
@@ -1124,9 +1142,9 @@ void ShapeGenerator::ReportStatistics(string seperator)
 		File << setw(4) << i << setw(9) << components[i] << setw(15) << specialWeights[i] << setw(12) << dimensionX[i] << setw(12) << dimensionY[i] << setw(5) << componentsType[i] << setw(10) << componentsSizeType[i] << setw(11) << componentsArea[i] << setw(9) << hoops[i] << "\n";
 
 
-	File << "Pixels Per minimum Size:" << pixelsPerMinimumCircle << "\n";
+	File << "Pixels Per minimum Size(ppms):" << pixelsPerMinimumCircle << "\n";
 
-	File << "Factor [pixelsPerMinimumCircle / minimumSize]:" << factor << "\n";
+	File << "Factor [ppms / minimumSize]:" << factor << "\n";
 	File << "Maximum Dimension:" << seperator << max << "\n";
 	File << "Minimum Dimension:" << seperator << min << "\n";
 	File << "Grid size =[" << seperator << grid->width << "x" << seperator << grid->height << "]" << "\n";
@@ -1153,8 +1171,6 @@ void ShapeGenerator::ReportStatistics(string seperator)
 
 
 }
-
-
 
 void ShapeGenerator::ReportStatistics(void)
 {
