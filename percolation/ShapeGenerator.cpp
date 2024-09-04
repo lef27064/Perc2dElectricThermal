@@ -893,7 +893,6 @@ void ShapeGenerator::monteCarlo(void)
 				{
 					cout << "Save images files .. " << FileName << "\n";
 					grid->saveToDisk(&FileName[0u], settings->saveAsBmpImage);
-
 				}
 			}
 		}
@@ -928,7 +927,7 @@ void ShapeGenerator::monteCarlo(void)
 	//meanYoungModulus = (sumYoungModulus / (iterations) + ((width - meanRVEPaths) * baseMeanYoungModulus) / width);
 	*/
 
-	/* This estimation is based on assumption that k = (nw)^(-S/L)*/
+	/* This estimation is based on assumption that k = (nw)^(-S/L) wich gives f about 4*/
 	if (meanPercolation > 0)
 	{
 		meanYoungModulus = pow((materialsYoungModulus[1] * meanRVEPaths * meanRVEPathWidth), (width / meanRVEPathLength)) + (materialsYoungModulus[0] * (width - (meanRVEPaths * meanRVEPathWidth)) / width);
@@ -1028,7 +1027,7 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 
 	File << "Realization No" << seperator  << "Percolate" "Y[1]/N[0]" << seperator  << "Process Time" << seperator << "Setup Time ";
 	for (int i = 0; i < totalComponents; i++)
-		File << setw(15) << seperator << "% Area Comp[" << i << "]";
+		File << setw(15) << seperator << "% Real Area Comp[" << i << "]";
 
 	if (calcStatistcs)
 		File << seperator << "Max" << seperator << "Cluster Radius" << seperator <<  "Correlation Length";

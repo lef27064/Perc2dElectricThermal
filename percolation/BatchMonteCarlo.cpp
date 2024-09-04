@@ -175,7 +175,7 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 	if (ireportType == SEMICOLON)
 	{
 		seperator = ";";
-		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Semicolon Seperated.csv", now);
+		strftime(fileName, 80, "Report %Y-%m-%d %H %M %S-Semicolon.csv", now);
 		std::locale cpploc{ "" };
 		componentFile.imbue(cpploc);
 		componentFile.open(fileName);
@@ -183,7 +183,7 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 	else
 	{
 		seperator = ",";
-		strftime(fileName, 80, "%Y-%m-%d %H %M %S-Comma Seperated.csv", now);
+		strftime(fileName, 80, "Report %Y-%m-%d %H %M %S-Comma.csv", now);
 		componentFile.open(fileName);
 	}
 	
@@ -213,14 +213,16 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 	componentFile << "Process Time" << seperator <<  "Preperation Time" << seperator << "Grid(X)" << seperator <<  "Grid(Y)" << seperator << "ppms" << seperator;
 
 	for (int j = 0; j < iShapes[0].totalComponents; j++)
-		componentFile << "% Area_" << j << seperator;
+		componentFile << "% Area - " << j << seperator;
 	for (int j = 0; j < iShapes[0].totalComponents; j++)
-		componentFile << "Size X_" << j << seperator;
+		componentFile << "% Real Area - " << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Size X -" << j << seperator;
 
 	for (int j = 0; j < iShapes[0].totalComponents; j++)
-		componentFile << "Size Y_" << j << seperator;
+		componentFile << "Size Y -" << j << seperator;
 	for (int j = 0; j < iShapes[0].totalComponents; j++)
-		componentFile << "Hoop" << j << seperator;
+		componentFile << "Hoop Size - " << j << seperator;
 
 	componentFile << "\n";
 
@@ -245,6 +247,8 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 
 		for (int j = 0; j < iShapes[i].totalComponents; j++)
 			componentFile << seperator << iShapes[i].componentsArea[j];
+		for (int j = 0; j < iShapes[i].totalComponents; j++)
+			componentFile << seperator << iShapes[i].realComponentAreas[j];
 		for (int j = 0; j < iShapes[i].totalComponents; j++)
 			componentFile << seperator << iShapes[i].dimensionX[j];
 

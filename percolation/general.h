@@ -70,6 +70,7 @@ enum ShapeType
 	NOTHING = 4				  // none (disolver)	
 };
 
+
 struct pinfo {
 	string program;
 	string version;
@@ -78,16 +79,18 @@ struct pinfo {
 	string licence;
 	int mayorVersion;
 	int minorVersion;
+	int dimensions;
 };
 
 pinfo const info{ 
-		"Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) \n", 
-		"Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties estimation \n",
+		"Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) \n", 
+		"Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties\n",
 		"Last update: 1/7/2024\n",
 		"Author:Eleftherios Lamprou\n", 
 		"Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\nDeveloped during PhD Thesis (2017-2024)\n",
 		2,
-		0
+		0,
+		2
 };
 
 string NowToString(void);  
