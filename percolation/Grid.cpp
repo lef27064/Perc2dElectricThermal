@@ -1,14 +1,15 @@
-﻿/*This file is part of Electric Percolation (eperc2d) program.
+﻿/*This file is part of Electric,Thermal, Mechanical Properties
+Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
-Created from Lefteris Lamprou lef27064@otenet.gr during PhD thesis
+Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
 
-eperc2d is free software : you can redistribute it and/or modify
+ETMPEWPT is free software : you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-eperc2d is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even tFhe implied warranty of
+ETMPEWPT is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
@@ -24,6 +25,37 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 
 using namespace std;
+
+
+/* These arrays are used to get row and column
+// numbers of 4 neighbours of a given cell
+//
+
+
+******* as published in paper *************
+******* with left preference  *************
+****** Left, Down, Up, Right  ************* 
+int xNum[] = { -1, 0 ,0,  1 };
+int yNum[] = { 0,  1 ,-1, 0 };
+
+****** Other implementations **************
+****** Down, Left, Rigth, Up **************
+int xNum[] = { 0, -1 ,1, 0 };
+int yNum[] = { 1,  0 ,0, -1 };
+
+***** Left, Down , Up Right and Up 
+int xNum[] = { -1, 0 ,1,  0 };
+int yNum[] = { 0,  1 ,0, -1 };
+
+**** Left, Down, Right, Up  ****************
+int xNum[] = {-1, 0 ,1,  0 };
+int yNum[] = { 0, 1 ,0, -1 };
+
+*/
+//****** Left, Down, Up, Right  ************* 
+int xNum[] = { -1, 0 ,0,  1 };
+int yNum[] = { 0,  1 ,-1, 0 };
+
 
 //initialize
 Grid::Grid(int x, int y) : width(x), height(y)
@@ -103,8 +135,6 @@ char Grid::get(int x, int y)
 }
 
 
-
-
 //Make Swiss cheese
 void Grid::inverse(void)
 {
@@ -135,8 +165,7 @@ int Grid::countArea()
 
 void Grid::set(int x, int y, char what)
 {
-
-	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
+	
 	cell[(size_t)y * width + x] = what;
 
 }
@@ -144,23 +173,10 @@ void Grid::set(int x, int y, char what)
 
 void Grid::set(int x, int y, int what)
 {
-
-	//if ((line < height) && (column < width ) && (line >= 0) && (column >= 0)) //check bounds
 	cell[(size_t)y * width + x] = (char)what;
-
 }
-// ------------------------------------------------------
-/*
-Rectangle Grid::cellCoordinates(int x, int y)
-	{
 
-		Rectangle ccell(Point(x, y), Point(x + 1, y + 1));
-		return ccell;
-	}
-	*/
-
-
-	//line = y, column = x, layer = z
+	
 void Grid::set(unsigned char* data, int x, int y, unsigned char what)
 {
 
@@ -168,8 +184,6 @@ void Grid::set(unsigned char* data, int x, int y, unsigned char what)
 
 }
 
-
-//line = y, column = x, layer = z
 unsigned char  Grid::get(unsigned char* data, int x, int y)
 {
 
@@ -184,14 +198,14 @@ iPoint Grid::toLocaldimensions(double x, double y)
 
 iPoint Grid::toLocaldimensionsDown(double x, double y)
 {
-	//return iPoint(int(std::round(x)), int(std::round(y)));
+	
 	return iPoint(int(std::floor(x)), int(std::floor(y)));
 }
 
 iPoint Grid::toLocaldimensionsUp(double x, double y)
 {
 	return iPoint(int(std::round(x)), int(std::round(y)));
-	//return iPoint(int(std::floor(x)), int(std::floor(y)));
+
 }
 
 Range Grid::fromRectangleToRange(double x1, double y1, double x2, double y2)
@@ -289,7 +303,8 @@ int Grid::countPixelsInsideEllipseMultiple(int x, int y, int a, int b, double sl
 	Ellipse iEllipse(Point(x, y), a, b, slope);
 	Range region(toLocaldimensionsDown(iEllipse.minX() - 1, iEllipse.minY() - 1), toLocaldimensionsUp(iEllipse.maxX() + 1, iEllipse.maxY() + 1));
 
-	//fix region from (0,0) to (width-1,height-1)
+	//check and fix region from (0,0) to (width-1,height-1)
+	//
 	if (region.from.x < 0)
 		region.from.x = 0;
 	if (region.from.y < 0)
@@ -298,7 +313,6 @@ int Grid::countPixelsInsideEllipseMultiple(int x, int y, int a, int b, double sl
 		region.to.x = width;
 	if (region.to.y > height)
 		region.to.y = height;
-
 
 
 	for (int i = region.from.x; i < region.to.x; i++)
@@ -317,7 +331,6 @@ int Grid::countPixelsInsideEllipseMultiple(int x, int y, int a, int b, double sl
 
 	return result;
 }
-
 
 
 
@@ -406,25 +419,8 @@ bool Grid::isValid(int x, int y)
 
 }
 
-// These arrays are used to get row and column
-// numbers of 4 neighbours of a given cell
-/*
-int xNum[] = { 0, -1 ,1, 0 };
-int yNum[] = { 1,  0 ,0, -1 };
 
-best results  *** *** as published in paper
-int xNum[] = { -1, 0 ,0,  1 };
-int yNum[] = { 0,  1 ,-1, 0 };
 
-int xNum[] = { -1, 0 ,1,  0 };
-int yNum[] = { 0,  1 ,0, -1 };
-
-very good optical results
-int xNum[] = {-1, 0 ,1,  0 };
-int yNum[] = { 0, 1 ,0, -1 };
-*/
-int xNum[] = { -1, 0 ,0,  1 }; 
-int yNum[] = { 0,  1 ,-1, 0 };
 
 
 // DFS
@@ -750,15 +746,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
 		currentPoint->resistance += currResistance;
 		currentPoint->thermalResistance += currThermalResistance;
-      /*
-		if (pathDirectionAtPoint != HORIZONTAL)
-		{
-			currYoungModulus = iYoungModulus[ingadients[position]] * height;
-			currPoissonRatio = iPoissonRatio[ingadients[position]] * height;
-			currentPoint->YoungModulus += currYoungModulus;
-			currentPoint->PoissonRatio += currPoissonRatio;
-		}
-		*/
+      
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
@@ -787,15 +775,7 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 		currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
 		currentPoint->resistance += currResistance;
 		currentPoint->thermalResistance += currThermalResistance;
-		/*
-		if (pathDirectionAtPoint != HORIZONTAL)
-		{
-			currYoungModulus = iYoungModulus[ingadients[position]] * height;
-			currPoissonRatio = iPoissonRatio[ingadients[position]] * height;
-			currentPoint->YoungModulus += currYoungModulus;
-			currentPoint->PoissonRatio += currPoissonRatio;
-		}
-		*/
+		
 		sameline = (mat[position] == HARD);
 		ivisited[position] = true;
 
@@ -809,317 +789,6 @@ void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPo
 	currentPoint->resistance = 1.0 / currentPoint->resistance;
 	currentPoint->thermalResistance = 1.0 / currentPoint->thermalResistance;
 }
-
-/*
-Back up 11/10/22
-try to solve mechanical
-void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
-{
-Direction pathDirectionAtPoint;
-size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
-int x, y;
-int material = ingadients[position];
-
-double currResistance = 1/ielectricConductivities[material];
-double currThermalResistance = 1/ithermalConductivities[material];
-double currYoungModulus = iYoungModulus[material];
-double currPoissonRatio = iPoissonRatio[material];
-
-currentPoint->resistance = currResistance;
-currentPoint->thermalResistance = currThermalResistance;
-currentPoint->YoungModulus = currYoungModulus;
-currentPoint->PoissonRatio = currPoissonRatio;
-
-x = currentPoint->pt.x;
-y = currentPoint->pt.y;
-
-if ((currentPoint->pt.x - currentPoint->previous.x) == 0)
-pathDirectionAtPoint = VERTICAL;
-else
-pathDirectionAtPoint = HORIZONTAL;
-
-do
-{
-	if (pathDirectionAtPoint == HORIZONTAL)
-		y--;
-	else
-		x--;
-
-	position = (size_t)y * width + x;
-	if (isValid(x, y) && (mat[position] == HARD))
-		material = ingadients[position];
-	else
-		break;
-
-	currResistance = 1.0 / ielectricConductivities[ingadients[position]];
-	currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
-	currentPoint->resistance += currResistance;
-	currentPoint->thermalResistance += currThermalResistance;
-
-	if (pathDirectionAtPoint != HORIZONTAL)
-	{
-		currYoungModulus = iYoungModulus[ingadients[position]];
-		currPoissonRatio = iPoissonRatio[ingadients[position]];
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-	}
-
-	// Debug cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-	ivisited[position] = true;
-	mat[position] = PATH;
-
-} while (material != 0);
-
-x = currentPoint->pt.x;
-y = currentPoint->pt.y;
-
-do
-{
-	if (pathDirectionAtPoint == HORIZONTAL)
-		y++;
-	else
-		x++;
-	position = (size_t)y * width + x;
-
-	if (isValid(x, y) && (mat[position] != PATH))
-		material = ingadients[position];
-	else
-		break;
-
-
-	currResistance = 1.0 / ielectricConductivities[ingadients[position]];
-	currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
-	currentPoint->resistance += currResistance;
-	currentPoint->thermalResistance += currThermalResistance;
-
-	if (pathDirectionAtPoint != HORIZONTAL)
-	{
-		currYoungModulus = iYoungModulus[ingadients[position]];
-		currPoissonRatio = iPoissonRatio[ingadients[position]];
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-	}
-	//debug: cout << "mat[position]=" << mat[position] << "x=" << x << "y=" << y << "\n";
-	//debug: cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-	ivisited[position] = true;
-	mat[position] = PATH;
-
-
-} while ((material != 0));
-
-currentPoint->resistance = 1.0 / currentPoint->resistance;
-currentPoint->thermalResistance = 1.0 / currentPoint->thermalResistance;
-
-
-}
-*/
-
-/*
-*
-*
-*bacu up 16/2/2022
-void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
-{
-Direction pathDirectionAtPoint;
-size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
-int x, y;
-int material = ingadients[position];
-
-double currResistance = ielectricConductivities[material];
-double currThermalResistance = ithermalConductivities[material];
-double currYoungModulus = iYoungModulus[material];
-double currPoissonRatio = iPoissonRatio[material];
-
-currentPoint->resistance = currResistance;
-currentPoint->thermalResistance = currThermalResistance;
-currentPoint->YoungModulus = currYoungModulus;
-currentPoint->PoissonRatio = currPoissonRatio;
-
-x = currentPoint->pt.x;
-y = currentPoint->pt.y;
-
-if ((currentPoint->pt.x - currentPoint->previous.x) == 0)
-pathDirectionAtPoint = VERTICAL;
-else
-pathDirectionAtPoint = HORIZONTAL;
-
-do
-{
-	if (pathDirectionAtPoint == HORIZONTAL)
-		y--;
-	else
-		x--;
-
-	position = (size_t)y * width + x;
-	if (isValid(x, y) && (mat[position] == HARD))
-		material = ingadients[position];
-	else
-		break;
-
-	currResistance = 1.0 / ielectricConductivities[ingadients[position]];
-	currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
-
-
-	currentPoint->resistance += currResistance;
-	currentPoint->thermalResistance += currThermalResistance;
-
-	if (pathDirectionAtPoint != HORIZONTAL)
-	{
-		currYoungModulus =  iYoungModulus[ingadients[position]];
-		currPoissonRatio =  iPoissonRatio[ingadients[position]];
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-	}
-	// Debug cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-	ivisited[position] = true;
-	mat[position] = PATH;
-
-} while (material != 0);
-
-x = currentPoint->pt.x;
-y = currentPoint->pt.y;
-
-do
-{
-	if (pathDirectionAtPoint == HORIZONTAL)
-		y++;
-	else
-		x++;
-	position = (size_t)y * width + x;
-
-	if (isValid(x, y) && (mat[position] != PATH))
-		material = ingadients[position];
-	else
-		break;
-
-
-	currResistance = 1.0 / ielectricConductivities[ingadients[position]];
-	currThermalResistance = 1.0 / ithermalConductivities[ingadients[position]];
-
-
-	currentPoint->resistance += currResistance;
-	currentPoint->thermalResistance += currThermalResistance;
-	if (pathDirectionAtPoint != HORIZONTAL)
-	{
-		currYoungModulus =  iYoungModulus[ingadients[position]];
-		currPoissonRatio =  iPoissonRatio[ingadients[position]];
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-	}
-	//debug: cout << "mat[position]=" << mat[position] << "x=" << x << "y=" << y << "\n";
-	//debug: cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-	ivisited[position] = true;
-	mat[position] = PATH;
-
-
-} while ((material != 0));
-
-currentPoint->resistance = 1.0 / currentPoint->resistance;
-currentPoint->thermalResistance = 1.0 / currentPoint->thermalResistance;
-
-
-}
-
-void Grid::calcPropertiesAtPoint(char* mat, bool* ivisited, queueNode* currentPoint, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio)
-{
-	Direction pathDirectionAtPoint;
-	size_t position = (size_t)currentPoint->pt.y * width + currentPoint->pt.x;
-	int x, y;
-	int material = ingadients[position];
-
-	double currResistance =  ielectricConductivities[material];
-	double currThermalResistance = ithermalConductivities[material];
-	double currYoungModulus = iYoungModulus[material];
-	double currPoissonRatio = iPoissonRatio[material];
-
-	currentPoint->resistance = currResistance;
-	currentPoint->thermalResistance = currThermalResistance;
-	currentPoint->YoungModulus = currYoungModulus;
-	currentPoint->PoissonRatio = currPoissonRatio;
-
-	x = currentPoint->pt.x;
-	y = currentPoint->pt.y;
-
-	if ((currentPoint->pt.x - currentPoint->previous.x) == 0)
-		pathDirectionAtPoint = VERTICAL;
-	else
-		pathDirectionAtPoint = HORIZONTAL;
-
-	do
-	{
-		if (pathDirectionAtPoint == HORIZONTAL)
-			y--;
-		else
-			x--;
-
-		position = (size_t)y * width + x;
-		if (isValid(x, y) && (mat[position] == HARD))
-			material = ingadients[position];
-		else
-			break;
-
-		currResistance =  1.0/ielectricConductivities[ingadients[position]];
-		currThermalResistance = 1.0/ithermalConductivities[ingadients[position]];
-		currYoungModulus = 1.0/iYoungModulus[ingadients[position]];
-		currPoissonRatio = 1.0/iPoissonRatio[ingadients[position]];
-
-		currentPoint->resistance += currResistance;
-		currentPoint->thermalResistance += currThermalResistance;
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-		// Debug cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-		ivisited[position] = true;
-		mat[position] = PATH;
-
-	} while (material != 0) ;
-
-	x = currentPoint->pt.x;
-	y = currentPoint->pt.y;
-
-	do
-	{
-		if (pathDirectionAtPoint == HORIZONTAL)
-			y++;
-		else
-			x++;
-		position = (size_t)y * width + x;
-
-		if (isValid(x, y) && (mat[position] != PATH))
-			material = ingadients[position];
-		else
-			break;
-
-
-		currResistance = 1.0/ielectricConductivities[ingadients[position]];
-		currThermalResistance = 1.0/ ithermalConductivities[ingadients[position]];
-		currYoungModulus = 1.0/iYoungModulus[ingadients[position]];
-		currPoissonRatio = 1.0/iPoissonRatio[ingadients[position]];
-
-		currentPoint->resistance += currResistance;
-		currentPoint->thermalResistance += currThermalResistance;
-		currentPoint->YoungModulus += currYoungModulus;
-		currentPoint->PoissonRatio += currPoissonRatio;
-
-		//debug: cout << "mat[position]=" << mat[position] << "x=" << x << "y=" << y << "\n";
-		//debug: cout << "--material" << material << "x=" << x << "y=" << y << "\n";
-
-		ivisited[position] = true;
-		mat[position] = PATH;
-
-
-	} while ((material != 0) );
-
-	currentPoint->resistance = 1.0 / currentPoint->resistance;
-	currentPoint->thermalResistance = 1.0 /currentPoint->thermalResistance;
-	currentPoint->YoungModulus = 1.0 / currentPoint->YoungModulus;
-	currentPoint->PoissonRatio = 1.0 / currentPoint->PoissonRatio;
-
-}*/
 
 
 void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clusterStack, list<smallQueueNode>* listPath)
@@ -1149,38 +818,6 @@ void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clu
 
 	}
 }
-
-/*
-backup 7/7/2023
-void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<queueNode>* clusterStack, list<queueNode>* listPath)
-{
-
-	queueNode last = clusterStack->top();
-
-	clusterStack->pop();
-	listPath->push_front(last);
-	queueNode currentPoint;
-
-	while (!clusterStack->empty())
-	{
-		currentPoint = clusterStack->top();
-		clusterStack->pop();
-
-		size_t index = ((size_t)currentPoint.pt.y * width) + currentPoint.pt.x;
-		ivisited[index] = false;
-		mat[index] = HARD;
-
-		if ((last.previous.x == currentPoint.pt.x) && (last.previous.y == currentPoint.pt.y))
-		{
-			last = currentPoint;
-			listPath->push_front(last);
-
-		}
-
-	}
-}
-
-*/
 
 
 int Grid::drawPath(char* mat, bool* ivisited, list<smallQueueNode> cpath)
@@ -1238,12 +875,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	std::stack<smallQueueNode> backup;
 	std::list<smallQueueNode> singlePath;
 
-	//int material = ingadients[position];
-	//float currResistance = 1. / ielectricConductivities[material];
-	//float currThermalResistance = 1. / ithermalConductivities[material];
-	//float currYoungModulus = iYoungModulus[material];
-	//float currPoissonRatio = iPoissonRatio[material];
-
+	
 
 	smallQueueNode s = { src, {0,0},0 }; // , currResistance, currThermalResistance, currYoungModulus, currPoissonRatio
 
@@ -1308,102 +940,6 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	return true;
 }
 
-/*
-backup 7/7/2023
-int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint)
-{
-
-
-	*distance = 0;
-	*resistance = 0;
-	*thermalResistance = 0;
-	*YoungModulus = 0;
-	*PoissonRatio = 0;
-
-	size_t position = (size_t)src.y * width + src.x;
-	if (!mat[position])
-	{
-		cout << "Warning:Bad source point at BFS\n";
-		return false;
-	}
-
-	// Mark the source cell as visited
-	ivisited[position] = true;
-
-	// Create a queue for BFS
-	std::queue<queueNode> q;
-	std::stack<queueNode> backup;
-	std::list<queueNode> singlePath;
-
-	int material = ingadients[position];
-	float currResistance = 1. / ielectricConductivities[material];
-	float currThermalResistance = 1. / ithermalConductivities[material];
-	float currYoungModulus = iYoungModulus[material];
-	float currPoissonRatio = iPoissonRatio[material];
-
-
-	queueNode s = { src, {0,0},0,currResistance,currThermalResistance, currYoungModulus, currPoissonRatio };
-
-	q.push(s); // Enqueue source cell
-	queueNode curr;
-	// Do a BFS starting from source cell
-	while (!q.empty())
-	{
-		curr = q.front();
-		point2d pt = curr.pt;
-//		position = (size_t)pt.y * width + pt.x;
-
-
-
-		// If we have reached the destination cell,
-		// we are done
-
-		if (pt.y >= (height - 1))
-		{
-			*distance = curr.dist + 1;
-			finalPoint->x = pt.x;
-			finalPoint->y = pt.y;
-			break;
-		}
-
-		// Otherwise dequeue the front cell in the queue and enqueue its adjacent cells
-
-		q.pop();
-
-
-		for (int i = 3; i > -1; i--)
-		{
-			int x = pt.x + xNum[i];
-			int y = pt.y + yNum[i];
-			position = (size_t)y * width + x;
-
-			if ((isValid(x, y)) && (mat[position] == PERCOLATE) && (ivisited[position] == false))
-			{
-				// mark cell as visited and enqueue it
-
-				queueNode Adjcell = { {x, y},{pt.x,pt.y},curr.dist + 1,0.0,0.0,0.0,0.0 };
-
-				q.push(Adjcell);
-				backup.push(Adjcell);
-				ivisited[position] = true;
-
-			}
-
-
-		}
-	}
-
-
-	this->pathsList.push_front(singlePath);
-	MarkMinimumPath(mat, ivisited, &backup, &pathsList.front());
-	drawPath(cell, visited, pathsList.front());
-
-	// Return false if destination cannot be reached
-	// Debug cout << "fault\n";
-	return true;
-}
-
-*/
 
 
 int Grid::clusterCenter(point2d src, doublepoint2d* center, size_t* totalPoints)
@@ -1572,8 +1108,6 @@ Cluster Grid::markClusters()
 	//
 
 	//#pragma omp parallel for
-
-
 
 	while (!cClusters.empty())
 	{
@@ -1751,76 +1285,6 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 
 			//debug:	cout << "Paths:" << *totalPaths << " Total function hoops:" << pathsLength[0] << " Real Path Length:" << realLength[0] << " Path resistance:" << pelectricResistance[0] << " Thermal resistance:" << pthermalResistance[0] << "\n";
 		}
-
-
-
-
-		/*
-		//#pragma omp section
-						{
-							//pathLength = 0;
-							//startPoint = { i,0,k };
-							//startPoint = { i,0,k };
-							if (cell[(k + (depth / 4))* width + i] == CellState::HARD)
-								if (DFS(cell, visited, { (short)i,(short)0,(short)(k + (depth / 4)) }, &endPoint, &pathsLength[1]))
-								{
-									cout << " From " << i << " " << 0 << " " << k << " To " << endPoint.x << " " << endPoint.y << " " << endPoint.z << "\n";
-									//std::fill_n(visited, total, false);
-									BFS(cell, visited, { i,0,k + depth / 4 }, &realLength[1], ielectricConductivities, &resistance[1], ithermalConductivities, &thermalResistance[1], &endPoint);
-									*totalPaths = *totalPaths + 1;
-									*meanLength = *meanLength + pathLength;
-
-									sumCalculatedLength += realLength[1];
-									sumResistance += resistance[1];
-									sumThermalResistance += thermalResistance[1];
-									// Debug cout << "Path:" << *totalPaths << " Total function hoops:" << pathsLength[1] << " Real Path Length:" << realLength[1];
-									// Debug cout<< " Path resistance:" << resistance[1] << " Thermal resistance:" << thermalResistance[1] << "\n";
-								}
-
-						}
-		//#pragma omp section
-						{
-							//pathLength = 0;
-							//startPoint = { i,0,k };
-							if (cell[(k + (2 * depth / 4))* width + i] == CellState::HARD)
-								if (DFS(cell, visited, { (short)i,(short)0,(short)(k + (2 * depth / 4)) }, &endPoint, &pathsLength[2]))
-								{
-									cout << " From " << i << " " << 0 << " " << k << " To " << endPoint.x << " " << endPoint.y << " " << endPoint.z << "\n";
-									//std::fill_n(visited, total, false);
-									BFS(cell, visited, { i,0,k + (2 * depth / 4) }, &realLength[2], ielectricConductivities, &resistance[2], ithermalConductivities, &thermalResistance[2] ,&endPoint);
-									*totalPaths = *totalPaths + 1;
-									*meanLength = *meanLength + pathLength;
-
-									sumCalculatedLength += realLength[2];
-									sumResistance += resistance[2];
-									sumThermalResistance += thermalResistance[2];
-									// Debug cout << "Path:" << *totalPaths << " Total function hoops:" << pathsLength[2] << " Real Path Length:" << realLength[2] << " Path resistance:" << resistance[2] << " Thermal resistance:" << thermalResistance[2] << "\n";
-								}
-
-						}
-		//#pragma omp section
-						{
-							//pathLength = 0;
-							//startPoint = { i,0,k };
-
-							if (cell[(k + (3 * depth / 4))* width + i] == CellState::HARD)
-								if (DFS(cell, visited, { (short)i,(short)0,(short)(k + (3 * depth / 4)) }, &endPoint, &pathsLength[3]))
-								{
-									cout << " From " << i << " " << 0 << " " << k << " To " << endPoint.x << " " << endPoint.y << " " << endPoint.z << "\n";
-									//std::fill_n(visited, total, false);
-									BFS(cell, visited, { i,0,k + (3 * depth / 4) }, &realLength[3], ielectricConductivities, &resistance[3], ithermalConductivities, &thermalResistance[3],&endPoint);
-									*totalPaths = *totalPaths + 1;
-									*meanLength = *meanLength + pathLength;
-
-									sumCalculatedLength += realLength[3];
-									sumResistance += resistance[3];
-									sumThermalResistance += thermalResistance[3];
-									// Debug cout << "Path:" << *totalPaths << " Total function hoops:" << pathsLength[3] << " Real Path Length:" << realLength[3] << " Path resistance:" << resistance[3] << " Thermal resistance:" << thermalResistance[3] << "\n";
-								}
-
-						}*/
-
-
 	}
 
 	sumResistance = 0;
@@ -1924,7 +1388,6 @@ void  Grid::saveToDisk(char* imageFileName, bool saveAsBMP)
 }
 
 
-
 void  Grid::saveToDisk(char* path, char* imageFileName, bool saveAsBMP)
 {
 	char* filename{ new char[strlen(path) + strlen(imageFileName) + 1] };
@@ -1933,8 +1396,6 @@ void  Grid::saveToDisk(char* path, char* imageFileName, bool saveAsBMP)
 	strcat(filename,  imageFileName);
 	saveToDisk(filename, saveAsBMP);
 }
-
-
 
 
 Grid::~Grid() {

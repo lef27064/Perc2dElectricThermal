@@ -1,17 +1,22 @@
-﻿/*
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+﻿/*This file is part of Electric,Thermal, Mechanical Properties
+Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ETMPEWPT is free software : you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ETMPEWPT is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
+
 
 #pragma comment(linker, "/STACK:600000000")
 #pragma comment(linker,  "/HEAP:4200000000")

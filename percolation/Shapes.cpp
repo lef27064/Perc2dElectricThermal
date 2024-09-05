@@ -1,14 +1,14 @@
-/*
-This file is part of Electric Percolation (eperc2d) program.
+/*This file is part of Electric,Thermal, Mechanical Properties
+Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
-Created from Lefteris Lamprou lef27064@otenet.gr during PhD thesis
+Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
 
-eperc2d is free software : you can redistribute it and/or modify
+ETMPEWPT is free software : you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-eperc2d is distributed in the hope that it will be useful,
+ETMPEWPT is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
@@ -16,8 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 */
-
-#pragma once
 
 #include <iostream>
 #include "Shapes.h"

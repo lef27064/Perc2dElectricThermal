@@ -1,13 +1,14 @@
-/*This file is part of Electric Percolation (eperc2d) program.
+/*This file is part of Electric,Thermal, Mechanical Properties
+Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
-Created from Lefteris Lamprou lef27064@otenet.gr during PhD thesis
+Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
 
-eperc2d is free software : you can redistribute it and/or modify
+ETMPEWPT is free software : you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-eperc2d is distributed in the hope that it will be useful,
+ETMPEWPT is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
@@ -30,11 +31,6 @@ ShapeGenerator::ShapeGenerator()
 }
 
 
-/*
-ShapeGenerator::~ShapeGenerator()
-{
-}*/
-
 void ShapeGenerator::initDirs(void)
 {
 	//c++17
@@ -52,57 +48,7 @@ void ShapeGenerator::initDirs(void)
 
 	if (!std::filesystem::exists(iimagesDir))
 		std::filesystem::create_directory(iimagesDir);
-	
-
-	/*
-	* before c++17 compiler
-	string iprojectDir = "./" + projectName;
-	string ishapesDir = iprojectDir + "/shapes/";
-	string iimagesDir = iprojectDir + "/images/";
-
-	char* cprojectDir = &iprojectDir[0u];
-	char* cshapesDir = &ishapesDir[0u];
-	char* cimagesDir = &iimagesDir[0u];
-
-	int result = 0 ;
-	
-
-
-	if (!dirExists(cprojectDir))
-	{
 		
-		result = mkdir(cprojectDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if (result != 0)
-		{
-			cout << "Error create directory " << projectDir;
-			exit(-1);
-		}
-		
-	}
-
-	if (!dirExists(cshapesDir))
-	{
-		result = mkdir(cshapesDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if (result != 0)
-		{
-			cout << "Error create directory " << ishapesDir;
-			exit(-1);
-		}
-
-	}
-
-	if (!dirExists(cimagesDir))
-	{
-		result = mkdir(cimagesDir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if (result != 0)
-		{
-			cout << "Error create directory " << iimagesDir;
-			exit(-1);
-		}
-	}
-	
-	return;
-	*/
 }
 
 ShapeGenerator::ShapeGenerator(int tcomp, double comp[], ShapeType compType[], SizeType compSizeType[], double sWeights[], double dimX[], double dimY[], double ihoops[], Grid* iGrid, Settings* isettings) : totalComponents(tcomp), grid(iGrid), settings(isettings)
@@ -714,7 +660,7 @@ void ShapeGenerator::swissCheeseCheckAndDraw(int ingradient, double rectWidth, d
 
 void ShapeGenerator::monteCarlo(void)
 {
-	string sPercolate[2] = { "Is NOT percolate ", "IS percolate" };
+	string sPercolate[2] = { "RSE Is NOT percolate\n", "RSE IS percolate\n" };
 	double sumPercolation = 0;
 	double sumTime = 0;
 	double sumSetupTime = 0;
@@ -728,7 +674,7 @@ void ShapeGenerator::monteCarlo(void)
 	double sumPathLength = 0;
 	double meanRVEPathLength = 0;
 	double meanRVEPathWidth = 0;
-
+	int totalConductivesRSE = 0;
 
 	//double sumMeanPathLength = 0;
 	cout << "--------------------------------------------------------------------------------------------------------------\n";
@@ -740,7 +686,7 @@ void ShapeGenerator::monteCarlo(void)
 
 	//std::seed_seq 	seed({ r(), r(), r(), r(),r(), r(), r(), r(), r() });
 	//eng.seed(seed);
-
+	
 	for (int i = 0; i < iterations; i++)
 	{
 		cout << "\n--------------------------------------------";
@@ -791,14 +737,14 @@ void ShapeGenerator::monteCarlo(void)
 		if (!Results[i])
 		{
 			paths[i] = 0;
-			cout << "RSE not percolated\n";
+			cout << sPercolate[Results[i]];                // "RSE not percolated\n";
 		}
 		else
 		{
 			sumPathLength += (meanRealPathLength[i] * paths[i]);
 			sumPaths += paths[i];
 			sumPercolation += Results[i];
-			cout << "RSE percolated\n";
+			cout << sPercolate[Results[i]];                 // "RSE percolated\n";
 		}
 
 		sumTime += Times[i];
@@ -811,7 +757,7 @@ void ShapeGenerator::monteCarlo(void)
 		else
 			meanRVEPathLength = 0;
 
-		int totalConductivesRSE = 0;
+		
 		if (paths[i] > 0)
 		{
 
@@ -822,7 +768,7 @@ void ShapeGenerator::monteCarlo(void)
 			totalConductivesRSE++;
 
 		}
-		cout << "Percolation Probability:" << (1.0 * totalConductivesRSE / (i + 1)) * 100 << "% \n";
+		cout << "RSE's Percolation Probability:" << ((1.0 * totalConductivesRSE) / (i + 1.0)) * 100.0 << "% \n";
 
 		sumElectricConductivity += electricConductivity[i];
 		sumThemalConductivity += thermalConductivities[i];
@@ -944,9 +890,9 @@ void ShapeGenerator::monteCarlo(void)
 	cout << "Mean Percolation  =" << meanPercolation << "\n";
 	cout << "Mean Proccess Time  =" << meanTime << "\n";
 	cout << "Mean SetUp Time  =" << meanSetUpTime << "\n";
-	cout << "Mean Paths per RVE=" << meanRVEPaths << "\n";
-	cout << "Mean Paths Length per RVE=" << meanRVEPathLength << "\n";
-	cout << "Mean RVE path Width=" << meanRVEPathWidth <<"\n";
+	cout << "Mean Paths per RSE=" << meanRVEPaths << "\n";
+	cout << "Mean Paths Length per RSE=" << meanRVEPathLength << "\n";
+	cout << "Mean path Width =" << meanRVEPathWidth <<"\n";
 	cout << "Mean Special Electric Counductivity =" << meanElectricConductivity << "\n";
 	cout << "Mean Special Thermal Counductivity =" << meanThermalConductivity << "\n";
 	cout << "Mean Young Modulus =" << meanYoungModulus << "\n";
@@ -1265,141 +1211,6 @@ void ShapeGenerator::digitizeSlopedRectangle(int ingradient, SlopedRectangle sRe
 
 void ShapeGenerator::digitizeSlopedRectangle(int ingradient, SlopedRectangle sRect, Grid* iGrid, double* realArea, CellState state)
 {
-	/*int i, j;
-
-	Range region(iGrid->toLocaldimensionsDown(0, sRect.minY() - 2), iGrid->toLocaldimensionsUp(0, sRect.maxY() + 2));
-
-	*realArea = 0;
-
-	//check bounds
-	if ((abs(sRect.slope) > M_PI * 45 / 180))
-	{
-		if (region.from.y < 0)
-			region.from.y = 0;
-
-		if (region.to.y > iGrid->height)
-			region.to.y = iGrid->height;
-
-		double lamda = tan(-sRect.slope);
-		double d = 0.5*sRect.height *(2 - abs(sin(sRect.slope)));
-
-#pragma omp parallel for
-
-		for (j = region.from.y; j < region.to.y; j++)
-		{
-
-			region.from.x = int(((j - sRect.center.y) / lamda) + sRect.center.x - d-2);
-			region.to.x = int(((j - sRect.center.y) / lamda) + sRect.center.x + d+2);
-
-			if (region.from.x > region.to.x)
-			{
-				int temp = region.from.x;
-				region.from.x = region.to.x;
-				region.to.x = temp;
-
-			}
-
-
-			if (region.from.x < 0)
-				region.from.x = 0;
-
-			if (region.to.x > iGrid->width)
-				region.to.x = iGrid->width;
-
-			for (i = region.from.x; i < region.to.x; i++)
-			{
-
-				Point rotated = Point::transform(i + 0.5, j + 0.5, sRect.center.x, sRect.center.y, -sRect.slope);
-				//if rotated inside circle
-
-
-				// Debug draw scan region:
-				// iGrid->set(i, j, CellState::SOFT);
-				if ((rotated.x <= (sRect.center.x + (sRect.width / 2))) && (rotated.x >= (sRect.center.x - (sRect.width / 2))) && ((rotated.y <= (sRect.center.y + (sRect.height / 2))) && rotated.y >= (sRect.center.y - (sRect.height / 2))))
-				{
-					char cPixel = iGrid->get(i, j);
-					if (state == CellState::HARD)
-					{
-
-						if ((cPixel != 0) && (cPixel != CellState::HARD) && (cPixel != BORDER)) // in one step
-							*realArea += 1.0;
-
-						iGrid->set(i, j, state);
-
-					}
-					else
-						if (cPixel != CellState::HARD)
-							iGrid->set(i, j, state);
-				}
-			}
-		}
-	}
-	else
-	{
-		region.from.x = int(sRect.minX()) - 2;
-		region.to.x = int(sRect.maxX()) + 2;
-
-		if (region.from.x < 0)
-			region.from.x = 0;
-
-		if (region.to.x > iGrid->width)
-			region.to.x = iGrid->width;
-
-		double lamda = -tan(sRect.slope);
-		double d = 0.5*sRect.height / cos(sRect.slope);
-
-#pragma omp parallel for
-
-		for (i = region.from.x; i < region.to.x; i++)
-		{
-
-			region.from.y = int(((i - sRect.center.x) * lamda) + sRect.center.y - d - 2);
-			region.to.y = int(((i - sRect.center.x) * lamda) + sRect.center.y + d + 2);
-
-			if (region.from.y > region.to.y)
-			{
-				int temp = region.from.y;
-				region.from.y = region.to.y;
-				region.to.y = temp;
-
-			}
-
-			if (region.from.y < 0)
-				region.from.y = 0;
-
-			if (region.to.y > iGrid->height)
-				region.to.y = iGrid->height;
-
-			for (j = region.from.y; j < region.to.y; j++)
-			{
-
-				Point rotated = Point::transform(i + 0.5, j + 0.5, sRect.center.x, sRect.center.y, -sRect.slope);
-				//if rotated inside circle
-				//distance = ((rotated.x - sRect.center.x)*(rotated.x - iEllipse.center.x) / (iEllipse.a*iEllipse.a)) + ((rotated.y - iEllipse.center.y)*(rotated.y - iEllipse.center.y) / (iEllipse.b* iEllipse.b));
-
-				//iGrid->set(i, j, CellState::SOFT);
-				if((rotated.x <= (sRect.center.x + (sRect.width / 2))) && (rotated.x >= (sRect.center.x - (sRect.width / 2))) && ((rotated.y <= (sRect.center.y + (sRect.height / 2))) && rotated.y >= (sRect.center.y - (sRect.height / 2))))
-				{
-					char cPixel = iGrid->get(i, j);
-					if (state == CellState::HARD)
-					{
-
-						if ((cPixel != 0) && (cPixel != CellState::HARD) && (cPixel != BORDER)) // in one step
-							*realArea += 1.0;
-
-						iGrid->set(i, j, state);
-
-					}
-					else
-						if (cPixel != CellState::HARD)
-							iGrid->set(i, j, state);
-				}
-			}
-		}
-	}
-	*/
-
-
 	int i, j;
 	Range region(iGrid->toLocaldimensionsDown(sRect.minX() - 1, sRect.minY() - 1), iGrid->toLocaldimensionsUp(sRect.maxX() + 1, sRect.maxY() + 1));
 	*realArea = 0;
@@ -1662,120 +1473,6 @@ void ShapeGenerator::digitizeEllipseDiv4(int ingradient, Ellipse iEllipse, Grid*
 }
 
 
-/*
-void ShapeGenerator::digitizeEllipseDiv4(char ingradient, Ellipse iEllipse, Grid* iGrid, double* realArea, CellState state, bool x, bool y)
-{
-	int i, j;
-
-	double distance;
-	Point rotated(0, 0);
-	iPoint iRotated(0, 0);
-
-	*realArea = 0;
-	double density = 1.8;
-
-	bool isCircle = (iEllipse.a == iEllipse.b);
-	if (isCircle)
-		density = 1.0;
-
-	double invDensity = 1 / density;
-	double sqInvDensity = invDensity * invDensity;
-
-	double costhetaX = cos(iEllipse.slope);
-	double sinthetaX = sin(iEllipse.slope);
-
-
-
-	double sqEllipsoidA = (iEllipse.a * iEllipse.a);
-	double sqEllipsoidB = (iEllipse.b * iEllipse.b);
-
-
-	int maxi, maxj;
-
-	maxi = int(density * (iEllipse.a + 2));
-
-	maxj = int(density * (iEllipse.b + 2));
-
-
-	int muli = 1;
-	int mulj = 1;
-
-	if (!x)
-		muli = -1;
-	if (!y)
-		mulj = -1;
-
-
-	int ii, jj;
-
-	{
-
-		for (i = 0; i < maxi; i++)
-			for (j = 0; j < maxj; j++)
-			{
-				ii = i * muli;
-				jj = j * mulj;
-
-
-				distance =
-					((sqInvDensity * i * i) / sqEllipsoidA) +
-					((sqInvDensity * j * j) / sqEllipsoidB);
-
-
-
-				if (distance <= 1.0)
-				{
-					if (!isCircle)
-						rotated = Point::transform(invDensity * ii, invDensity * jj, 0, 0,
-							iEllipse.slope, costhetaX, sinthetaX);
-					else
-					{
-						rotated = { (double)ii,(double)jj };
-
-					}
-
-					rotated = { rotated.x + iEllipse.center.x,
-						rotated.y + iEllipse.center.y };
-
-
-
-					iRotated = rotated.round();
-
-
-					if (isInsideGrid(iRotated, iGrid))
-					{
-
-						size_t where = (size_t)iRotated.y * width + iRotated.x;
-						char cPixel = iGrid->cell[where];
-						{
-							if (state == CellState::HARD)
-							{
-								if (cPixel != CellState::HARD)
-								{
-									iGrid->ingadients[where] = ingradient;
-									*realArea = 1.0 + *realArea;
-
-								}
-								iGrid->cell[where] = CellState::HARD;
-							}
-							else
-								if (cPixel != CellState::HARD)
-								{
-									iGrid->cell[where] = state;
-									iGrid->ingadients[where] = ingradient;
-								}
-						}
-
-
-
-					}
-				}
-			}
-
-	}
-}
-
-*/
 
 
 void ShapeGenerator::digitizeEllipse(int ingradient, Ellipse iEllipse, Grid* iGrid, CellState state)
@@ -1891,229 +1588,7 @@ void ShapeGenerator::digitizeEllipseWithBorder(Ellipse iEllipse, Grid* iGrid, do
 
 }
 
-/*
 
-void ShapeGenerator::digitizeEllipse(Ellipse iEllipse, Grid* iGrid, double *realArea, CellState state)
-{
-	int i, j;
-
-	double distance;
-	Point rotated(0,0);
-	iPoint iRotated(0, 0);
-
-	*realArea = 0;
-	double density = 2.0;
-
-	bool isCircle = (iEllipse.a == iEllipse.b);
-	if (isCircle)
-		density = 1.0;
-
-	double invDensity = 1 / density;
-	double sqInvDensity = invDensity * invDensity;
-	double sqrEllipseA = (iEllipse.a*iEllipse.a);
-	double sqrEllipseB = (iEllipse.b*iEllipse.b);
-#pragma omp  for
-	for (i = int(-density * (iEllipse.a + 2)); i < int(density*(iEllipse.a + 2)); i++)
-	{
-		for (j = int(-density * (iEllipse.b + 2)); j < int(density*(iEllipse.b + 2)); j++)
-		{
-
-			distance =
-				((sqInvDensity*i*i) / sqrEllipseA) +
-				((sqInvDensity*j*j) / sqrEllipseB);
-
-
-				if (distance <= 1.0)
-				{
-					if (!isCircle)
-						rotated = Point::transform(invDensity*i, invDensity*j, 0, 0,iEllipse.slope);
-					else
-					{
-						rotated.x = i;
-						rotated.y = j;
-
-					}
-
-					rotated.x = rotated.x + iEllipse.center.x;
-					rotated.y = rotated.y + iEllipse.center.y;
-
-
-					iRotated.x = round(rotated.x);
-					iRotated.y = round(rotated.y);
-
-
-
-					if ((iRotated.x >= 0) && (iRotated.y  >= 0) && (iRotated.x < width) && (iRotated.y < height))
-					{
-						char cPixel = iGrid->get(iRotated.x, iRotated.y);
-						{
-
-							if (state == CellState::HARD)
-							{
-								if (cPixel != CellState::HARD)
-								{
-									//iGrid->set(iGrid->ingadients, iRotated.x, iRotated.y, ingradient);
-									*realArea += 1.0;
-								}
-
-								iGrid->set(iRotated.x, iRotated.y,  CellState::HARD);
-							}
-							else
-								if (cPixel != CellState::HARD)
-								{
-									iGrid->set(iRotated.x, iRotated.y, state);
-									//iGrid->set(iGrid->ingadients, iRotated.x, iRotated.y, iRotated.z, ingradient);
-								}
-						}
-
-					}
-				}
-
-		}
-	}
-}
-*/
-
-/*
-
-void ShapeGenerator::digitizeEllipse(Ellipse iEllipse, Grid* iGrid, double *realArea, CellState state)
-{
-	int i, j;
-	double distance;
-	Range region(iGrid->toLocaldimensionsDown(0, iEllipse.minY() - 2), iGrid->toLocaldimensionsUp(0, iEllipse.maxY() + 2));
-
-	*realArea = 0;
-
-	//check bounds
-	if ((abs(iEllipse.slope) > M_PI*45/180))
-	{
-		if (region.from.y < 0)
-			region.from.y = 0;
-
-		if (region.to.y > iGrid->height)
-			region.to.y = iGrid->height;
-
-		double lamda = tan(-iEllipse.slope);
-		double d = iEllipse.b *(2-abs(sin(iEllipse.slope)));
-
-#pragma omp for
-
-		for (j = region.from.y; j < region.to.y; j++)
-		{
-
-			region.from.x = int(((j - iEllipse.center.y) / lamda) + iEllipse.center.x - d);
-			region.to.x = int(((j - iEllipse.center.y) / lamda) + iEllipse.center.x + d);
-
-			if (region.from.x > region.to.x)
-			{
-				int temp = region.from.x;
-				region.from.x = region.to.x;
-				region.to.x = temp;
-
-			}
-			region.from.x--;
-			region.to.x++;
-			region.to.x++;
-
-			if (region.from.x < 0)
-				region.from.x = 0;
-
-			if (region.to.x > iGrid->width)
-				region.to.x = iGrid->width;
-
-			for (i = region.from.x; i < region.to.x; i++)
-			{
-
-				Point rotated = Point::transform(i + 0.5, j + 0.5, iEllipse.center.x, iEllipse.center.y, -iEllipse.slope);
-				//if rotated inside circle
-				distance = ((rotated.x - iEllipse.center.x)*(rotated.x - iEllipse.center.x) / (iEllipse.a*iEllipse.a)) + ((rotated.y - iEllipse.center.y)*(rotated.y - iEllipse.center.y) / (iEllipse.b* iEllipse.b));
-
-				//iGrid->set(i, j, CellState::SOFT);
-				if (distance <= 1.0)
-				{
-					char cPixel = iGrid->get(i, j);
-					if (state == CellState::HARD)
-					{
-
-						if ((cPixel != 0) && (cPixel != CellState::HARD) && (cPixel != BORDER)) // in one step
-							*realArea += 1.0;
-
-						iGrid->set(i, j, state);
-
-					}
-					else
-						if (cPixel != CellState::HARD)
-							iGrid->set(i, j, state);
-				}
-			}
-		}
-	}
-	else
-	{
-		region.from.x = int(iEllipse.minX()) - 2;
-		region.to.x = int(iEllipse.maxX()) + 2;
-
-		if (region.from.x < 0)
-			region.from.x = 0;
-
-		if (region.to.x > iGrid->width)
-			region.to.x = iGrid->width;
-
-		double lamda = -tan(iEllipse.slope);
-		double d = iEllipse.b / cos(iEllipse.slope);
-
-#pragma omp for
-
-		for (i = region.from.x; i < region.to.x; i++)
-		{
-
-			region.from.y = int(((i - iEllipse.center.x) * lamda) + iEllipse.center.y - d-1);
-			region.to.y = int(((i - iEllipse.center.x) * lamda) + iEllipse.center.y + d+1);
-
-			if (region.from.y > region.to.y)
-			{
-				int temp = region.from.y;
-				region.from.y = region.to.y;
-				region.to.y = temp;
-
-			}
-
-			if (region.from.y < 0)
-				region.from.y = 0;
-
-			if (region.to.y > iGrid->height)
-				region.to.y = iGrid->height;
-
-			for (j = region.from.y ; j < region.to.y ; j++)
-			{
-
-				Point rotated = Point::transform(i + 0.5, j + 0.5, iEllipse.center.x, iEllipse.center.y, -iEllipse.slope);
-				//if rotated inside circle
-				distance = ((rotated.x - iEllipse.center.x)*(rotated.x - iEllipse.center.x) / (iEllipse.a*iEllipse.a)) + ((rotated.y - iEllipse.center.y)*(rotated.y - iEllipse.center.y) / (iEllipse.b* iEllipse.b));
-
-				//iGrid->set(i, j, CellState::SOFT);
-				if (distance <= 1.0)
-				{
-					char cPixel = iGrid->get(i, j);
-					if (state == CellState::HARD)
-					{
-
-						if ((cPixel != 0) && (cPixel != CellState::HARD) && (cPixel != BORDER)) // in one step
-							*realArea += 1.0;
-
-						iGrid->set(i, j, state);
-
-					}
-					else
-						if (cPixel != CellState::HARD)
-							iGrid->set(i, j, state);
-				}
-			}
-		}
-	}
-
-
-}*/
 
 
 std::vector<std::string> ShapeGenerator::split(std::string strToSplit, char delimeter)

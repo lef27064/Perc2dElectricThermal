@@ -3,7 +3,7 @@ ellipse_1iter300ppmC_101width_500_Area0.6
 #total component
 3
 #components % weights
-0.3 0.4 0.3
+0.4 0.3 0.3
 #Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)
 4 3 1
 #SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)
