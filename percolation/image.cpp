@@ -28,16 +28,7 @@ if you use this programm and write a paper or report please cite above papers
 */ 
 
 #include "image.h"
-sRGB RGB_EMPTY = { 0x00, 0x00, 0x00 };
-sRGB RGB_PERCOLATE = { 0, 224, 224  };
-				// 		224, 224, 224
-sRGB RGB_SOFT = { 0x70, 0x00, 0x40 };
-sRGB RGB_HARD = { 254, 254, 0 };
-sRGB RGB_BORDER = { 0x40, 0x50, 0x80 };
-sRGB RGB_PATH = { 255, 224, 32 };
-sRGB RGB_SIDEPATH = { 0, 192, 0 };
-				
-			
+		
 
 
 sRGB RGB_Black = { 0x0,0x0,0x0 };
@@ -55,7 +46,7 @@ sRGB RGB_Green = { 0,192,0 };
 sRGB RGB_Yellow = { 0xFF,224,32 };
 sRGB RGB_Gold = { 0x33,0xA5,0xAA }; 
 sRGB RGB_Brown = { 160,128,96 };
-sRGB RGB_Orange = { 0xFD, 0xA1, 0x72 };
+sRGB RGB_Orange = { 0xCD, 0x91, 0x52 };
 
 void generatePGMImage(char * image, int height, int width, char * imageFileName)
 {
@@ -147,19 +138,19 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 			unsigned char color = image[(size_t)line*width + column];
 			switch (color){
 			//EMPTY 	
-			case '0':  setcolor(colors, 3 * column, RGB_EMPTY);  break;
+			case '0':  setcolor(colors, 3 * column, RGB_Black);  break;
 			//PERCOLATE			
-			case '1': setcolor(colors, 3 * column,RGB_PERCOLATE);  break;
+			case '1': setcolor(colors, 3 * column,RGB_White );  break;
 			//SOFT
-			case '2':setcolor(colors, 3 * column, RGB_SOFT); break;
+			case '2':setcolor(colors, 3 * column, RGB_Red); break;
 			//HARD
 			case '3': setcolor(colors, 3 * column, RGB_Orange);  break;
 			//BORDER
-			case '4': setcolor(colors, 3 * column, RGB_BORDER);  break;
+			case '4': setcolor(colors, 3 * column, RGB_Brown);  break;
 			//PATH
-			case '5': setcolor(colors, 3 * column, RGB_PATH);  break;
+			case '5': setcolor(colors, 3 * column, RGB_Yellow);  break;
 			//SIDEPATH
-			case '6': setcolor(colors, 3 * column, RGB_SIDEPATH);  break;
+			case '6': setcolor(colors, 3 * column, RGB_Light_Blue);  break;
 				/*
 			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
 				//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
