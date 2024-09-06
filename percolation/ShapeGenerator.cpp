@@ -15,6 +15,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” , 
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, 
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
 */
 
 
@@ -24,7 +34,7 @@ ShapeGenerator::ShapeGenerator()
 {
   totalComponents = 0;
   iterations = 400;
-  pixelsPerMinimumCircle = 10;
+  pixelsPerMinimumSize = 10;
   settings = NULL;
   grid = NULL;
 
@@ -201,7 +211,7 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 
 void ShapeGenerator::printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent)
 {
-	float matrixRealArea = 1.0;
+	double matrixRealArea = 1.0;
 	int whereMatrix=0;
 	cout << "Component  |      Particle Type      | Total Praticles | Real Area in Lattice % | Goal Area % |  Error %   \n";
 	for (int i = 0; i < totalComponents; i++)
@@ -664,7 +674,7 @@ void ShapeGenerator::monteCarlo(void)
 	double sumPercolation = 0;
 	double sumTime = 0;
 	double sumSetupTime = 0;
-	//double totalPaths = 0;
+	
 	double sumElectricConductivity = 0;
 	double sumThemalConductivity = 0;
 	double sumYoungModulus = 0;
@@ -676,9 +686,10 @@ void ShapeGenerator::monteCarlo(void)
 	double meanRVEPathWidth = 0;
 	int totalConductivesRSE = 0;
 
+	//double totalPaths = 0;
 	//double sumMeanPathLength = 0;
 	cout << "--------------------------------------------------------------------------------------------------------------\n";
-	cout << "Pixels Per minimum Size (ppms)=" << pixelsPerMinimumCircle << "\n";
+	cout << "Pixels Per minimum Size (ppms)=" << pixelsPerMinimumSize << "\n";
 	cout << "Minimum Size " << min << "\n";
 	cout << "Factor [ppms/ minimumSize]" << factor << "\n";
 	//cout << "--------------------------------------------------------------------------------------------------------------\n";
@@ -689,12 +700,14 @@ void ShapeGenerator::monteCarlo(void)
 	
 	for (int i = 0; i < iterations; i++)
 	{
+		std::seed_seq seed{ r(), r(), r(), r(),r(), r(), r(), r(), r() };
+		eng.seed(seed);
+
 		cout << "\n--------------------------------------------";
 		cout << "Case " << setw(6) <<(i + 1) << " of " << setw(6)<< iterations;
 		cout << "--------------------------------------------\n";
 		string  Base;
-		std::seed_seq seed{ r(), r(), r(), r(),r(), r(), r(), r(), r() };
-		eng.seed(seed);
+		
 		if (!settings->saveAsBmpImage)
 			Base = "_Result.pgm";
 		else
@@ -702,12 +715,13 @@ void ShapeGenerator::monteCarlo(void)
 		Results[i] = 0;
 		grid->clear();
 
+		//is Lattice
 		if (settings->isLattice)
 			setupCaseLattice(i, &setUpTimes[i]);
 		else
 			setupCase(i, &setUpTimes[i]);
 
-
+		//initilize paths
 		paths[i] = 0;
 		meanPathLength[i] = 0;
 
@@ -719,20 +733,17 @@ void ShapeGenerator::monteCarlo(void)
 				&meanRealPathLength[i], &Times[i], materialsElectricConductivity, &this->meanRVEResistances[i],
 				materialsThermalConductivity, &this->meanRVEThermalResistance[i], materialsYoungModulus,
 				&this->meanRVEYoungModulus[i], materialsPoissonRatio, &this->meanRVEPoissoonRatio[i]);
-
-
 			// debug only cout << "__________________" << this->meanPathResistances[i] << "---"<< meanPathLength[i]  	<< meanRealPathLength[i] << " " << meanPathResistances[i] << this->meanPathThermalResistance[i]<< this->meanPathYoungModulus[i]<< this->meanPathPoissoonRatio[i]<<"\n";
 		}
 		else
 		{  // if not calculate
 			Results[i] = grid->percolate(&Times[i]);
 
-			// if percolates and not calculate electric conductivity then minimum one path for calculations
+			// if percolates and not calculate electric conductivity then minimum one path for all calculations
 			if (Results[i])
 				paths[i] = 1;
 
 		}
-
 
 		if (!Results[i])
 		{
@@ -856,6 +867,7 @@ void ShapeGenerator::monteCarlo(void)
 	/*
 	//traversal direction
 	//base properties
+	//some tries to estimate with mixture law
 	//double stiffnessOfFiber = (sumPOissonRatio / iterations) / meanRVEPaths;
 
 	//double baseMeanPoissonRatio = ((meanRVEPaths * sumPOissonRatio / iterations) + (width - meanRVEPaths) * materialsPoissonRatio[0]) / width;
@@ -961,7 +973,7 @@ void ShapeGenerator::saveResultstoReport(ReportType ireportType)
 		setw(10) << componentsSizeType[i] << seperator <<
 		setw(11) << componentsArea[i] << seperator <<
 		setw(9) << hoops[i] << "\n";
-	File << "Pixels Per minimum Size (ppms):" << seperator << pixelsPerMinimumCircle << "\n";
+	File << "Pixels Per minimum Size (ppms):" << seperator << pixelsPerMinimumSize << "\n";
 
 	File << "Factor [ppms / minimumSize]:" << seperator << factor << "\n";
 	File << "Maximum Dimension:" << seperator << max << "\n";
@@ -1087,7 +1099,7 @@ void ShapeGenerator::ReportStatistics(string seperator)
 		File << setw(4) << i << setw(9) << components[i] << setw(15) << specialWeights[i] << setw(12) << dimensionX[i] << setw(12) << dimensionY[i] << setw(5) << componentsType[i] << setw(10) << componentsSizeType[i] << setw(11) << componentsArea[i] << setw(9) << hoops[i] << "\n";
 
 
-	File << "Pixels Per minimum Size(ppms):" << pixelsPerMinimumCircle << "\n";
+	File << "Pixels Per minimum Size(ppms):" << pixelsPerMinimumSize << "\n";
 
 	File << "Factor [ppms / minimumSize]:" << factor << "\n";
 	File << "Maximum Dimension:" << seperator << max << "\n";
@@ -1113,8 +1125,6 @@ void ShapeGenerator::ReportStatistics(string seperator)
 	}
 	File << "---------------------------------------------------------------------------------------------------\n";
 	File.close();
-
-
 }
 
 void ShapeGenerator::ReportStatistics(void)
@@ -1133,11 +1143,9 @@ SlopedRectangle ShapeGenerator::generateSlopedRectangle(Point downleft, Point up
 	else
 		angle = maxAngle;
 
-
 	angle = angle * M_PI / (180);
 
 	SlopedRectangle Result(center, iwidth, iheight, angle);
-
 
 	return Result;
 }
@@ -1817,7 +1825,7 @@ void ShapeGenerator::readFromFile(char* inputFileName)
 			}
 
 
-			pixelsPerMinimumCircle = std::stoi(line);
+			pixelsPerMinimumSize = std::stoi(line);
 			getline(inputFile, line);
 
 			while (line[0] == '#')
@@ -1888,7 +1896,7 @@ void ShapeGenerator::readFromFile(char* inputFileName)
 		//pixelsPerMinimumCircle = sqrt(width*min / max);
 		//pixelsPerMinimumCircle =38;
 
-		factor = pixelsPerMinimumCircle / min;
+		factor = pixelsPerMinimumSize / min;
 	}
 	else
 

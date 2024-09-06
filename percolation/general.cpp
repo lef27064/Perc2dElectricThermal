@@ -15,7 +15,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
 */
+
 
 #include "general.h"
 #include <sys/stat.h>
@@ -89,25 +100,6 @@ double  maxElement(double values[], int first, int last)
 	return result;
 }
 
-/// <summary>
-/// Get current working directory
-/// </summary>
-/// <param name=""></param>
-/// <returns>Current working directory (std::filesystem::path)</returns>
-std::filesystem::path GetCurrentWorkingDir(void)
-{
-	//c++17
-	return std::filesystem::current_path();
-	
-	//before c++17 version not multiplatform
-	/*
-	
-		char buff[FILENAME_MAX];
-	    std::filesystem::current_path(buff, FILENAME_MAX);
-		
-		std::string current_working_dir(buff);
-		return current_working_dir;*/
-}
 
 /// <summary>
 /// Average Element of an array of doubles

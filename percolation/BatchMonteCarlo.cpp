@@ -15,6 +15,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
 */
 
 #include "BatchMonteCarlo.h"
@@ -100,7 +110,7 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 	// Debug cout << "avgMaxClusterRadius=" << avgMaxClusterRadius <<"\n";
 
 	//grid.cMaxClusterRadius.clear();
-	cout << endl << "Running " << shapes->width << "x" << shapes->height << " grids " << shapes->iterations << " times " << endl;
+	cout << endl << "Running " << shapes->width << "x" << shapes->height << " grid " << shapes->iterations << " times " << endl;
 
 	clock_t end = clock();
 	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -240,7 +250,7 @@ void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 			componentFile << setw(13) << iShapes[i].FDResults[2 * i] << seperator << setw(13) << iShapes[i].FDResults[2 * i + 1] << seperator << setw(13) << (1 / iShapes[i].FDResults[2 * i])<< seperator;
 
 		componentFile << iShapes[i].meanSetUpTime << seperator << iShapes[i].meanTime << seperator << iShapes[i].width << seperator << iShapes[i].height << seperator
-			<< iShapes[i].pixelsPerMinimumCircle;
+			<< iShapes[i].pixelsPerMinimumSize;
 
 		for (int j = 0; j < iShapes[i].totalComponents; j++)
 			componentFile << seperator << iShapes[i].componentsArea[j];

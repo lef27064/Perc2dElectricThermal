@@ -66,9 +66,9 @@ int main()
 		inputFile << "2\n";
 		inputFile << "#components % weights\n";
 		inputFile << 1.0 - fi  << " " << fi <<"\n";
-		inputFile << "#Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)\n";
+		inputFile << "#Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (matrix)\n";
 		inputFile << "4 2\n";
-		inputFile << "#SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)\n";
+		inputFile << "#SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(matrix)\n";
 		inputFile << "3 0\n";
 		inputFile << "#Special Weights\n";
 		inputFile << "1.0 1.0\n";

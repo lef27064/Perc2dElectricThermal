@@ -15,9 +15,47 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
-*/
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
+*/ 
 
 #include "image.h"
+sRGB RGB_EMPTY = { 0x00, 0x00, 0x00 };
+sRGB RGB_PERCOLATE = { 0, 224, 224  };
+				// 		224, 224, 224
+sRGB RGB_SOFT = { 0x70, 0x00, 0x40 };
+sRGB RGB_HARD = { 254, 254, 0 };
+sRGB RGB_BORDER = { 0x40, 0x50, 0x80 };
+sRGB RGB_PATH = { 255, 224, 32 };
+sRGB RGB_SIDEPATH = { 0, 192, 0 };
+				
+			
+
+
+sRGB RGB_Black = { 0x0,0x0,0x0 };
+sRGB RGB_White = { 0xFF,0xFF,0xFF };
+sRGB RGB_Light_Gray = {224,224,224 };
+sRGB RGB_Gray = { 128,128,128 };
+sRGB RGB_Dark_Gray = { 64,64,64 };
+sRGB RGB_Red = {0xFF,0,0};
+sRGB RGB_Pink = { 254,96,208 };
+sRGB RGB_Purple = { 160,32,254 };
+sRGB RGB_Light_Blue = { 80,208,254 };
+sRGB RGB_Blue = { 0,0x20,0xFF };
+sRGB RGB_Yellow_Green = { 96,254,128 };
+sRGB RGB_Green = { 0,192,0 };
+sRGB RGB_Yellow = { 0xFF,224,32 };
+sRGB RGB_Gold = { 0x33,0xA5,0xAA }; 
+sRGB RGB_Brown = { 160,128,96 };
+sRGB RGB_Orange = { 0xFD, 0xA1, 0x72 };
 
 void generatePGMImage(char * image, int height, int width, char * imageFileName)
 {
@@ -63,11 +101,18 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 }
 
 //only for internal proposes code clearnce
-void setcolor(unsigned char *image,  int start, unsigned char red , unsigned char green , unsigned char blue)
+void setcolor(unsigned char* image, int start,  unsigned char red , unsigned char green , unsigned char blue )
 {
 	image[start] = red;
 	image[start+1] = green;
 	image[start+2] = blue;
+}
+
+void setcolor(unsigned char* image, int start, sRGB iRGB)
+{
+	image[start] = iRGB.red;
+	image[start + 1] = iRGB.green;
+	image[start + 2] = iRGB.blue;
 }
 
 
@@ -93,36 +138,37 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 	fwrite(fileHeader, 1, fileHeaderSize, imageFile);
 	fwrite(infoHeader, 1, infoHeaderSize, imageFile);
 
+
 	//from botom to up
 	for (int line = height-1; line >=0 ; line--)
 	{
 		for (int column = 0; column < width ; column++)
 		{
 			unsigned char color = image[(size_t)line*width + column];
-			switch (color)			{
+			switch (color){
+			//EMPTY 	
+			case '0':  setcolor(colors, 3 * column, RGB_EMPTY);  break;
+			//PERCOLATE			
+			case '1': setcolor(colors, 3 * column,RGB_PERCOLATE);  break;
+			//SOFT
+			case '2':setcolor(colors, 3 * column, RGB_SOFT); break;
+			//HARD
+			case '3': setcolor(colors, 3 * column, RGB_Orange);  break;
+			//BORDER
+			case '4': setcolor(colors, 3 * column, RGB_BORDER);  break;
+			//PATH
+			case '5': setcolor(colors, 3 * column, RGB_PATH);  break;
+			//SIDEPATH
+			case '6': setcolor(colors, 3 * column, RGB_SIDEPATH);  break;
+				/*
 			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
-			//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
+				//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
 			case '1': setcolor(colors, 3 * column, 224, 224, 224);  break;
 			case '2':setcolor(colors, 3 * column, 0x70, 0x00, 0x40); break;
 			case '3': setcolor(colors, 3 * column, 224, 224, 224);  break;
 			case '4': setcolor(colors, 3 * column, 0x40, 0x50, 0x80);  break;
 			case '5': setcolor(colors, 3 * column, 255, 224, 32);  break;
-			case '6': setcolor(colors, 3 * column, 0, 192, 0);  break;
-			//default:setcolor(colors, 3 * column, 0x00, 0x50, 0x100); break;
-			/*case CellState::EMPTY:setcolor(colors, 3 * column, 0x00, 0x00, 0x00); break;
-			case CellState::HARD:  setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
-			case CellState::PATH:setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
-			case PERCOLATE : setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
-
-			//case PERCOLATE : setcolor(colors, 3 * column, 0x33, 0x99, 0xFF);  break;
-
-			//case CellState::PATH :setcolor(colors, 3 * column, 0x77, 0xff, 0x10);  break;
-			//case CellState::PATH:setcolor(colors, 3 * column, 0x33, 0x99, 0xFF);  break;
-			//case CellState::SIDEPATH:setcolor(colors, 3 * column, 0xFF, 0x99, 0x33);  break;
-			case CellState::SIDEPATH: setcolor(colors, 3 * column, 0x99, 0x99, 0x99);  break;
-			case CellState::SOFT:setcolor(colors, 3 * column, 0x33, 0x99, 0xFF); break;
-			//case BORDER: setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);  break;*/
-
+			case '6': setcolor(colors, 3 * column, 0, 192, 0);  break;*/
 			}
 			//if (((line % 10) ==0) || ((column % 10) == 0))
 			//	setcolor(colors, 3 * column, 0x00, 0x80, 0x00);

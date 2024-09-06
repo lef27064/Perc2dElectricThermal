@@ -15,6 +15,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
 */
 
 #pragma once
@@ -26,10 +36,9 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 #include <time.h>
 #include <filesystem>
 
-//#define GetCurrentDir std::filesystem::current_path();
-
-
 using namespace std;
+
+#define GetCurrentDir std::filesystem::current_path();
 
 enum CellState {
 	PERCOLATE = '1',  //Percolate symbol
@@ -44,7 +53,7 @@ enum CellState {
 enum SizeType {
 	CONSTANT = 0,	  //Constant Size 	
 	VARIABLE = 1,	  //Variable Size 	
-	NONE = 3		  //None (disolver)
+	NONE = 3		  //None (matrix)
 };
 
 enum  Direction
@@ -65,12 +74,11 @@ enum ShapeType
 	SLOPEDRECTANGLE = 1,      // sloped rectangle
 	CIRCLE = 2,				  // circle
 	ELLIPSE = 3,			  // Ellipse		
-	SLOPED = 5,
-	CONSTANTSLOPEDRECTANGLE = 6,// Const Sloped Rectangle
-	CONSTANTSLOPEDELLIPSE = 7,  // Const Sloped Ellipse
-	NOTHING = 4				  // none (disolver)	
+//	SLOPED = 5,               // to be implemented
+//	CONSTANTSLOPEDRECTANGLE = 6,// Const Sloped Rectangle
+//	CONSTANTSLOPEDELLIPSE = 7,  // Const Sloped Ellipse
+	NOTHING = 4				  // none (matrix)	
 };
-
 
 struct pinfo {
 	string program;
@@ -99,4 +107,4 @@ string NowToString(void);
 double  minElement(double values[], int first, int last);
 double  maxElement(double values[], int first, int last);
 double  average_element(double values[], int first, int last);
-void delay(int number_of_seconds);
+void    delay(int number_of_seconds);
