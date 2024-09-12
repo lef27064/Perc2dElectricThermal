@@ -180,8 +180,7 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 		thresh = componentsArea[1];
 		for (i = 0; i < width; i++) 
 		{
-#pragma omp parallel shared (totalSites)
-#pragma omp for  
+		#pragma omp parallel for  schedule(dynamic)
 			for (j = 0; j < height; j++)
 			{
 				what = dis(gen);
@@ -203,10 +202,10 @@ void ShapeGenerator::setupCaseLattice(int caseNo, double* setUpTime)
 		clock_t end = clock();
 		*setUpTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-	realComponentAreas[caseNo * 2] = 1.0 * totalSites / (width * height);
-	realComponentAreas[caseNo * 2+1] = 1.0 - realComponentAreas[caseNo * 2];
+	realComponentAreas[caseNo * 2+1] = 1.0 * totalSites / (width * height);
+	realComponentAreas[caseNo * 2] = 1.0 - realComponentAreas[caseNo * 2];
 	cout << "% Real component Area[0]=" << realComponentAreas[caseNo * 2] << "\n";
-
+	
 }
 
 void ShapeGenerator::printParticles(int caseNo, vector<int> totalEllipsesPerComponent, vector<int> totalCirclesPerComponent, vector<int> totalRectanglesPerComponent, vector<int> totalSlopedRectanglesPerComponent)

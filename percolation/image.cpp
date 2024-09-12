@@ -29,8 +29,7 @@ if you use this programm and write a paper or report please cite above papers
 
 #include "image.h"
 		
-
-
+//some basic colors
 sRGB RGB_Black = { 0x0,0x0,0x0 };
 sRGB RGB_White = { 0xFF,0xFF,0xFF };
 sRGB RGB_Light_Gray = {224,224,224 };
@@ -75,13 +74,12 @@ void generatePGMImage(char * image, int height, int width, char * imageFileName)
 			unsigned char color = image[(size_t)line * width + column];
 			switch (color)
 			{
-			case '0':fprintf(pgmimg, "%d ", 0); break;
-			case '1': fprintf(pgmimg, "%d ", 64); break;
-			case '2': fprintf(pgmimg, "%d ", 128); break;
-			case '3': fprintf(pgmimg, "%d ", 164); break;
-			case '4':fprintf(pgmimg, "%d ", 200); break;
-			case '5':fprintf(pgmimg, "%d ", 222); break;
-			case '6':fprintf(pgmimg, "%d ", 254); break;
+			case EMPTY:fprintf(pgmimg, "%d ", 0); break;
+			case PERCOLATE: fprintf(pgmimg, "%d ", 64); break;
+			case SOFT: fprintf(pgmimg, "%d ", 128); break;
+			case HARD: fprintf(pgmimg, "%d ", 164); break;
+			case SIDEPATH:fprintf(pgmimg, "%d ", 200); break;
+			case PATH:fprintf(pgmimg, "%d ", 254); break;
 			}
 		}
 		fprintf(pgmimg, "\n");
@@ -108,7 +106,8 @@ void setcolor(unsigned char* image, int start, sRGB iRGB)
 
 
 //create bitmap from array
-void generateBitmapImage(char *image, int height, int width, char* imageFileName) {
+void generateBitmapImage(char* image, int height, int width, char* imageFileName)
+{
 
 	//bmp format
 	unsigned char* fileHeader = createBitmapFileHeader(height, width);
@@ -116,9 +115,9 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 	unsigned char padding[] = { 0, 0, 0 };
 
 	//one line of image 3 colors* width
-	unsigned char* colors = new unsigned char[bytesPerPixel*width]();
+	unsigned char* colors = new unsigned char[bytesPerPixel * width]();
 
-	int paddingSize = (4 - (width*bytesPerPixel) % 4) % 4;
+	int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4;
 
 
 	FILE* imageFile;
@@ -131,48 +130,31 @@ void generateBitmapImage(char *image, int height, int width, char* imageFileName
 
 
 	//from botom to up
-	for (int line = height-1; line >=0 ; line--)
+	for (int line = height - 1; line >= 0; line--)
 	{
-		for (int column = 0; column < width ; column++)
+		for (int column = 0; column < width; column++)
 		{
-			unsigned char color = image[(size_t)line*width + column];
-			switch (color){
-			//EMPTY 	
-			case '0':  setcolor(colors, 3 * column, RGB_Black);  break;
-			//PERCOLATE			
-			case '1': setcolor(colors, 3 * column,RGB_White );  break;
-			//SOFT
-			case '2':setcolor(colors, 3 * column, RGB_Red); break;
-			//HARD
-			case '3': setcolor(colors, 3 * column, RGB_Orange);  break;
-			//BORDER
-			case '4': setcolor(colors, 3 * column, RGB_Brown);  break;
-			//PATH
-			case '5': setcolor(colors, 3 * column, RGB_Yellow);  break;
-			//SIDEPATH
-			case '6': setcolor(colors, 3 * column, RGB_Light_Blue);  break;
-				/*
-			case '0':  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
-				//case '1': setcolor(colors, 3 * column, 255, 160, 16);  break;
-			case '1': setcolor(colors, 3 * column, 224, 224, 224);  break;
-			case '2':setcolor(colors, 3 * column, 0x70, 0x00, 0x40); break;
-			case '3': setcolor(colors, 3 * column, 224, 224, 224);  break;
-			case '4': setcolor(colors, 3 * column, 0x40, 0x50, 0x80);  break;
-			case '5': setcolor(colors, 3 * column, 255, 224, 32);  break;
-			case '6': setcolor(colors, 3 * column, 0, 192, 0);  break;*/
-			}
-			//if (((line % 10) ==0) || ((column % 10) == 0))
-			//	setcolor(colors, 3 * column, 0x00, 0x80, 0x00);
-		}
-		//write line and pading
-		fwrite(colors, bytesPerPixel, width, imageFile);
-		fwrite(padding, 1, paddingSize, imageFile);
-	}
+			unsigned char color = image[(size_t)line * width + column];
+			switch (color) {
 
-	//close
-	fclose(imageFile);
-	delete[](colors);
-}
+			case SOFT:setcolor(colors, 3 * column, RGB_Red); break;
+			case EMPTY:setcolor(colors, 3 * column, RGB_Black); break;
+			case HARD:  setcolor(colors, 3 * column, RGB_Orange);  break;
+			case PERCOLATE: setcolor(colors, 3 * column, RGB_White);  break;
+			case PATH:setcolor(colors, 3 * column, RGB_Yellow);  break;
+			case SIDEPATH:setcolor(colors, 3 * column, RGB_Light_Blue);  break;
+
+			}
+		}
+			//write line and pading
+			fwrite(colors, bytesPerPixel, width, imageFile);
+			fwrite(padding, 1, paddingSize, imageFile);
+		}
+
+		//close
+		fclose(imageFile);
+		delete[](colors);
+	}
 
 
 

@@ -126,7 +126,7 @@ void BatchMonteCarlo::singleRun(string fileName, ShapeGenerator* shapes)
 
 int BatchMonteCarlo::getInputFiles(void)
 {
-	//C++ 17
+	//C++ 17*
 	total = 0;
 	
 	for (const auto& file : std::filesystem::directory_iterator(directory)) 
@@ -160,17 +160,150 @@ void BatchMonteCarlo::show(void)
 void BatchMonteCarlo::Run()
 {
 	show();
+	
+	char fileNameComma[80];
+	char fileNameSemicolon[80];
+	bool headerSaved = false;
+	
+	
 	for (int i = 0; i < total; i++)
 	{
 		//string inputfile = exePath.generic_string() + "/" + directory + "/" + inputfiles[i];
 		string inputfile = exePath.generic_string() + "/" + inputfiles[i];
-		if (inputfiles[i][0]!='.')
+		if (inputfiles[i][0] != '.') 
+		{
 			singleRun(inputfile, &iShapes[i]);
+			
+			if (!headerSaved)
+			{
+				headerSaved = true;
+				singlRunsaveResultstoReportHeader(ReportType::COMMA, &fileNameComma[0]);
+				singlRunsaveResultstoReportHeader(ReportType::SEMICOLON, &fileNameSemicolon[0]);
+			}
+
+			singlRunsaveResultstoReportData(ReportType::COMMA, &fileNameComma[0], i);
+			singlRunsaveResultstoReportData(ReportType::SEMICOLON, &fileNameSemicolon[0], i);
+		}
 	}
 
-	saveResults();
-	saveResultsWithSemicolon();
+	//saveResults();
+	//saveResultsWithSemicolon();
 }
+
+void BatchMonteCarlo::singlRunsaveResultstoReportHeader(ReportType ireportType, char* fileName)
+{
+	string seperator;
+	time_t t = time(0);   // get time now
+	struct tm* now = localtime(&t);
+
+	//char fileName[80];
+	std::ofstream componentFile;
+
+	if (ireportType == SEMICOLON)
+	{
+		seperator = ";";
+		strftime(fileName, 80, "Report %Y-%m-%d %H %M %S-Semicolon.csv", now);
+		std::locale cpploc{ "" };
+		componentFile.imbue(cpploc);
+		componentFile.open(fileName);
+	}
+	else
+	{
+		seperator = ",";
+		strftime(fileName, 80, "Report %Y-%m-%d %H %M %S-Comma.csv", now);
+		componentFile.open(fileName);
+	}
+
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << info.program;
+	componentFile << info.version;
+	componentFile << info.date;
+	componentFile << info.author;
+	componentFile << info.licence;
+	componentFile << "-------------------------------------------------------------------------------------------------------------------------\n";
+	componentFile << "Start at " << NowToString() << "\n";
+
+
+	componentFile << "Case" << seperator << "Mean Percolation Probability" << seperator;
+	if (this->iShapes[0].calcStatistcs)
+		componentFile << "Max Cluster Radius" << seperator << "Correlation" << seperator << "Length" << seperator;
+
+	if (this->iShapes[0].calcElectricConductivity)
+		componentFile << "Electric Conductivity" << seperator << "Thermal Conductivity" << seperator << "Young Modulus"
+		<< seperator << "Poisson Ratio" << seperator << "Total Conductive Paths" << seperator << "Mean Conductive Length" << seperator
+		<< "Log Electric Conductivity" << seperator << "Log Thermal Conductivity" << seperator << "Log Young Modulus"
+		<< seperator << "Log Poisson Ratio" << seperator << "Log Total Conductive Paths" << seperator << "Log Mean Conductive Length" << seperator;
+
+	if (this->iShapes[0].calcElectricConductivityWithFDM)
+		componentFile << "FDM Ix" << seperator << "FDM Iy" << seperator << "FDM ro" << seperator;
+
+	componentFile << "Process Time" << seperator << "Preperation Time" << seperator << "Grid(X)" << seperator << "Grid(Y)" << seperator << "ppms" << seperator;
+
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "% Area - " << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "% Real Area - " << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Size X -" << j << seperator;
+
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Size Y -" << j << seperator;
+	for (int j = 0; j < iShapes[0].totalComponents; j++)
+		componentFile << "Hoop Size - " << j << seperator;
+
+	componentFile << "\n";
+	componentFile.close();
+	return;
+
+}
+
+void  BatchMonteCarlo::singlRunsaveResultstoReportData(ReportType ireportType, char* fileName,int i)
+{
+	string seperator;
+	std::ofstream componentFile;
+	if (ireportType == SEMICOLON)
+		seperator = ";";
+	
+	else
+		seperator = ",";
+
+	componentFile.open(fileName, std::ios_base::app);
+	double meanPaths = average_element(iShapes[i].paths, 0, iShapes[i].iterations);
+	double meanPathsLength = average_element(iShapes[i].meanPathLength, 0, iShapes[i].iterations);
+	componentFile << iShapes[i].projectName << seperator << iShapes[i].meanPercolation << seperator;
+	if (this->iShapes[0].calcStatistcs)
+		componentFile << casesMeanMaxClusterRadius[i] << seperator << iShapes[i].correleationLength << seperator;
+	if (this->iShapes[0].calcElectricConductivity)
+		componentFile << iShapes[i].meanElectricConductivity << seperator << iShapes[i].meanThermalConductivity << seperator
+		<< iShapes[i].meanYoungModulus << seperator << iShapes[i].meanPoissonRatio << seperator << meanPaths << seperator << meanPathsLength << seperator
+		<< log(iShapes[i].meanElectricConductivity) << seperator << log(iShapes[i].meanThermalConductivity) << seperator
+		<< log(iShapes[i].meanYoungModulus) << seperator << log(iShapes[i].meanPoissonRatio) << seperator << log(meanPaths) << seperator << log(meanPathsLength) << seperator;
+	if (this->iShapes[0].calcElectricConductivityWithFDM)
+		componentFile << setw(13) << iShapes[i].FDResults[2 * i] << seperator << setw(13) << iShapes[i].FDResults[2 * i + 1] << seperator << setw(13) << (1 / iShapes[i].FDResults[2 * i]) << seperator;
+
+	componentFile << iShapes[i].meanSetUpTime << seperator << iShapes[i].meanTime << seperator << iShapes[i].width << seperator << iShapes[i].height << seperator
+		<< iShapes[i].pixelsPerMinimumSize;
+
+	for (int j = 0; j < iShapes[i].totalComponents; j++)
+		componentFile << seperator << iShapes[i].componentsArea[j];
+	for (int j = 0; j < iShapes[i].totalComponents; j++)
+		componentFile << seperator << iShapes[i].realComponentAreas[j];
+	for (int j = 0; j < iShapes[i].totalComponents; j++)
+		componentFile << seperator << iShapes[i].dimensionX[j];
+
+	for (int j = 0; j < iShapes[i].totalComponents; j++)
+		componentFile << seperator << iShapes[i].dimensionY[j];
+
+	for (int j = 0; j < iShapes[i].totalComponents; j++)
+		componentFile << seperator << iShapes[i].hoops[j];
+	
+	componentFile << "\n";
+
+	componentFile.close();
+}
+
+ 
+
 void BatchMonteCarlo::saveResultstoReport(ReportType ireportType)
 {	string seperator;
 	time_t t = time(0);   // get time now

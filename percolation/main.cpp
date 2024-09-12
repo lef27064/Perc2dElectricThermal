@@ -74,7 +74,7 @@ int main() {
 	if (batchMonteCarlo->getInputFiles() != EXIT_FAILURE)
 	{
 		batchMonteCarlo->Run();
-		batchMonteCarlo->saveResults();
+//		batchMonteCarlo->saveResults();
 	}
 	else
 		return EXIT_FAILURE;
