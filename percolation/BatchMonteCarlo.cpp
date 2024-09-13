@@ -181,8 +181,8 @@ void BatchMonteCarlo::Run()
 				singlRunsaveResultstoReportHeader(ReportType::SEMICOLON, &fileNameSemicolon[0]);
 			}
 
-			singlRunsaveResultstoReportData(ReportType::COMMA, &fileNameComma[0], i);
-			singlRunsaveResultstoReportData(ReportType::SEMICOLON, &fileNameSemicolon[0], i);
+			singlRunsaveResultstoReport(ReportType::COMMA, &fileNameComma[0], i);
+			singlRunsaveResultstoReport(ReportType::SEMICOLON, &fileNameSemicolon[0], i);
 		}
 	}
 
@@ -257,12 +257,16 @@ void BatchMonteCarlo::singlRunsaveResultstoReportHeader(ReportType ireportType, 
 
 }
 
-void  BatchMonteCarlo::singlRunsaveResultstoReportData(ReportType ireportType, char* fileName,int i)
+void  BatchMonteCarlo::singlRunsaveResultstoReport(ReportType ireportType, char* fileName,int i)
 {
 	string seperator;
 	std::ofstream componentFile;
 	if (ireportType == SEMICOLON)
+	{
 		seperator = ";";
+		std::locale cpploc{ "" };
+		componentFile.imbue(cpploc);
+	}
 	
 	else
 		seperator = ",";

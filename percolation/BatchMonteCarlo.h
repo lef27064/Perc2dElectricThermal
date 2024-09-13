@@ -65,7 +65,7 @@ public:
 	void Run();
 	void singlRunsaveResultstoReportHeader(ReportType ireportType, char* fileName);
 
-	void singlRunsaveResultstoReportData(ReportType ireportType, char* fileName, int i);
+	void singlRunsaveResultstoReport(ReportType ireportType, char* fileName, int i);
 	
 	void saveResultstoReport(ReportType ireportType);
 	void saveResultsWithSemicolon(void);
