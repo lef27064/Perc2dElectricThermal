@@ -22,7 +22,7 @@ int main()
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
 
 	string inputFile = "input.txt";
-	string directory = "..\\percolation\\inputs";
+	string directory = "..\source\inputs";
 
 	double ar[] = { 1 };
 	int totalfj = 20;
@@ -42,7 +42,7 @@ int main()
 
 		
 	
-	for (int i = 1; i <=25; i=i+1)
+	for (int i = 30; i <=47; i=i+1)
 	//for (int j = 0; j <= 0; j=j+1)
 		//	for (int j = 0; j <14; j++)
 	{
@@ -50,11 +50,11 @@ int main()
 		int iters = Iters[0];
 		int ppminCircle = 101;
 		//= 2 * sqrt(l);
-		int width = 500; //Widths[j];
+		int width = 300; //Widths[j];
 		int height = width;
 		int depth = width;
 		//double w = fi + i * deltafi;
-		fi = 0.59+(float)i /100.0;
+		fi = (float)i /100.0;
 		//fj = j / 100.0;
 		double w = fi;
 		string FileName = directory + "\\in_" + to_string(i) + "_" + to_string(ppminCircle) + "_" + to_string(width) + "_" + to_string(w) + ".txt";
