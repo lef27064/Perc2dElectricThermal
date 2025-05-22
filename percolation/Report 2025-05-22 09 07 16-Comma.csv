@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------------------------------------------------
+Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) 
+Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
+Last update: 1/7/2024
+Author:Eleftherios Lamprou
+Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.
+Developed during PhD Thesis (2017-2024)
+-------------------------------------------------------------------------------------------------------------------------
+Start at Thu May 22 09:07:16 2025
+Case,Mean Percolation Probability,Electric Conductivity,Thermal Conductivity,Young Modulus,Poisson Ratio,Total Conductive Paths,Mean Conductive Length,Log Electric Conductivity,Log Thermal Conductivity,Log Young Modulus,Log Poisson Ratio,Log Total Conductive Paths,Log Mean Conductive Length,Process Time,Preperation Time,Grid(X),Grid(Y),ppms,% Area - 0,% Area - 1,% Area - 2,% Real Area - 0,% Real Area - 1,% Real Area - 2,Size X -0,Size X -1,Size X -2,Size Y -0,Size Y -1,Size Y -2,Hoop Size - 0,Hoop Size - 1,Hoop Size - 2,
+ellipse_1iter300ppmC_101width_500_Area0.7,1,0.0969811,0.0969811,1.03242e+08,0.302945,183.333,1522.97,-2.33324,-2.33324,18.4526,-1.1942,5.21131,7.32842,0.173333,0.100333,1000,1000,101,0.256955,0.426504,0.316541,0.255856,0.426931,0.317213,1e-08,1e-08,1e-09,1e-08,1e-08,1e-08,5e-10,5e-10,5e-10
+ellipse_1iter300ppmC_101width_500_Area0.5,1,0.023969,0.023969,5.59877e+06,0.300826,51.3333,1724.07,-3.73099,-3.73099,15.5381,-1.20122,3.93834,7.45244,0.0896667,0.063,1000,1000,101,0.44701,0.222589,0.330401,0.444727,0.224381,0.330892,1e-08,1e-08,1e-09,1e-08,1e-08,1e-08,5e-10,5e-10,5e-10
+ellipse_1iter300ppmC_101width_500_Area0.6,1,0.0360158,0.0360158,6.35595e+06,0.30125,77.3333,1728.59,-3.3238,-3.3238,15.6649,-1.19981,4.34813,7.45506,0.117,0.0743333,1000,1000,101,0.349947,0.326731,0.323322,0.345037,0.331423,0.32354,1e-08,1e-08,1e-09,1e-08,1e-08,1e-08,5e-10,5e-10,5e-10
+ellipse_30_iter_300_ppms_101_width_300_Area_0.3,0.00333333,0.00016032,0.00016032,1.02061e+06,0.300005,0.0666667,1.4845,-8.73834,-8.73834,13.8359,-1.20396,-2.70805,0.395078,0.000916667,0.00032,300,300,101,0.7,0.3,0.690233,0.309767,1e-08,1e-08,1e-08,1e-08,0,0

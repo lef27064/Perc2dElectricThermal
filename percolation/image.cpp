@@ -47,48 +47,89 @@ sRGB RGB_Gold = { 0x33,0xA5,0xAA };
 sRGB RGB_Brown = { 160,128,96 };
 sRGB RGB_Orange = { 0xCD, 0x91, 0x52 };
 
-void generatePGMImage(char * image, int height, int width, char * imageFileName)
+void generatePGMImage(char* image, int height, int width, char* imageFileName)
 {
+	// Use FILE* and C-style functions as per original requirement,
+	// but prefer std::ofstream for C++ streams in new code.
+	FILE* pgmimg = nullptr; // Initialize to nullptr for safety
 
-
-	FILE* pgmimg;
-	
+	// Attempt to open the file. Check if fopen was successful.
 	pgmimg = fopen(imageFileName, "w");
+	if (pgmimg == nullptr) {
+		// Use std::cerr for error output. It's generally unbuffered.
+		std::cerr << "\n*************************************************************************************\n";
+		std::cerr << "Error: Could not open or create file for writing: " << imageFileName << "\n";
+		std::cerr << "*************************************************************************************\n";
+		// It's often better to throw an exception or return an error code
+		// instead of just returning void, but adhering to original signature.
+		return;
+	}
 
-
-	// Writing Magic Number to the File
+	// --- PGM Header Writing ---
+	// Writing Magic Number to the File (P2 for ASCII grayscale)
 	fprintf(pgmimg, "P2\n");
 
 	// Writing Width and Height
-	fprintf(pgmimg, "%d %d\n", width , height);
+	fprintf(pgmimg, "%d %d\n", width, height);
 
 	// Writing the maximum gray value
-	fprintf(pgmimg, "255\n");
-	//int count = 0;
+	fprintf(pgmimg, "255\n"); // Max pixel value for 8-bit grayscale
 
-
-	for (int line = 0; line < height; line++)
+	// --- Image Data Writing ---
+	// Iterate through rows and columns to write pixel data.
+	for (int line = 0; line < height; ++line) // Use pre-increment for slight optimization
 	{
-		for (int column = 0; column < width ; column++)
+		for (int column = 0; column < width; ++column) // Use pre-increment
 		{
-			unsigned char color = image[(size_t)line * width + column];
-			switch (color)
-			{
-			case EMPTY:fprintf(pgmimg, "%d ", 0); break;
-			case PERCOLATE: fprintf(pgmimg, "%d ", 64); break;
-			case SOFT: fprintf(pgmimg, "%d ", 128); break;
-			case HARD: fprintf(pgmimg, "%d ", 164); break;
-			case SIDEPATH:fprintf(pgmimg, "%d ", 200); break;
-			case PATH:fprintf(pgmimg, "%d ", 254); break;
+			// Calculate the correct index into the 1D 'image' array.
+			// Explicitly cast to size_t for array indexing to prevent potential
+			// overflow issues with large dimensions on 32-bit systems.
+			unsigned char color_code = image[static_cast<size_t>(line) * width + column];
+			int gray_value; // Use a temporary variable for the gray value
+
+			// Use if-else if structure for cleaner logic than switch for non-contiguous cases.
+			// Or, ideally, use a map or array for lookup if there are many mappings.
+			if (color_code == EMPTY) {
+				gray_value = 0;
 			}
+			else if (color_code == CellState::PERCOLATE) {
+				gray_value = 64;
+			}
+			else if (color_code == CellState::SOFT) {
+				gray_value = 128;
+			}
+			else if (color_code == CellState::HARD) {
+				gray_value = 164;
+			}
+			else if (color_code == CellState::SIDEPATH) {
+				gray_value = 200;
+			}
+			else if (color_code == CellState::PATH) {
+				gray_value = 254;
+			}
+			else {
+				// Handle unexpected color_code values.
+				// You might want to log a warning or assign a default value.
+				gray_value = 0; // Default to black for unknown codes
+				std::cerr << "Warning: Unknown color code encountered: " << static_cast<int>(color_code) << " at (" << line << ", " << column << ")\n";
+			}
+
+			// Print the gray value followed by a space.
+			// Using %hhu (for unsigned char) or casting to int (%d) for fprintf is common.
+			// %d is generally safer as it promotes to int.
+			fprintf(pgmimg, "%d ", gray_value);
 		}
+		// After each row, add a newline character for PGM format readability.
 		fprintf(pgmimg, "\n");
 	}
-	int err  = fclose(pgmimg);
-	if (err != 0)
-		cout <<"*** Warning: Error writing at PGM Image  ****\n";
-}
 
+	// --- File Closing and Error Checking ---
+	// Close the file and check the return value for potential write errors.
+	int err = fclose(pgmimg);
+	if (err != 0) {
+		std::cerr << "\n*** Warning: Error writing to PGM Image file '" << imageFileName << "' ****\n";
+	}
+}
 //only for internal proposes code clearnce
 void setcolor(unsigned char* image, int start,  unsigned char red , unsigned char green , unsigned char blue )
 {

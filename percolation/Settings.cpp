@@ -29,119 +29,116 @@ if you use this programm and write a paper or report please cite above papers
 
 #include "Settings.h"
 
+#include "general.h" // Assuming this contains necessary definitions for Settings class members
+#include <sys/stat.h> // Potentially for file status, though not directly used in the read logic
+#include <string>     // For std::string
+#include <fstream>    // For std::ifstream
+#include <iostream>   // For std::cout, std::cerr
+#include <stdexcept>  // For std::stoi potential exceptions
+#include <limits>     // For std::numeric_limits
+#include <chrono>     // For std::chrono
+#include <thread>     // For std::this_thread::sleep_for
+#include <map>        // For std::map to potentially store settings (not used here to preserve original structure)
+#include <algorithm>  // For std::transform and std::tolower
+
+
+// Helper function to convert a string to lowercase for case-insensitive comparisons
+std::string toLower(std::string s) {
+    std::transform(s.begin(), s.end(), s.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return s;
+}
+
 void Settings::readFromFile(char* fileName)
 {
-		string line;
-		ifstream inputFile(fileName);
+    std::string line;
+    std::ifstream inputFile(fileName);
 
-		if (inputFile.is_open())
-		{
-			while (getline(inputFile, line))
-			{
-				//skip line if starts with #
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
+    if (inputFile.is_open())
+    {
+        // Helper lambda to read a line and skip comments/empty lines.
+        // Returns false if EOF is reached or a read error occurs.
+        auto readNextValidLine = [&](std::ifstream& file, std::string& currentLine) {
+            while (std::getline(file, currentLine)) {
+                // Trim leading/trailing whitespace (optional, but good practice for config files)
+                // For simplicity, not adding full trim here to minimize changes to core logic.
+                // If currentLine[0] is used, make sure string is not empty first.
+                if (currentLine.empty() || currentLine[0] == '#') {
+                    continue; // Skip empty lines or lines starting with '#' (comments)
+                }
+                return true; // Found a valid, non-comment line
+            }
+            return false; // End of file or read error
+            };
 
-				//Read save image file
-				if ((line =="TRUE") || (line=="true"))
-					saveImageFile=true;
-				else
-					saveImageFile = false;
+        // Helper lambda to read a boolean setting
+        auto readBoolSetting = [&](bool& settingVar, const char* settingName) {
+            if (!readNextValidLine(inputFile, line)) {
+                std::cerr << "Error: Unexpected end of file while reading '" << settingName << "' setting.\n";
+                inputFile.close();
+                exit(-1);
+            }
+            settingVar = (toLower(line) == "true"); // Case-insensitive comparison
+            };
 
+        // Helper lambda to read a string setting (e.g., for "BMP" vs others)
+        auto readStringSetting = [&](std::string& settingVar, const char* settingName) {
+            if (!readNextValidLine(inputFile, line)) {
+                std::cerr << "Error: Unexpected end of file while reading '" << settingName << "' setting.\n";
+                inputFile.close();
+                exit(-1);
+            }
+            settingVar = line; // Directly assign the read line
+            };
 
-				getline(inputFile, line);
+        // --- Read save image file setting ---
+        readBoolSetting(saveImageFile, "saveImageFile");
 
-				//skip line if starts with #
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
-				//read random save image file
-				if ((line == "TRUE") || (line == "true"))
-					RandomSaveImageFile = true;
-				else
-					RandomSaveImageFile = false;
-				
-				//Read total images to save
-				getline(inputFile, line);
-				//skip line if starts with #
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
+        // --- Read random save image file setting ---
+        readBoolSetting(RandomSaveImageFile, "RandomSaveImageFile");
 
+        // --- Read total images to save setting ---
+        if (!readNextValidLine(inputFile, line)) {
+            std::cerr << "Error: Unexpected end of file while reading 'totalImagesToSave' setting.\n";
+            inputFile.close();
+            exit(-1);
+        }
+        try {
+            totalImagesToSave = std::stoi(line);
+        }
+        catch (const std::invalid_argument& e) {
+            std::cerr << "Error: Invalid argument for totalImagesToSave: '" << line << "'. " << e.what() << "\n";
+            inputFile.close();
+            exit(-1);
+        }
+        catch (const std::out_of_range& e) {
+            std::cerr << "Error: totalImagesToSave value out of range: '" << line << "'. " << e.what() << "\n";
+            inputFile.close();
+            exit(-1);
+        }
 
-				totalImagesToSave = std::stoi(line);
+        // --- Read save shapes setting ---
+        readBoolSetting(saveShapes, "saveShapes");
 
-				//--------------------------------------
-				
+        // --- Read save as BMP setting ---
+        // We need the original line here to check for "BMP"/"bmp"
+        readStringSetting(line, "saveAsBmpImage_format"); // Read into 'line'
+        saveAsBmpImage = (toLower(line) == "bmp");
 
-				getline(inputFile, line);
-				//read save shapes
-				//skip line if starts with #
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
-			
-				if ((line == "TRUE") || (line == "true"))
-					saveShapes = true;
-				else
-					saveShapes = false;
+        // --- Read is Lattice shapes setting ---
+        readBoolSetting(isLattice, "isLattice");
 
-				getline(inputFile, line);
-				
-				//read if save bmp
-				//skip line if starts with #
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
-
-				if ((line == "BMP") || (line == "bmp"))
-					saveAsBmpImage = true;
-				else
-					saveAsBmpImage = false;
-
-				getline(inputFile, line);
-				//read is Lattice shapes
-				//skip line if starts with #
-				
-				while (line[0] == '#')
-				{
-					getline(inputFile, line);
-				}
-
-				if ((line == "TRUE") || (line == "true"))
-					isLattice = true;
-				else
-					isLattice = false;
-			}
-
-			inputFile.close();
-
-		
-
-						
-		}
-		else
-
-		{
-			cout << "\n*************************************************************************************\n";
-			cout << "Error cannot find ";
-			std::cout.write(fileName, strlen(fileName));
-			cout << " Program halted..." << '\n';
-			cout << "*************************************************************************************\n";
-			//Some delay is better than wait for user response
-			delay(4);
-			
-			/*
-			char resp;
-			cin.get(resp);
-			*/
-			exit(-1);
-		}
-	
+        inputFile.close(); // Close the file explicitly
+    }
+    else // File could not be opened
+    {
+        std::cout << "\n*************************************************************************************\n";
+        std::cout << "Error: Cannot open or find file: ";
+        // Using std::string(fileName) for safer output and potential string operations
+        std::cout << std::string(fileName) << ". Program halted...\n";
+        std::cout << "*************************************************************************************\n";
+        // Some delay is better than waiting for user response
+        delay(4);
+        exit(-1);
+    }
 }

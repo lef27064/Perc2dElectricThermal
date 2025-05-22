@@ -1,0 +1,17 @@
+Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) 
+Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
+Report starting: Thu May 22 09:31:40 2025
+---------------------------------------------------------------------------------------------------
+Inputs
+|#  |%Weights|%Spec. Weights|X Dimension|Y Dimension|Type|Size type|      Area|hoop Dist
+   0      0.6              1       1e-08       1e-08    4         3        0.6        0
+   1      0.4              1       1e-08       1e-08    2         0        0.4        0
+Pixels Per minimum Size(ppms):101
+Factor [ppms / minimumSize]:1.01e+10
+Maximum Dimension:;1e-08
+Minimum Dimension:;1e-08
+Grid size =[;300x;300]
+Total iterations: ;300
+---------------------------------------------------------------------------------------------------
+Total  Points  |Mean Radius | Inertia 
+---------------------------------------------------------------------------------------------------

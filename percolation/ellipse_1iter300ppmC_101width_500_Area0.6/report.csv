@@ -1,0 +1,27 @@
+Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) 
+Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
+Report starting: ,Thu May 22 09:31:02 2025
+---------------------------------------------------------------------------------------------------
+Inputs
+    |#, % Weights, % Spec.Weights, X Dimension, Y Dimension, Type, Size type,       Area,     hoop,
+     0,      0.4,         1.6532,       1e-08,       1e-08,    4,         3,   0.349947,    5e-10
+     1,      0.3,          1.328,       1e-08,       1e-08,    3,         0,   0.326731,    5e-10
+     2,      0.3,          1.342,       1e-09,       1e-08,    1,         0,   0.323322,    5e-10
+Pixels Per minimum Size (ppms):,101
+Factor [ppms / minimumSize]:,1.01e+10
+Maximum Dimension:,1e-08
+Minimum Dimension:,1e-08
+Grid size,1000,x,1000
+Total iterations: ,3
+---------------------------------------------------------------------------------------------------
+Realization No,PercolateY[1]/N[0],Process Time,Setup Time               ,% Real Area Comp[0]              ,% Real Area Comp[1]              ,% Real Area Comp[2],Electric Conductivity,Thermal Conductivity,Young Modulus,Poisson Ratio,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
+      1,                  1,     0.081,          0.112            ,0.343583            ,0.332399            ,0.324018,18.03790108550359506,18.03790108550359506,46594393.30198214203119278,0.30172603995240094,116.00000000000000000,1556.70689655172418497,0.00643090343217510
+      2,                  1,0.05500000000000000,0.11100000000000000            ,0.34661000000000008            ,0.32971899999999998            ,0.32367099999999999,42.16031430037310201,42.16031430037310201,3321848.07448594504967332,0.30084743022250154,53.00000000000000000,1786.39622641509436107,0.00125710637786993
+      3,                  1,0.07099999999999999,0.14000000000000001            ,0.34852600000000000            ,0.32785999999999998            ,0.32361400000000001,31.46896109149646747,31.46896109149646747,7143172.61684706527739763,0.30108918068555646,65.00000000000000000,1713.76923076923071676,0.00206552735601952
+---------------------------------------------------------------------------------------------------
+Mean Percolation=,1.00000000000000000
+Mean Processing Time=,0.06900000000000001
+Mean set up time=,0.12100000000000000
+Mean Area of component[0]=,0.34623966666666667
+Mean Area of component[1]=,0.32999266666666666
+Mean Area of component[2]=,0.32376766666666668
