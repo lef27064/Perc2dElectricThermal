@@ -1,5 +1,5 @@
 #Save image file(s)
-false
+TRUE
 #Random Save image file(s)
 FALSE
 #Total images to save

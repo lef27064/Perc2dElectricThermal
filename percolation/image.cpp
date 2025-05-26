@@ -25,27 +25,31 @@ and its Applications, vol. 590, p. 126738, 2022
 
 if you use this programm and write a paper or report please cite above papers
 
-*/ 
+*/
 
 #include "image.h"
-		
-//some basic colors
+
+// --- Global Color Definitions Initialization ---
+// These are the global sRGB color variables declared in image.h.
+// They are initialized here with their specific byte values for Red, Green, and Blue components.
+// Note the order: {Blue, Green, Red} to match BMP's typical byte order for pixel data.
 sRGB RGB_Black = { 0x0,0x0,0x0 };
 sRGB RGB_White = { 0xFF,0xFF,0xFF };
-sRGB RGB_Light_Gray = {224,224,224 };
+sRGB RGB_Light_Gray = { 224,224,224 };
 sRGB RGB_Gray = { 128,128,128 };
 sRGB RGB_Dark_Gray = { 64,64,64 };
-sRGB RGB_Red = {0xFF,0,0};
-sRGB RGB_Pink = { 254,96,208 };
-sRGB RGB_Purple = { 160,32,254 };
-sRGB RGB_Light_Blue = { 80,208,254 };
-sRGB RGB_Blue = { 0,0x20,0xFF };
-sRGB RGB_Yellow_Green = { 96,254,128 };
-sRGB RGB_Green = { 0,192,0 };
-sRGB RGB_Yellow = { 0xFF,224,32 };
-sRGB RGB_Gold = { 0x33,0xA5,0xAA }; 
-sRGB RGB_Brown = { 160,128,96 };
-sRGB RGB_Orange = { 0xCD, 0x91, 0x52 };
+sRGB RGB_Red = { 0,0,0xFF }; // Red is 0xFF (255) for Red, 0 for Green, 0 for Blue (written as {B,G,R}).
+sRGB RGB_Pink = { 208,96,254 }; // Pink (254,96,208) as {208,96,254}
+sRGB RGB_Purple = { 254,32,160 }; // Purple (160,32,254) as {254,32,160}
+sRGB RGB_Light_Blue = { 254,208,80 }; // Light Blue (80,208,254) as {254,208,80}
+sRGB RGB_Blue = { 0xFF,0x20,0 }; // Blue (0,32,255) as {255,32,0}
+sRGB RGB_Yellow_Green = { 128,254,96 }; // Yellow Green (96,254,128) as {128,254,96}
+sRGB RGB_Green = { 0,192,0 }; // Green (0,192,0) as {0,192,0}
+sRGB RGB_Yellow = { 32,224,0xFF }; // Yellow (255,224,32) as {32,224,255}
+sRGB RGB_Gold = { 0xAA,0xA5,0x33 }; // Gold (51,165,170) as {170,165,51}
+sRGB RGB_Brown = { 96,128,160 }; // Brown (160,128,96) as {96,128,160}
+sRGB RGB_Orange = { 0x52,0x91,0xCD }; // Orange (205,145,82) as {82,145,205}
+
 
 void generatePGMImage(char* image, int height, int width, char* imageFileName)
 {
@@ -131,11 +135,11 @@ void generatePGMImage(char* image, int height, int width, char* imageFileName)
 	}
 }
 //only for internal proposes code clearnce
-void setcolor(unsigned char* image, int start,  unsigned char red , unsigned char green , unsigned char blue )
+void setcolor(unsigned char* image, int start, unsigned char red, unsigned char green, unsigned char blue)
 {
 	image[start] = red;
-	image[start+1] = green;
-	image[start+2] = blue;
+	image[start + 1] = green;
+	image[start + 2] = blue;
 }
 
 void setcolor(unsigned char* image, int start, sRGB iRGB)
@@ -187,15 +191,15 @@ void generateBitmapImage(char* image, int height, int width, char* imageFileName
 
 			}
 		}
-			//write line and pading
-			fwrite(colors, bytesPerPixel, width, imageFile);
-			fwrite(padding, 1, paddingSize, imageFile);
-		}
-
-		//close
-		fclose(imageFile);
-		delete[](colors);
+		//write line and pading
+		fwrite(colors, bytesPerPixel, width, imageFile);
+		fwrite(padding, 1, paddingSize, imageFile);
 	}
+
+	//close
+	fclose(imageFile);
+	delete[](colors);
+}
 
 
 
@@ -227,17 +231,17 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 		for (int column = 0; column < width; column++)
 		{
 			int color = image[(size_t)line * width + column];
-			if (color==1)
+			if (color == 1)
 				setcolor(colors, 3 * column, 0x00, 0x00, 0x00);
 			else
 				setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);
 
-				//case CellState::SOFT:setcolor(colors, 3 * column, 0x33, 0x99, 0xFF); break;
-				//case BORDER: setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);  break;
+			//case CellState::SOFT:setcolor(colors, 3 * column, 0x33, 0x99, 0xFF); break;
+			//case BORDER: setcolor(colors, 3 * column, 0xFF, 0xFF, 0xFF);  break;
 
 
-			//if (((line % 10) ==0) || ((column % 10) == 0))
-			//	setcolor(colors, 3 * column, 0x00, 0x80, 0x00);
+		//if (((line % 10) ==0) || ((column % 10) == 0))
+		//	setcolor(colors, 3 * column, 0x00, 0x80, 0x00);
 		}
 		//write line and pading
 		fwrite(colors, bytesPerPixel, width, imageFile);
@@ -253,7 +257,7 @@ void generateBitmapImageFortranStyle(int* image, int height, int width, char* im
 
 
 //create bitmap from array
-void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char* imageFileName) {
+void saveClustersAsBitmapImage(unsigned char* image, int height, int width, char* imageFileName) {
 
 	//bmp format
 	unsigned char* fileHeader = createBitmapFileHeader(height, width);
@@ -261,13 +265,13 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 	unsigned char padding[] = { 0, 0, 0 };
 
 	//one line of image 3 colors* width
-	unsigned char* colors = new unsigned char[bytesPerPixel*width]();
+	unsigned char* colors = new unsigned char[bytesPerPixel * width]();
 
-	int paddingSize = (4 - (width*bytesPerPixel) % 4) % 4;
+	int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4;
 
 
 	FILE* imageFile;
-//	int err;
+	//	int err;
 	imageFile = fopen(imageFileName, "w");
 
 	//initialize
@@ -276,17 +280,17 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 	//unsigned char red = 557756 & 0xFF;
 	//unsigned char blue = (557756 >> 8) & 0xFF;
 	//unsigned char green = (557756 >> 16) & 0xFF;
-	// 
+	//
 	//from botom to up
 	for (int line = height - 1; line >= 0; line--)
 	{
 		for (int column = 0; column < width; column++)
 		{
 
-			unsigned char color = image[(size_t) line*width + column];
+			unsigned char color = image[(size_t)line * width + column];
 			switch ((int)color)
 			{
-			//case 0:setcolor(colors, 3 * column, 0x00, 0x00, 0x00); cout << "1"; break;
+				//case 0:setcolor(colors, 3 * column, 0x00, 0x00, 0x00); cout << "1"; break;
 			case 0:  setcolor(colors, 3 * column, 0x00, 0x00, 0x00);  break;
 			case 1: setcolor(colors, 3 * column, 0x20, 0x20, 0x20);  break;
 			case 2:setcolor(colors, 3 * column, 0x40, 0x40, 0x40); break;
@@ -305,11 +309,11 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, char
 
 	//close
 	fclose(imageFile);
-	delete [] colors;
+	delete[] colors;
 }
 
 //create bitmap from array
-void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int totalColors,char* imageFileName) {
+void saveClustersAsBitmapImage(unsigned char* image, int height, int width, int totalColors, char* imageFileName) {
 
 	//bmp format
 	unsigned char* fileHeader = createBitmapFileHeader(height, width);
@@ -317,14 +321,14 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 	unsigned char padding[] = { 0, 0, 0 };
 
 	int trueColor;
-	int colorWidth = (0xFFFFFF -1)/ (totalColors+1);
+	int colorWidth = (0xFFFFFF - 1) / (totalColors + 1);
 
-//	cout << "Color Width" << colorWidth << "\n";
-	//one line of image 3 colors* width
+	//	cout << "Color Width" << colorWidth << "\n";
+		//one line of image 3 colors* width
 
-	unsigned char* colors = new unsigned char[bytesPerPixel*width]();
+	unsigned char* colors = new unsigned char[bytesPerPixel * width]();
 
-	int paddingSize = (4 - (width*bytesPerPixel) % 4) % 4;
+	int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4;
 
 
 	FILE* imageFile;
@@ -343,16 +347,16 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 		for (int column = 0; column < width; column++)
 		{
 
-			unsigned char color = image[(size_t)line*width + column];
+			unsigned char color = image[(size_t)line * width + column];
 			trueColor = (int)color * colorWidth;
-			red = (( char)(trueColor % (0xFF)) )|0xF;//& (0xFF);
-			blue = ((char(trueColor) % 0x00FF) ) | 0xF; //(trueColor >> 8) & (0xFF);
+			red = ((char)(trueColor % (0xFF))) | 0xF;//& (0xFF);
+			blue = ((char(trueColor) % 0x00FF)) | 0xF; //(trueColor >> 8) & (0xFF);
 			green = ((char(trueColor) % 0x0000FF)) | 0xF; //(trueColor >> 16) & (0xFF);
-			if (color>0)
+			if (color > 0)
 				//setcolor(colors, 3 * column, 0xFA, 0xFA, 0XFA);
-					setcolor(colors, 3 * column, red, green, blue);
+				setcolor(colors, 3 * column, red, green, blue);
 			else
-					setcolor(colors, 3 * column, 0, 0, 0);
+				setcolor(colors, 3 * column, 0, 0, 0);
 
 		}
 		//write line and pading
@@ -361,19 +365,25 @@ void saveClustersAsBitmapImage(unsigned char *image, int height, int width, int 
 	}
 
 	//close
-	err=fclose(imageFile);
+	err = fclose(imageFile);
 	delete[] colors;
 	if (err != 0)
 		cout << "*** Warning: Error writing at Image File  ****\n";
 }
 
 
-
+/**
+ * @brief Creates a BMP file header as a byte array.
+ * @param height The height of the image.
+ * @param width The width of the image.
+ * @return A pointer to a static unsigned char array containing the file header bytes.
+ */
 unsigned char* createBitmapFileHeader(int height, int width) {
-	int fileSize = fileHeaderSize + infoHeaderSize + bytesPerPixel * height*width;
+	// Calculate the size of the pixel data, ensuring each row is padded to a multiple of 4 bytes.
+	int fileSize = fileHeaderSize + infoHeaderSize + bytesPerPixel * height * width;
 
 	static unsigned char fileHeader[] = {
-		0,0,     /// signature
+		0,0,    /// signature
 		0,0,0,0, /// image file size in bytes
 		0,0,0,0, /// reserved
 		0,0,0,0, /// start of pixel array
@@ -395,8 +405,8 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 		0,0,0,0, /// header size
 		0,0,0,0, /// image width
 		0,0,0,0, /// image height
-		0,0,     /// number of color planes
-		0,0,     /// bits per pixel
+		0,0,    /// number of color planes
+		0,0,    /// bits per pixel
 		0,0,0,0, /// compression
 		0,0,0,0, /// image size
 		0,0,0,0, /// horizontal resolution

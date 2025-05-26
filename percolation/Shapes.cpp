@@ -27,137 +27,161 @@ if you use this programm and write a paper or report please cite above papers
 
 */
 
-#include <iostream>   // For std::cout
-#include "Shapes.h"   // Include the header file for class definitions
-#include <algorithm>  // For std::min, std::max, std::swap
-#include <cmath>      // For std::cos, std::sin, std::sqrt, std::round
+#include <iostream>   // For standard input/output operations, like std::cout.
+#include "Shapes.h"   // Includes the header file that declares the geometric shape classes (iPoint, Point, Ellipse, Rectangle, etc.).
+#include <algorithm>  // Provides functions like std::min, std::max, and std::swap for numerical operations.
+#include <cmath>      // Provides mathematical functions such as std::cos, std::sin, std::sqrt, and std::round.
 
-// Removed 'using namespace std;' from .cpp to avoid polluting the global namespace.
-// Prefer explicit std:: or scoped using declarations.
+// It's generally good practice to avoid 'using namespace std;' in header files
+// and often in .cpp files too, to prevent naming conflicts. Explicitly using 'std::' is preferred.
 
-// Initialize integer Point
+// --- iPoint Class Implementation ---
+
+// Constructor for iPoint: Initializes an integer point with given x and y coordinates.
 iPoint::iPoint(int ix, int iy) : x(ix), y(iy)
 {
 }
 
-// Range of integers
+// --- Range Class Implementation ---
+
+// Constructor for Range: Initializes a rectangular range defined by two iPoints (from and to).
+// It ensures that 'from' always represents the lower-left corner and 'to' the upper-right corner
+// by swapping coordinates if they are out of order.
 Range::Range(iPoint f, iPoint t) : from(f.x, f.y), to(t.x, t.y)
 {
-    // Ensure 'from' represents the lower-left corner and 'to' the upper-right.
-    // Swap x-coordinates if from.x > to.x
+    // Ensure 'from.x' is less than or equal to 'to.x'.
     if (from.x > to.x)
     {
-        std::swap(from.x, to.x); // Use std::swap for clarity and safety
+        std::swap(from.x, to.x); // Swaps the x-coordinates if 'from.x' is greater than 'to.x'.
     }
-    // Swap y-coordinates if from.y > to.y
+    // Ensure 'from.y' is less than or equal to 'to.y'.
     if (from.y > to.y)
     {
-        std::swap(from.y, to.y); // Use std::swap
+        std::swap(from.y, to.y); // Swaps the y-coordinates if 'from.y' is greater than 'to.y'.
     }
 }
 
-// Point initialization
+// --- Point Class Implementation ---
+
+// Constructor for Point: Initializes a floating-point point with given x and y coordinates.
 Point::Point(double xPos, double yPos) : x(xPos), y(yPos)
 {
 }
 
 /*
-Transformation of coordinates
-Point original point
-Point transformCenter Center of transformation
-x' = x*cos(theta) + y*sin(theta)
-y' = -x*sin(theta) + y*cos(theta)
+ * Transformation of coordinates for a point around a center.
+ * The formulas for rotation are:
+ * x' = x*cos(theta) + y*sin(theta)
+ * y' = -x*sin(theta) + y*cos(theta)
+ * where (x,y) are the translated coordinates relative to the center.
 */
 
-// General Case: Transforms an original point around a transformCenter with pre-calculated cos/sin values.
+// Static method: Transforms an 'original' point by rotating it around a 'transformCenter'.
+// It takes pre-calculated cosine and sine values for efficiency.
 Point Point::transform(Point original, Point transformCenter, double theta, double cosTheta, double sinTheta)
 {
-    // Translate point so transformCenter becomes the origin
+    // 1. Translate the original point so that the transformCenter becomes the origin (0,0).
     double translated_x = original.x - transformCenter.x;
     double translated_y = original.y - transformCenter.y;
 
-    // Apply rotation
+    // 2. Apply the 2D rotation formulas to the translated point.
     double rotated_x = translated_x * cosTheta + translated_y * sinTheta;
     double rotated_y = -translated_x * sinTheta + translated_y * cosTheta;
 
-    // Translate back to original coordinate system
+    // 3. Translate the rotated point back to its original coordinate system by adding the transformCenter's coordinates.
     Point result(rotated_x + transformCenter.x, rotated_y + transformCenter.y);
     return result;
 }
 
-// General Case: Transforms an original point around a transformCenter, calculating cos/sin internally.
+// Static method: Transforms an 'original' point around a 'transformCenter'.
+// This overload calculates the cosine and sine of the angle internally.
 Point Point::transform(Point original, Point transformCenter, double theta)
 {
-    // If no rotation is needed, return original point (optimization)
-    if (theta == 0.0) // Compare double to 0.0 directly for optimization, but careful with floating point precision
+    // Optimization: If the rotation angle is 0, no transformation is needed.
+    // Direct comparison of doubles to 0.0 can be problematic due to floating-point precision;
+    // a small epsilon comparison (e.g., fabs(theta) < epsilon) would be safer for general use.
+    if (theta == 0.0)
         return original;
 
+    // Calculate cosine and sine of the angle.
     double cosTheta = std::cos(theta);
     double sinTheta = std::sin(theta);
 
-    // Reuse the overloaded transform function with pre-calculated cos/sin
+    // Reuse the more efficient overloaded transform function that accepts pre-calculated cos/sin.
     return transform(original, transformCenter, theta, cosTheta, sinTheta);
 }
 
-// Rotate around (0,0) origin
+// Static method: Rotates an 'original' point around the global origin (0,0).
 Point Point::transform(Point original, double theta)
 {
-    Point transformCenter(0.0, 0.0); // Origin as transformation center
+    // Define the origin (0,0) as the transformation center.
+    Point transformCenter(0.0, 0.0);
+    // Reuse the general transform function.
     return Point::transform(original, transformCenter, theta);
 }
 
-// General Case with double coordinates: Transforms a point given its coordinates, transform center coordinates, angle, cos, and sin.
+// Static method: Transforms a point given its individual x, y coordinates,
+// a transform center's x, y coordinates, angle, and pre-calculated cos/sin.
 Point Point::transform(double x, double y, double transformCenterX, double transformCenterY, double theta, double cosTheta, double sinTheta)
 {
+    // Create Point objects from the individual coordinates for convenience.
     Point original(x, y);
     Point transformCenter(transformCenterX, transformCenterY);
-    // Reuse the transform function that takes Point objects
+    // Reuse the transform function that operates on Point objects.
     return Point::transform(original, transformCenter, theta, cosTheta, sinTheta);
 }
 
-// General Case with double coordinates: Transforms a point given its coordinates, transform center coordinates, and angle.
+// Static method: Transforms a point given its individual x, y coordinates,
+// a transform center's x, y coordinates, and the angle.
+// This overload calculates cos/sin internally.
 Point Point::transform(double x, double y, double transformCenterX, double transformCenterY, double theta)
 {
+    // Create Point objects from the individual coordinates.
     Point original(x, y);
     Point transformCenter(transformCenterX, transformCenterY);
-    // Reuse the transform function that takes Point objects
+    // Reuse the transform function that operates on Point objects.
     return transform(original, transformCenter, theta);
 }
 
-// Move by dx dy
+// Moves the current point by adding 'dx' to its x-coordinate and 'dy' to its y-coordinate.
 void Point::move(double dx, double dy)
 {
     x += dx;
     y += dy;
 }
 
-// Round Coordinates to iPoint
+// Rounds the double-precision coordinates of the point to the nearest integers,
+// returning a new iPoint object.
 iPoint Point::round(void)
 {
-    // Use std::round for proper rounding to nearest integer
+    // Uses std::round to round to the nearest integer. static_cast<int> truncates.
     return iPoint(static_cast<int>(std::round(x)), static_cast<int>(std::round(y)));
 }
 
-// Initialize line
+// --- Line Class Implementation ---
+
+// Constructor for Line: Initializes a line segment with a given start and end point.
 Line::Line(Point start, Point end) : start(start), end(end)
 {
 }
 
-// Initialize Ellipse
+// --- Ellipse Class Implementation ---
+
+// Constructor for Ellipse: Initializes an ellipse with its center, semi-axes lengths (a and b), and slope.
 Ellipse::Ellipse(Point c, double ia, double ib, double iSlope) : center(c), a(ia), b(ib), slope(iSlope)
 {
-    // Optional: Add validation for a, b (e.g., must be positive)
-    // if (a <= 0 || b <= 0) { /* handle error */ }
-    // realArea = M_PI * a * b; // Calculate realArea here if it's meant to be stored
+    // Optional: Add validation for 'a' and 'b' to ensure they are positive values.
+    // For example: if (a <= 0 || b <= 0) { /* handle error: throw exception or set default */ }
+    // The 'realArea' member is not updated here, suggesting it might be calculated on demand by the area() method.
 }
 
-// Area of ellipse A=ð*a*b
+// Calculates and returns the area of the ellipse using the formula A = ð * a * b.
 double Ellipse::area()
 {
     return M_PI * a * b;
 }
 
-// toString method for Ellipse
+// Prints the ellipse's parameters (center, semi-axes, slope in radians and degrees, and area) to the console.
 void Ellipse::toString(void)
 {
     std::cout << "\n";
@@ -165,129 +189,127 @@ void Ellipse::toString(void)
     std::cout << "Ellipse Parameters:\n";
     std::cout << "Center/  X=" << center.x << " Y=" << center.y << "\n";
     std::cout << "a =" << a << " b =" << b << "\n";
-    std::cout << "Slope =" << slope << " radians (" << slope * 180.0 / M_PI << " degrees)\n";
-    std::cout << "Area =" << area() << "\n"; // Display calculated area
+    std::cout << "Slope =" << slope << " radians (" << slope * 180.0 / M_PI << " degrees)\n"; // Converts radians to degrees for readability.
+    std::cout << "Area =" << area() << "\n"; // Calls the area() method to get the current area.
     std::cout << "--------------------------------------------------\n";
 }
 
-// Move ellipse by dx & dy
+// Moves the ellipse by translating its center by 'dx' in the x-direction and 'dy' in the y-direction.
 void Ellipse::move(double dx, double dy)
 {
-    center.move(dx, dy); // Reuse Point::move
+    center.move(dx, dy); // Reuses the Point::move method for the center.
 }
 
-// Calculate max X of ellipse's bounding box
+// Calculates and returns the maximum X-coordinate of the ellipse's bounding box.
+// This uses a general formula for the extent of a rotated ellipse.
 double Ellipse::maxX()
 {
-    // General formula for the maximum extent of a rotated ellipse
     double cos_s = std::cos(slope);
     double sin_s = std::sin(slope);
     return center.x + std::sqrt(a * a * cos_s * cos_s + b * b * sin_s * sin_s);
 }
 
-// Calculate max Y of ellipse's bounding box
+// Calculates and returns the maximum Y-coordinate of the ellipse's bounding box.
+// This uses a general formula for the extent of a rotated ellipse.
 double Ellipse::maxY()
 {
-    // General formula for the maximum extent of a rotated ellipse
     double cos_s = std::cos(slope);
     double sin_s = std::sin(slope);
     return center.y + std::sqrt(a * a * sin_s * sin_s + b * b * cos_s * cos_s);
 }
 
-// Calculate min X of ellipse's bounding box
+// Calculates and returns the minimum X-coordinate of the ellipse's bounding box.
+// This uses a general formula for the extent of a rotated ellipse.
 double Ellipse::minX()
 {
-    // General formula for the minimum extent of a rotated ellipse
     double cos_s = std::cos(slope);
     double sin_s = std::sin(slope);
     return center.x - std::sqrt(a * a * cos_s * cos_s + b * b * sin_s * sin_s);
 }
 
-// Calculate min Y of ellipse's bounding box
+// Calculates and returns the minimum Y-coordinate of the ellipse's bounding box.
+// This uses a general formula for the extent of a rotated ellipse.
 double Ellipse::minY()
 {
-    // General formula for the minimum extent of a rotated ellipse
     double cos_s = std::cos(slope);
     double sin_s = std::sin(slope);
     return center.y - std::sqrt(a * a * sin_s * sin_s + b * b * cos_s * cos_s);
 }
 
-// Rectangle class, defined by lower left and upper right points
-// Initialize
+// --- Rectangle Class Implementation ---
+
+// Constructor for Rectangle: Initializes an axis-aligned rectangle.
+// It takes the lower-left and upper-right points and automatically calculates
+// the other corners, center, width, height, and defines its boundary lines.
 Rectangle::Rectangle(Point lowLeft, Point upRight)
     : lowerLeft(lowLeft), upperRight(upRight),
-    upperLeft(lowLeft.x, upRight.y), // More direct initialization
-    lowerRight(upRight.x, lowLeft.y), // More direct initialization
-    center((upRight.x + lowLeft.x) / 2.0, (upRight.y + lowLeft.y) / 2.0), // Use 2.0 for double division
-    width(upRight.x - lowLeft.x),
-    height(upRight.y - lowLeft.y),
-    // Initialize lines after all points are set
+    upperLeft(lowLeft.x, upRight.y),       // Derived: same x as lowerLeft, same y as upperRight.
+    lowerRight(upRight.x, lowLeft.y),      // Derived: same x as upperRight, same y as lowerLeft.
+    center((upRight.x + lowLeft.x) / 2.0, (upRight.y + lowLeft.y) / 2.0), // Center is the midpoint.
+    width(upRight.x - lowLeft.x),          // Width is the difference in x-coordinates.
+    height(upRight.y - lowLeft.y),         // Height is the difference in y-coordinates.
+    // Initialize boundary lines using the calculated corner points.
     topLine(upperLeft, upperRight),
     bottomLine(lowerLeft, lowerRight),
     leftLine(lowerLeft, upperLeft),
     rightLine(lowerRight, upperRight)
 {
-    // Optional: Add validation for width, height (e.g., must be positive)
-    // if (width < 0 || height < 0) { /* handle error, potentially swap points */ }
-    // realArea = width * height; // Calculate realArea here if it's meant to be stored
+    // Optional: Add validation to ensure width and height are non-negative.
+    // If (width < 0 || height < 0) { /* handle error or swap points if out of order */ }
+    // The 'realArea' member is not explicitly initialized here, suggesting it might be calculated by the area() method.
 }
 
-// Move Rectangle
+// Moves the entire rectangle by translating all its defining points (corners, center)
+// and then re-initializing its boundary lines.
 void Rectangle::move(double dx, double dy)
 {
-    // Move all corners and center. Lines will implicitly update if they store references/pointers
-    // or are re-initialized, but since they hold copies, we need to move them too.
-    // A better design might make lines depend on points, or just calculate them on the fly.
-    // Moving individual points:
+    // Move each individual corner point and the center.
     center.move(dx, dy);
     upperRight.move(dx, dy);
     upperLeft.move(dx, dy);
     lowerRight.move(dx, dy);
     lowerLeft.move(dx, dy);
 
-    // Re-initialize lines based on moved points. This is repetitive.
-    // Consider making Line members `const` and re-calculating in a helper `updateLines()` method
-    // or having Line take Point references/pointers. For now, adhering to existing structure.
+    // Re-initialize the boundary lines to reflect the new positions of the points.
+    // This is necessary because Line members store copies of Points, not references.
     topLine = Line(upperLeft, upperRight);
     bottomLine = Line(lowerLeft, lowerRight);
     leftLine = Line(lowerLeft, upperLeft);
     rightLine = Line(lowerRight, upperRight);
 }
 
-// Area of rectangle
+// Calculates and returns the area of the rectangle.
 double Rectangle::area()
 {
     return width * height;
 }
 
-// Max - Min of X and Y
-// Get maximum - minimum of all corners
-// max X
+// Calculates and returns the maximum X-coordinate among all four corners of the rectangle.
+// Uses std::max with an initializer list for conciseness (C++11 and later).
 double Rectangle::maxX()
 {
-    // Using std::max with an initializer list (C++11 and later) for conciseness
     return std::max({ lowerLeft.x, upperLeft.x, lowerRight.x, upperRight.x });
 }
 
-// maxY
+// Calculates and returns the maximum Y-coordinate among all four corners of the rectangle.
 double Rectangle::maxY()
 {
     return std::max({ lowerLeft.y, upperLeft.y, lowerRight.y, upperRight.y });
 }
 
-// minX
+// Calculates and returns the minimum X-coordinate among all four corners of the rectangle.
 double Rectangle::minX()
 {
     return std::min({ lowerLeft.x, upperLeft.x, lowerRight.x, upperRight.x });
 }
 
-// minY
+// Calculates and returns the minimum Y-coordinate among all four corners of the rectangle.
 double Rectangle::minY()
 {
     return std::min({ lowerLeft.y, upperLeft.y, lowerRight.y, upperRight.y });
 }
 
-// toString method for Rectangle
+// Prints the rectangle's parameters (center, width, height, and all four corner coordinates) to the console.
 void Rectangle::toString(void)
 {
     std::cout << "--------------------------------------------------\n";
@@ -298,39 +320,42 @@ void Rectangle::toString(void)
     std::cout << "Upper Left/  X=" << upperLeft.x << " Y=" << upperLeft.y << "\n";
     std::cout << "Lower Right/ X=" << lowerRight.x << " Y=" << lowerRight.y << "\n";
     std::cout << "Lower Left/  X=" << lowerLeft.x << " Y=" << lowerLeft.y << "\n";
-    std::cout << "Area =" << area() << "\n"; // Display calculated area
+    std::cout << "Area =" << area() << "\n"; // Calls the area() method to get the current area.
     std::cout << "--------------------------------------------------\n";
 }
 
-// initialize SlopedRectangle
-// The base Rectangle constructor is called, then corner points are rotated around the center.
+// --- SlopedRectangle Class Implementation ---
+
+// Constructor for SlopedRectangle: Initializes a rectangle with a given slope (rotation).
+// It takes the conceptual lower-left and upper-right points *before* rotation, and the slope.
 SlopedRectangle::SlopedRectangle(Point dLeft, Point uRight, double Slope)
+// First, call the base Rectangle constructor with the un-rotated defining points.
     : Rectangle(dLeft, uRight), slope(Slope)
 {
-    // Recalculate corners by rotating the axis-aligned corners around the center.
-    // The original constructor of Rectangle would set corners based on dLeft, uRight
-    // as if it were an axis-aligned rectangle. Now we rotate them.
+    // After the base Rectangle constructor has set up its axis-aligned properties,
+    // we recalculate the corners by rotating them around the rectangle's center.
+    // The 'center', 'width', and 'height' members here are from the base Rectangle class,
+    // correctly initialized based on the un-rotated dLeft and uRight.
     upperRight = Point::transform(center.x + (width / 2.0), center.y + (height / 2.0), center.x, center.y, Slope);
     upperLeft = Point::transform(center.x - (width / 2.0), center.y + (height / 2.0), center.x, center.y, Slope);
     lowerRight = Point::transform(center.x + (width / 2.0), center.y - (height / 2.0), center.x, center.y, Slope);
     lowerLeft = Point::transform(center.x - (width / 2.0), center.y - (height / 2.0), center.x, center.y, Slope);
 
-    // The base Rectangle::move() also updates lines implicitly.
-    // For SlopedRectangle, lines would need to be re-calculated after point rotation.
-    // This current design doesn't re-expose lines in SlopedRectangle, so they remain
-    // the axis-aligned ones from the Rectangle base, which might be incorrect for a sloped rectangle.
-    // If lines are needed for sloped rectangles, they should be members of SlopedRectangle
-    // or recalculated upon creation/movement.
+    // Note: The 'Line' members inherited from Rectangle (topLine, bottomLine, etc.)
+    // still represent the axis-aligned lines. If sloped lines are needed, they
+    // should either be members of SlopedRectangle or be calculated on demand.
 }
 
+// Constructor for SlopedRectangle: Initializes a sloped rectangle using its center,
+// un-rotated width and height, and the slope.
 SlopedRectangle::SlopedRectangle(Point Center, double Width, double Height, double Slope)
+// First, call the base Rectangle constructor by calculating its un-rotated lower-left
+// and upper-right points from the provided center, width, and height.
     : Rectangle(Point(Center.x - Width / 2.0, Center.y - Height / 2.0), Point(Center.x + Width / 2.0, Center.y + Height / 2.0)),
     slope(Slope)
 {
-    // The base Rectangle constructor sets center, width, height, and initial corners.
-    // Now rotate these corners to reflect the slope.
-    // Note: 'center' here is the base class's center, which is correct.
-    // 'width' and 'height' are also base class members.
+    // The base Rectangle constructor has already set 'center', 'width', and 'height'
+    // based on the provided parameters. Now, rotate the corner points around this center.
     upperRight = Point::transform(center.x + (width / 2.0), center.y + (height / 2.0), center.x, center.y, Slope);
     upperLeft = Point::transform(center.x - (width / 2.0), center.y + (height / 2.0), center.x, center.y, Slope);
     lowerRight = Point::transform(center.x + (width / 2.0), center.y - (height / 2.0), center.x, center.y, Slope);
@@ -338,7 +363,8 @@ SlopedRectangle::SlopedRectangle(Point Center, double Width, double Height, doub
 }
 
 
-// toString method for SlopedRectangle
+// Prints the sloped rectangle's parameters (center, width, height, slope in radians and degrees)
+// and the coordinates of its transformed (rotated) corner points to the console.
 void SlopedRectangle::toString(void)
 {
     std::cout << "\n";
@@ -347,11 +373,11 @@ void SlopedRectangle::toString(void)
     std::cout << "Center/  X=" << center.x << " Y=" << center.y << "\n";
     std::cout << "Width =" << width << "\n";
     std::cout << "Height =" << height << "\n";
-    std::cout << "Slope = " << slope << " radians (" << slope * 180.0 / M_PI << " degrees)\n"; // Display in degrees too
+    std::cout << "Slope = " << slope << " radians (" << slope * 180.0 / M_PI << " degrees)\n"; // Converts radians to degrees.
     std::cout << "Upper Right/  X=" << upperRight.x << " Y=" << upperRight.y << "\n";
     std::cout << "Upper Left/  X=" << upperLeft.x << " Y=" << upperLeft.y << "\n";
     std::cout << "Lower Right/  X=" << lowerRight.x << " Y=" << lowerRight.y << "\n";
     std::cout << "Lower Left/  X=" << lowerLeft.x << " Y=" << lowerLeft.y << "\n";
-    std::cout << "Area =" << area() << "\n"; // Display calculated area (base class area is valid for sloped rect)
+    std::cout << "Area =" << area() << "\n"; // Calls the base class's area() method, which correctly calculates the area (rotation doesn't change area).
     std::cout << "--------------------------------------------------\n";
 }

@@ -27,131 +27,176 @@ if you use this programm and write a paper or report please cite above papers
 
 */
 
-#include <algorithm>    // std::fill_n
-#include <iostream>     // std::cout
-#include <string>       // string
-#include <fstream>
-#include <sstream>
-#include <sys/stat.h>
-#include <vector>
-#include <list>
+#include <algorithm>   // For std::fill_n, which efficiently fills a range with a value.
+#include <iostream>    // For standard input/output operations, like std::cout.
+#include <string>      // For std::string class.
+#include <fstream>     // For file stream operations (e.g., std::ifstream, std::ofstream).
+#include <sstream>     // For string stream operations (e.g., std::istringstream).
+#include <sys/stat.h>  // For stat() function, used to get file information like size.
+#include <vector>      // For std::vector dynamic arrays.
+#include <list>        // For std::list doubly-linked list.
 
+// --- Template Class for 2D Matrix ---
+// A generic 2D matrix class that can store any data type 'T'.
 template <typename T>
 class Matrix2D
 {
-	T* array;
-	int width=0;   //x
-	int height=0;  //y
+	T* array;     // Pointer to the dynamically allocated array that stores the matrix data.
+	int width = 0;  // Width (number of columns, x-dimension) of the matrix.
+	int height = 0; // Height (number of rows, y-dimension) of the matrix.
 
-public: Matrix2D(int w, int h) :
-	
-	array(new T[w * h]),
-	width(w),
-	height(h) {}
+public:
+	// Constructor: Initializes a 2D matrix with specified width (w) and height (h).
+	// It allocates memory for the matrix data.
+	Matrix2D(int w, int h) :
+		array(new T[w * h]), // Dynamically allocate memory for w * h elements of type T.
+		width(w),            // Initialize width.
+		height(h)            // Initialize height.
+	{
+	}
 
-	  ~Matrix2D()
-	  {
-		  delete[] array;
-	  }
+	// Destructor: Deallocates the dynamically allocated memory when a Matrix2D object is destroyed.
+	~Matrix2D()
+	{
+		delete[] array; // Frees the memory pointed to by 'array'.
+	}
 
-	  T at(int x, int y) const { return array[index(x, y)]; }
-	  T at(int position) const { return array[position]; }
+	// Accessor method: Returns the value at a specific (x, y) coordinate. (const version)
+	// It's a const method, meaning it doesn't modify the object's state.
+	T at(int x, int y) const { return array[index(x, y)]; }
 
-	  void set(int x, int y, T val)
-	  {
-		  array[index(x, y)] = val;
-	  }
+	// Accessor method: Returns the value at a specific linear 'position' in the flattened array. (const version)
+	T at(int position) const { return array[position]; }
 
-protected: int index(int x, int y) const { return x + width * y; }
+	// Mutator method: Sets the value 'val' at a specific (x, y) coordinate.
+	void set(int x, int y, T val)
+	{
+		array[index(x, y)] = val; // Sets the value in the underlying array.
+	}
+
+protected:
+	// Helper method: Calculates the 1D array index from 2D (x, y) coordinates.
+	// This uses row-major ordering (x varies fastest).
+	int index(int x, int y) const { return x + width * y; }
 };
 
+// --- Template Class for 3D Matrix ---
+// A generic 3D matrix class that can store any data type 'T'.
 template <typename T>
 class Matrix3D
 {
-	T* array;
-	int width=0;  //x
-	int height=0; //y;
-	int depth=0;  //z;
+	T* array;      // Pointer to the dynamically allocated array for 3D data.
+	int width = 0;   // Width (x-dimension).
+	int height = 0;  // Height (y-dimension).
+	int depth = 0;   // Depth (z-dimension).
 
-public: Matrix3D(int w, int h, int d) : width(w), height(h), depth(d), array(new T[w * h * d])
-{}
+public:
+	// Constructor: Initializes a 3D matrix with specified width (w), height (h), and depth (d).
+	// It allocates memory for the matrix data.
+	Matrix3D(int w, int h, int d) : width(w), height(h), depth(d), array(new T[w * h * d])
+	{
+	}
 
-	  ~Matrix3D()
-	  {
-		  delete[] array;
-	  }
+	// Destructor: Deallocates the dynamically allocated memory.
+	~Matrix3D()
+	{
+		delete[] array; // Frees the memory.
+	}
 
-	  T at(int x, int y, int z) const { return array[index(x, y, z)]; }
-	  T at(int position) const { return array[position]; }
+	// Accessor method: Returns the value at a specific (x, y, z) coordinate. (const version)
+	T at(int x, int y, int z) const { return array[index(x, y, z)]; }
 
-	  void  set(int x, int y, int z, T val)
-	  {
-		  array[index(x, y, z)] = val;
-	  }
+	// Accessor method: Returns the value at a specific linear 'position' in the flattened array. (const version)
+	T at(int position) const { return array[position]; }
 
+	// Mutator method: Sets the value 'val' at a specific (x, y, z) coordinate.
+	void  set(int x, int y, int z, T val)
+	{
+		array[index(x, y, z)] = val; // Sets the value in the underlying array.
+	}
 
-protected: int index(int x, int y, int z) const { return x + (width * y) + (width * height) * z; }
-
+protected:
+	// Helper method: Calculates the 1D array index from 3D (x, y, z) coordinates.
+	// This uses a specific linearization (x varies fastest, then y, then z).
+	int index(int x, int y, int z) const { return x + (width * y) + (width * height) * z; }
 };
 
+// --- FD2DEL Class (Finite Difference 2D Electrical) ---
+// This class likely implements a finite difference method for 2D electrical property estimation.
 class FD2DEL
 {
+	// Private members for storing simulation data and parameters.
+	double* gx; // Grid data for x-direction (e.g., current or potential gradient).
+	double* gy; // Grid data for y-direction.
+	double* u;  // Potential or voltage field.
+	double* gb; // Boundary conditions or other specific grid values.
+	double* h;  // Step sizes or grid spacing.
+	double* ah; // Another grid related to h.
 
-	double* gx;
-	double* gy;
-	double* u;
-	double* gb;
-	double* h;
-	double* ah;
-	
-	int width=0;
-	int heigth=0;
-	int nx=0, ny=0, nx1=0, ny1=0, nx2=0, ny2=0, ns2=0;
-	int components=2;
-	int	_maxComponents = 100;
+	int width = 0;    // Grid width.
+	int heigth = 0;   // Grid height.
+	int nx = 0, ny = 0, nx1 = 0, ny1 = 0, nx2 = 0, ny2 = 0, ns2 = 0; // Grid dimensions and indices.
+	int components = 2; // Number of different material components or phases.
+	int	_maxComponents = 100; // Maximum allowed number of components.
 
-	Matrix2D<double>* sigma;
-	Matrix3D<double>* be;
-	double* a;
-	
-	int* list;
-	int ncgsteps = 50000;
+	Matrix2D<double>* sigma; // 2D matrix for material conductivities or permittivity.
+	Matrix3D<double>* be;    // 3D matrix for basis functions or other material properties.
+	double* a;               // General purpose array, possibly for material properties.
 
-	void current(double* currx, double* curry, double* u, double* gx, double* gy);
-	void ppixel(int* pix, double* a, int nphase, int ntot);
-	void bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Matrix3D<double>* be, int nphase, int ntot);
-	void prod(double* gx, double* gy, double* xw, double* yw);
+	int* list;       // Array for managing lists of elements (e.g., for sparse matrix solvers).
+	int ncgsteps = 50000; // Number of conjugate gradient (CG) steps for iterative solver.
+
+	// Private helper methods for the simulation logic.
+	void current(double* currx, double* curry, double* u, double* gx, double* gy); // Calculates current.
+	void ppixel(int* pix, double* a, int nphase, int ntot); // Processes pixel data.
+	void bond(int* pix, double* gx, double* gy, Matrix2D<double>* sigma, Matrix3D<double>* be, int nphase, int ntot); // Calculates bond properties.
+	void prod(double* gx, double* gy, double* xw, double* yw); // Performs a product operation.
+	// This method likely performs a preconditioned conjugate gradient step or similar numerical operation.
 	void dembx(double* gx, double* gy, double* u, int* ic, double* gb, double* h, double* Ah, int* list, int nlist, double gtest);
+	// Utility function to split a string by a delimiter.
 	std::vector<std::string> split(std::string strToSplit, char delimeter);
 
 public:
-	double currx=0.0, curry=0.0;
-	double gtest = 1.0e-16 * 100*100;
-	void initValues(int x, int y);
+	double currx = 0.0, curry = 0.0; // Current values in x and y directions.
+	double gtest = 1.0e-16 * 100 * 100; // Global test parameter, possibly for convergence criteria.
+	void initValues(int x, int y); // Initializes various values based on grid dimensions.
 
-	void intitArrays();
-	int* pix;
+	void intitArrays(); // Initializes dynamically allocated arrays.
+	int* pix;           // Pixel data, likely representing material phases at each grid point.
 
+	// Constructor: Initializes FD2DEL with grid dimensions and component information.
 	FD2DEL(int x, int y, int components, int imaxComponents);
+	// Constructor: Initializes FD2DEL with only component information (grid dimensions to be set later).
 	FD2DEL(int icomponents, int imaxComponents);
-	~FD2DEL(void);
+	~FD2DEL(void); // Destructor: Cleans up dynamically allocated memory.
 
-
+	// --- File and Image Reading Methods ---
+	// Reads simulation parameters or grid data from a file.
 	void readFromFile(char* inputFileName);
-	
-	size_t readFromImageFile(std::string filename, std::list<int>* pixels);
 
+	// Reads pixel data from an image file, storing it in a list of integers.
+	size_t readFromImageFile(std::string filename, std::list<int>* pixels);
+	// Reads pixel data from an image file, storing it in a list of integers, and returns image dimensions.
 	size_t readFromImageFile(std::string filename, std::list<int>* pixels, int* x, int* y);
 
-	//long GetFileSize(std::string filename);
+	// Gets the size of an image file and extracts its dimensions (x, y).
 	long GetFileSize(std::string filename, int* x, int* y);
+	// Reads pixel data from an image file sequentially.
 	void readFromImageFileSequantially(char* inputFileName);
+	// Reads pixel data from an image file and returns image dimensions.
 	void readFromImageFile(char* inputFileName, int* x, int* y);
-	//void readFromFile(char* inputFileName, int* x, int* y, int components, int maxComponents);
-	void readFromFile(char* inputFileName, int* x, int* y);
-	void readFromArray(unsigned char* ingadients);
-	void readFromArray(unsigned char* ingadients, double* iMaterialsElecricConductivity);
-	//void run(char* inputFileName, char* outputFileName);
-	void run(char* inputFileName, char* outputFileName, int inphase);
+	// Reads simulation parameters from a file, including dimensions.
+	void readFromFile(char* inputFileName, int* x, int* y); // Overload.
 
+	// Reads material data (e.g., phases) from an unsigned character array.
+	void readFromArray(unsigned char* ingadients);
+	// Reads material data from an unsigned character array, mapping it to electric conductivities.
+	void readFromArray(unsigned char* ingadients, double* iMaterialsElecricConductivity);
+
+	// --- Simulation Execution Methods ---
+	// Runs the simulation with input and output file names.
+	// The commented-out version suggests an initial approach, replaced by a more specific one.
+	// void run(char* inputFileName, char* outputFileName);
+	// Runs the simulation with input file, output file, and number of phases.
+	void run(char* inputFileName, char* outputFileName, int inphase);
 };

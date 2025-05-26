@@ -1,4 +1,5 @@
-/*This file is part of Electric,Thermal, Mechanical Properties
+/*
+This file is part of Electric,Thermal, Mechanical Properties
 Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
 Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
@@ -27,118 +28,143 @@ if you use this programm and write a paper or report please cite above papers
 
 */
 
-#include "Settings.h"
+#include "Settings.h" // Includes the header for the Settings class, which this file implements.
 
-#include "general.h" // Assuming this contains necessary definitions for Settings class members
-#include <sys/stat.h> // Potentially for file status, though not directly used in the read logic
-#include <string>     // For std::string
-#include <fstream>    // For std::ifstream
-#include <iostream>   // For std::cout, std::cerr
-#include <stdexcept>  // For std::stoi potential exceptions
-#include <limits>     // For std::numeric_limits
-#include <chrono>     // For std::chrono
-#include <thread>     // For std::this_thread::sleep_for
-#include <map>        // For std::map to potentially store settings (not used here to preserve original structure)
-#include <algorithm>  // For std::transform and std::tolower
+#include "general.h"   // Assumed to contain declarations for `delay` and potentially other common utilities.
+#include <sys/stat.h>  // System/stat.h might be included for file status checks, though not directly used in the provided logic for reading.
+#include <string>      // For `std::string` manipulation.
+#include <fstream>     // For file input operations, specifically `std::ifstream`.
+#include <iostream>    // For input/output operations, like `std::cout` and `std::cerr`.
+#include <stdexcept>   // For exception handling, specifically `std::invalid_argument` and `std::out_of_range` used with `std::stoi`.
+#include <limits>      // For `std::numeric_limits`, though not directly used in this snippet's logic.
+#include <chrono>      // For `std::chrono` functionalities, like `std::chrono::seconds`.
+#include <thread>      // For `std::this_thread::sleep_for`.
+#include <map>         // For `std::map`, although not used in the final version of the `readFromFile` method, it was likely considered.
+#include <algorithm>   // For `std::transform` and `std::tolower`, used in the `toLower` helper function.
 
 
-// Helper function to convert a string to lowercase for case-insensitive comparisons
+// Helper function: toLower
+// Converts a given string to lowercase. This is useful for case-insensitive comparisons
+// when reading settings from a configuration file (e.g., "TRUE" vs "true").
 std::string toLower(std::string s) {
+    // `std::transform` applies a given operation to each element in a range.
+    // Here, it iterates through the string `s` and converts each character to its lowercase equivalent.
     std::transform(s.begin(), s.end(), s.begin(),
         [](unsigned char c) { return std::tolower(c); });
-    return s;
+    return s; // Returns the lowercase version of the string.
 }
 
+// Settings::readFromFile
+// Reads configuration settings from a specified file and populates the member variables
+// of the `Settings` class. It handles comments, empty lines, and basic error checking.
 void Settings::readFromFile(char* fileName)
 {
-    std::string line;
-    std::ifstream inputFile(fileName);
+    std::string line;               // A temporary string to store each line read from the file.
+    std::ifstream inputFile(fileName); // Opens the specified file for reading.
 
+    // Check if the file was successfully opened.
     if (inputFile.is_open())
     {
-        // Helper lambda to read a line and skip comments/empty lines.
-        // Returns false if EOF is reached or a read error occurs.
+        // Helper lambda: readNextValidLine
+        // This lambda function reads lines from the input file, skipping any empty lines
+        // or lines that start with '#' (which are treated as comments).
+        // It returns `true` if a valid, non-comment line is read into `currentLine`,
+        // and `false` if the end of the file is reached or a read error occurs.
         auto readNextValidLine = [&](std::ifstream& file, std::string& currentLine) {
             while (std::getline(file, currentLine)) {
-                // Trim leading/trailing whitespace (optional, but good practice for config files)
-                // For simplicity, not adding full trim here to minimize changes to core logic.
-                // If currentLine[0] is used, make sure string is not empty first.
+                // Check if the line is empty or starts with '#' (comment).
+                // If it is, skip to the next line.
                 if (currentLine.empty() || currentLine[0] == '#') {
-                    continue; // Skip empty lines or lines starting with '#' (comments)
+                    continue; // Skip empty lines or comment lines.
                 }
-                return true; // Found a valid, non-comment line
+                return true; // A valid, non-comment line was found.
             }
-            return false; // End of file or read error
+            return false; // End of file or read error.
             };
 
-        // Helper lambda to read a boolean setting
+        // Helper lambda: readBoolSetting
+        // This lambda reads a boolean setting from the file. It expects the value
+        // to be "true" or "false" (case-insensitive).
+        // If an unexpected end of file is encountered, it prints an error and exits.
         auto readBoolSetting = [&](bool& settingVar, const char* settingName) {
             if (!readNextValidLine(inputFile, line)) {
                 std::cerr << "Error: Unexpected end of file while reading '" << settingName << "' setting.\n";
-                inputFile.close();
-                exit(-1);
+                inputFile.close(); // Close the file before exiting.
+                exit(-1);          // Terminate the program with an error code.
             }
-            settingVar = (toLower(line) == "true"); // Case-insensitive comparison
+            // Convert the read line to lowercase and compare it to "true" to set the boolean variable.
+            settingVar = (toLower(line) == "true");
             };
 
-        // Helper lambda to read a string setting (e.g., for "BMP" vs others)
+        // Helper lambda: readStringSetting
+        // This lambda reads a string setting directly from the file.
+        // Similar to `readBoolSetting`, it handles unexpected end of file scenarios.
         auto readStringSetting = [&](std::string& settingVar, const char* settingName) {
             if (!readNextValidLine(inputFile, line)) {
                 std::cerr << "Error: Unexpected end of file while reading '" << settingName << "' setting.\n";
                 inputFile.close();
                 exit(-1);
             }
-            settingVar = line; // Directly assign the read line
+            settingVar = line; // Directly assign the read line to the setting variable.
             };
 
-        // --- Read save image file setting ---
+        // --- Read 'saveImageFile' setting ---
+        // Determines whether to save image files.
         readBoolSetting(saveImageFile, "saveImageFile");
 
-        // --- Read random save image file setting ---
+        // --- Read 'RandomSaveImageFile' setting ---
+        // Determines if image saving should be random.
         readBoolSetting(RandomSaveImageFile, "RandomSaveImageFile");
 
-        // --- Read total images to save setting ---
+        // --- Read 'totalImagesToSave' setting ---
+        // Determines the total number of images to save if random saving is enabled.
         if (!readNextValidLine(inputFile, line)) {
             std::cerr << "Error: Unexpected end of file while reading 'totalImagesToSave' setting.\n";
             inputFile.close();
             exit(-1);
         }
         try {
+            // Attempt to convert the read line (string) to an integer.
             totalImagesToSave = std::stoi(line);
         }
         catch (const std::invalid_argument& e) {
+            // Catch error if the string is not a valid integer.
             std::cerr << "Error: Invalid argument for totalImagesToSave: '" << line << "'. " << e.what() << "\n";
             inputFile.close();
             exit(-1);
         }
         catch (const std::out_of_range& e) {
+            // Catch error if the integer value is out of the representable range for `int`.
             std::cerr << "Error: totalImagesToSave value out of range: '" << line << "'. " << e.what() << "\n";
             inputFile.close();
             exit(-1);
         }
 
-        // --- Read save shapes setting ---
+        // --- Read 'saveShapes' setting ---
+        // Determines whether to save generated shapes.
         readBoolSetting(saveShapes, "saveShapes");
 
-        // --- Read save as BMP setting ---
-        // We need the original line here to check for "BMP"/"bmp"
-        readStringSetting(line, "saveAsBmpImage_format"); // Read into 'line'
-        saveAsBmpImage = (toLower(line) == "bmp");
+        // --- Read 'saveAsBmpImage' setting ---
+        // Determines if images should be saved in BMP format. It reads a string
+        // and checks if it's "bmp" (case-insensitive).
+        readStringSetting(line, "saveAsBmpImage_format"); // Reads the format string into 'line'.
+        saveAsBmpImage = (toLower(line) == "bmp");         // Sets `saveAsBmpImage` based on the format.
 
-        // --- Read is Lattice shapes setting ---
+        // --- Read 'isLattice' setting ---
+        // Determines if the simulation uses a lattice structure.
         readBoolSetting(isLattice, "isLattice");
 
-        inputFile.close(); // Close the file explicitly
+        inputFile.close(); // Always close the file after reading.
     }
-    else // File could not be opened
+    else // If the file could not be opened.
     {
         std::cout << "\n*************************************************************************************\n";
         std::cout << "Error: Cannot open or find file: ";
-        // Using std::string(fileName) for safer output and potential string operations
+        // Output the file name that could not be opened.
         std::cout << std::string(fileName) << ". Program halted...\n";
         std::cout << "*************************************************************************************\n";
-        // Some delay is better than waiting for user response
+        // Introduce a short delay before exiting, allowing the user to see the error message.
         delay(4);
-        exit(-1);
+        exit(-1); // Terminate the program with an error code.
     }
 }
