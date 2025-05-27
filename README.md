@@ -279,7 +279,7 @@ component| id|     X         |     Y         |  Width/a      | height/b |   hoop
            1,    5,        181,         276,        50.5,        50.5,          0  ,          0
            1,    6,        175,         206,        50.5,        50.5,          0  ,          0
            1,    7,        214,         180,        50.5,        50.5,          0  ,          0
-           1,    8,        293,          95,        50.5,        50.5,          0  ,          0
+           1,    8,         293,          95,        50.5,        50.5,          0  ,          0
            1,    9,         41,         156,        50.5,        50.5,          0  ,          0
 ------------------------------------------------------------------------------
 Component[1] Total Spheres = 9
@@ -329,9 +329,8 @@ Note: ETMPEWPT was developed as part of a PhD thesis. Due to the author's profes
 
 9. Credits
 Author and Lead Developer: Eleftherios Lamprou
-Contributors: (Any other contributors or team members can be added here, if applicable)
+Documentation Support / Authoring (via AI): Gemini (Google)
 Theory: The theory behind this project is published in two papers:
 E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite”, Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, https://doi.org/10.1016/j.physa.2024.129760
 E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022
-Code References: (As mentioned in the Finite Differences section) Edward Garboczi (Garboczi, E. (1998). Finite Element and Finite Difference Programs for Computing the Linear Electric and Elastic Properties of Digital Images of Random Materials. NIST Interagency/Internal Report (NISTIR), National Institute of Standards and Technology, Gaithersburg, MD, url="https://www.google.com/search?q=https://tsapps.nist.gov/publication/get_pdf.cfm%3Fpub_id%3D860168")
-<!-- end list -->
+Code References: (As mentioned in the Finite Differences section) Edward Garboczi (Garboczi, E. (1998). Finite Element and Finite Difference Programs for Computing the Linear Electric and Elastic Properties of Digital Images of Random Materials. NIST Interagency/Internal Report (NISTIR), National Institute of Standards and Technology, Gaithersburg, MD, url="https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=860168")
