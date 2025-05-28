@@ -338,7 +338,10 @@ Note: ETMPEWPT was developed as part of a PhD thesis. Due to the author's profes
 9. Credits
 Author and Lead Developer: Eleftherios Lamprou
 Documentation Support / Authoring (via AI): Gemini (Google)
-Theory: The theory behind this project is published in two papers:
-E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite”, Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, https://doi.org/10.1016/j.physa.2024.129760
-E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022
-Code References: (As mentioned in the Finite Differences section) Edward Garboczi (Garboczi, E. (1998). Finite Element and Finite Difference Programs for Computing the Linear Electric and Elastic Properties of Digital Images of Random Materials. NIST Interagency/Internal Report (NISTIR), National Institute of Standards and Technology, Gaithersburg, MD, url="https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=860168")
+**Theory**: The theory behind this project is published in two papers:
+
+* E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite”, Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, https://doi.org/10.1016/j.physa.2024.129760
+
+* E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022
+
+**Code References**: (As mentioned in the Finite Differences section) Edward Garboczi (Garboczi, E. (1998). Finite Element and Finite Difference Programs for Computing the Linear Electric and Elastic Properties of Digital Images of Random Materials. NIST Interagency/Internal Report (NISTIR), National Institute of Standards and Technology, Gaithersburg, MD, url="https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=860168")
