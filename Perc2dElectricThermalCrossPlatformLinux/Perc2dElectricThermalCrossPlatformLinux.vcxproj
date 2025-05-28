@@ -43,6 +43,7 @@
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+    <ProjectName>ETMPEWPT-Linux</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
@@ -74,6 +75,7 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemGroup>
     <ClCompile Include="..\percolation\BatchMonteCarlo.cpp" />
     <ClCompile Include="..\percolation\cluster.cpp" />
@@ -96,14 +98,34 @@
     <ClInclude Include="..\percolation\Settings.h" />
     <ClInclude Include="..\percolation\ShapeGenerator.h" />
     <ClInclude Include="..\percolation\Shapes.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\percolation\settings.txt" />
+    <Text Include="..\percolation\settings.txt">
+      <RemoteCopyToOutputDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</RemoteCopyToOutputDir>
+      <RemoteCopyFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</RemoteCopyFile>
+      <RemoteFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)bin\$(Platform)\$(Configuration)\</RemoteFile>
+    </Text>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
+    <RemotePostBuildEvent>
+      <Command>
+      </Command>
+      <AdditionalSourcesToCopyMapping>
+      </AdditionalSourcesToCopyMapping>
+    </RemotePostBuildEvent>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <AdditionalSourcesToCopyMapping>
+      </AdditionalSourcesToCopyMapping>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

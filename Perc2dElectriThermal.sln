@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Electric Percolation Continuum", "Percolation\Percolation.vcxproj", "{CE784617-0D8C-4CFA-ADF4-3E04C055ABAD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ETMPEWPT", "Percolation\Percolation.vcxproj", "{CE784617-0D8C-4CFA-ADF4-3E04C055ABAD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CreateInputs", "CreateInputs\CreateInputs.vcxproj", "{9232FF9C-4BB4-484F-B611-EFB9CCBFB2CC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Perc2dElectricThermalCrossPlatformLinux", "Perc2dElectricThermalCrossPlatformLinux\Perc2dElectricThermalCrossPlatformLinux.vcxproj", "{EDCD37F5-F83A-4FEE-BDE1-C1B76416E1C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ETMPEWPT-Linux", "Perc2dElectricThermalCrossPlatformLinux\Perc2dElectricThermalCrossPlatformLinux.vcxproj", "{EDCD37F5-F83A-4FEE-BDE1-C1B76416E1C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

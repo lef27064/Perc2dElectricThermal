@@ -16,13 +16,13 @@ int main()
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
 	cout << "Percolation Setup Input Program \n";
 	cout << "version 1.0\n";
-	cout << "Jan 2022\n";
+	cout << "Jan 2024\n";
 	cout << "Lefteris Lamprou\n";
 	cout << "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License\n";
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
 
 	string inputFile = "input.txt";
-	string directory = "..\\percolation\\inputs";
+	string directory = "..\source\inputs";
 
 	double ar[] = { 1 };
 	int totalfj = 20;
@@ -42,7 +42,7 @@ int main()
 
 		
 	
-	for (int i = 1; i <=60 ; i=i+1)
+	for (int i = 30; i <=47; i=i+1)
 	//for (int j = 0; j <= 0; j=j+1)
 		//	for (int j = 0; j <14; j++)
 	{
@@ -50,25 +50,25 @@ int main()
 		int iters = Iters[0];
 		int ppminCircle = 101;
 		//= 2 * sqrt(l);
-		int width = 1000; //Widths[j];
+		int width = 300; //Widths[j];
 		int height = width;
 		int depth = width;
 		//double w = fi + i * deltafi;
-		fi = 0.65+(float)i / 200.0;
+		fi = (float)i /100.0;
 		//fj = j / 100.0;
 		double w = fi;
 		string FileName = directory + "\\in_" + to_string(i) + "_" + to_string(ppminCircle) + "_" + to_string(width) + "_" + to_string(w) + ".txt";
 		// Debug cout << FileName << "\n";
 		inputFile.open(FileName);
 		inputFile << "#name\n";
-		inputFile << "ellipse_" << i << "iter" << iters << "ppmC_" << ppminCircle << "width_" << width << "_Area" << w << "\n";
+		inputFile << "ellipse_" << i << "_iter_" << iters << "_ppms_" << ppminCircle << "_width_" << width << "_Area_" << w << "\n";
 		inputFile << "#total component\n";
 		inputFile << "2\n";
 		inputFile << "#components % weights\n";
 		inputFile << 1.0 - fi  << " " << fi <<"\n";
-		inputFile << "#Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (disolver)\n";
+		inputFile << "#Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, моме = 4 (matrix)\n";
 		inputFile << "4 2\n";
-		inputFile << "#SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(disolver)\n";
+		inputFile << "#SizeType CONSTANT = 0 (Constant Size), VARIABLE = 1, (Variable Size), NONE = 3 None(matrix)\n";
 		inputFile << "3 0\n";
 		inputFile << "#Special Weights\n";
 		inputFile << "1.0 1.0\n";
@@ -85,7 +85,7 @@ int main()
 		inputFile << "#Thermal Conductivities\n";
 		inputFile << "1.e-16 1.0\n";
 		inputFile << "#Young Modulus\n";
-		inputFile << "1.e+5 1.e+8\n";
+		inputFile << "1.e+5 1.e+10\n";
 		inputFile << "#Poisson Ratio\n";
 		inputFile << "0.3 0.32\n";
 		inputFile << "#width - height - depth\n";

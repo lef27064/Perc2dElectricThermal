@@ -1,22 +1,32 @@
-/*This file is part of Electric Percolation (eperc2d) program.
+/*This file is part of Electric,Thermal, Mechanical Properties
+Estimation With Percolation Theory (ETMPEWPT) (2D version) program.
 
-Created from Lefteris Lamprou lef27064@otenet.gr during PhD thesis
+Created from Eleftherios Lamprou lef27064@otenet.gr during PhD thesis (2017-2024)
 
-eperc2d is free software : you can redistribute it and/or modify
+ETMPEWPT is free software : you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-eperc2d is distributed in the hope that it will be useful,
+ETMPEWPT is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Foobar.If not, see < https://www.gnu.org/licenses/>.
+
+Theory of this is published in two papers:
+1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
+Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
+https://doi.org/10.1016/j.physa.2024.129760
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+and its Applications, vol. 590, p. 126738, 2022
+
+if you use this programm and write a paper or report please cite above papers
+
 */
 
-#pragma once
 #include <filesystem>
 
 #include "Shapes.h"
@@ -31,7 +41,7 @@ along with Foobar.If not, see < https://www.gnu.org/licenses/>.
 
 class BatchMonteCarlo {
 public:
-	int total;
+	int total=0;
 
 
 	string directory;
@@ -53,6 +63,11 @@ public:
 	int getInputFiles(void);
 	void show(void);
 	void Run();
+	void singlRunsaveResultstoReportHeader(ReportType ireportType, char* fileName);
+
+	void singlRunsaveResultstoReport(ReportType ireportType, char* fileName, int i);
+	
+	void saveResultstoReport(ReportType ireportType);
 	void saveResultsWithSemicolon(void);
 	void saveResults();
 };

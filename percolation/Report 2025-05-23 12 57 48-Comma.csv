@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------------------------------------------------
+Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) 
+Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
+Last update: 1/7/2024
+Author:Eleftherios Lamprou
+Licence:This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.
+Developed during PhD Thesis (2017-2024)
+-------------------------------------------------------------------------------------------------------------------------
+Start at Fri May 23 12:57:48 2025
+Case,Mean Percolation Probability,Electric Conductivity,Thermal Conductivity,Young Modulus,Poisson Ratio,Total Conductive Paths,Mean Conductive Length,Log Electric Conductivity,Log Thermal Conductivity,Log Young Modulus,Log Poisson Ratio,Log Total Conductive Paths,Log Mean Conductive Length,Process Time,Preperation Time,Grid(X),Grid(Y),ppms,% Area - 0,% Area - 1,% Area - 2,% Real Area - 0,% Real Area - 1,% Real Area - 2,Size X -0,Size X -1,Size X -2,Size Y -0,Size Y -1,Size Y -2,Hoop Size - 0,Hoop Size - 1,Hoop Size - 2,
+ellipse_1iter300ppmC_101width_500_Area0.6,1,0.0455877,0.0455877,2.74877e+07,0.301454,91.25,1598.72,-3.08812,-3.08812,17.1293,-1.19914,4.5136,7.37696,0.129195,0.07207,1000,1000,101,0.349947,0.326731,0.323322,0.348969,0.327523,0.323508,1e-08,1e-08,1e-09,1e-08,1e-08,1e-08,5e-10,5e-10,5e-10
