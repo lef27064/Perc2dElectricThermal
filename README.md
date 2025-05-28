@@ -338,6 +338,7 @@ Note: ETMPEWPT was developed as part of a PhD thesis. Due to the author's profes
 9. Credits
 Author and Lead Developer: Eleftherios Lamprou
 Documentation Support / Authoring (via AI): Gemini (Google)
+
 **Theory**: The theory behind this project is published in two papers:
 
 * E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite”, Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, https://doi.org/10.1016/j.physa.2024.129760
