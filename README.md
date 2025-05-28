@@ -12,8 +12,8 @@ For ETMPEWPT to run smoothly, ensure your system meets the following requirement
 * **Processor:** x64 compatible processor. The program is single-threaded, so core frequency is more important than core count.
 * **RAM:** Highly dependent on the grid size defined in the input file.
     * For a 1000x1000 grid: Approximately 2 GB RAM.
-    * For a 5000x5000 grid: Approximately 50 GB RAM.
-    * For a 10000x10000 grid: Approximately 200 GB RAM.
+    * For a 5000x5000 grid: Approximately 8 GB RAM.
+    * For a 10000x10000 grid: Approximately 16 GB RAM.
 * **Disk Space:** Sufficient space for storing output files, especially if you choose to save images or `shapes` files for each realization.
 * **DirectX:** For certain visualization functions, DirectX compatibility may be required.
 
@@ -62,12 +62,15 @@ For compilation with **Visual Studio**:
 For compilation with **GNU g++ (MinGW/Linux)**:
 Open a terminal in the directory containing the source code files and execute a command similar to the following:
 ```bash
-g++ -std=c++17 -O3 -o ETMPEWPT main.cpp other_source_files.cpp -lm
+wget https://github.com/lef27064/Perc2dElectricThermal/archive/refs/heads/master.zip -O Perc2d.zip
+unzip Perc2d.zip
+cd Perc2dElectricThermal-master/Percolation
+g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17
 -std=c++17: Specifies the C++17 standard.
 -O3: Optimization level (recommended for performance).
--o ETMPEWPT: The name of the executable file.
-main.cpp other_source_files.cpp: The project's source code files.
--lm: Link with the math library (if required).
+-o Perc2d: The name of the executable file.
+-main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp: The project's source code files.
+-fopenmp use of omp library for parallel execution
 4. Input File (.txt)
 The ETMPEWPT program reads simulation parameters from a text file with a .txt extension. These files must be placed in the inputs/ subdirectory, which should be located in the same folder as the program's executable.
 
