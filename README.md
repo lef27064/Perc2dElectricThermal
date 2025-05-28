@@ -66,18 +66,20 @@ wget https://github.com/lef27064/Perc2dElectricThermal/archive/refs/heads/master
 unzip Perc2d.zip
 cd Perc2dElectricThermal-master/Percolation
 g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17
+```
 -std=c++17: Specifies the C++17 standard.
 -O3: Optimization level (recommended for performance).
 -o Perc2d: The name of the executable file.
 -main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp: The project's source code files.
 -fopenmp use of omp library for parallel execution
+
 4. Input File (.txt)
 The ETMPEWPT program reads simulation parameters from a text file with a .txt extension. These files must be placed in the inputs/ subdirectory, which should be located in the same folder as the program's executable.
 
 Each input file contains a series of parameters, with one parameter per line. Lines beginning with the # symbol are treated as comments and are ignored by the program.
 
 Below is a detailed description of each parameter based on a provided example:
-
+```
 #name
 example
 #total component
@@ -120,7 +122,7 @@ false
 FALSE
 Detailed Parameter Description
 #name
-
+```
 Description: The name assigned to the current simulation series (project name). This name will be used to create the output directory where results will be stored.
 Data Type: String.
 Possible Values: Any valid string suitable for a folder name.
