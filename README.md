@@ -246,8 +246,7 @@ The report.csv file begins with header information and the input parameters, fol
 
 Example Header and Data Table (report.csv):
 
-Απόσπασμα κώδικα
-
+```
 Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version)
 Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
 Report starting: ,Thu May 22 09:31:53 2025
@@ -266,11 +265,12 @@ Total iterations: ,300
 Realization No,PercolateY[1]/N[0],Process Time,Setup Time              ,% Real Area Comp[0]            ,% Real Area Comp[1],Electric Conductivity,Thermal Conductivity,Young Modulus,Poisson Ratio,Total Conductive Paths,Mean Real Path Length,Current Electric Conductivity
       1,                   1,      0.003,          0.002            ,0.502967             ,0.497033,115.71233808994294634,115.71233808994294634,5823086.67912218533456326,0.30027136259208237,1.00000000000000000,471.00000000000000000,0.00002880706922318
       2,                   0,0.00200000000000000,0.00100000000000000            ,0.52548888888888889             ,0.47451111111111111,0.00000000000000000,0.00000000000000000,100000.00000000000000000,0.29999999999999999,0.00000000000000000,0.00000000000000000,0.00000000000000000
+```
 shapes/ File Structure
 Each file within the shapes/ subdirectory describes the characteristics of individual particles for a specific realization.
 
 Example shapes/ file:
-
+```
 Component 1 maximum area=0.47 [on 300x300]
 Component type: Circle
 ---------------------------------------------------------------------------------------
@@ -289,12 +289,13 @@ component| id|     X         |     Y         |  Width/a      | height/b |   hoop
 ------------------------------------------------------------------------------
 Component[1] Total Spheres = 9
 Summary Report (Main Directory)
+```
+
 If multiple problems are executed sequentially (via multiple input files in the inputs directory), a summary report file is generated in the main directory (where the executable is located). This file aggregates key results from all executed simulations for a quick overview.
 
 Example Summary Report:
 
-Απόσπασμα κώδικα
-
+```
 -------------------------------------------------------------------------------------------------------------------------
 Electric,Thermal, Mechanical Properties Estimation With Percolation Theory (ETMPEWPT) (2D version) 
 Version 2.0 Percolation, Cluster Analysis,  Electric - Thermal - Mechanical properties
@@ -306,6 +307,8 @@ Developed during PhD Thesis (2017-2024)
 Start at Fri May 23 12:54:48 2025
 Case,Mean Percolation Probability,Electric Conductivity,Thermal Conductivity,Young Modulus,Poisson Ratio,Total Conductive Paths,Mean Conductive Length,Log Electric Conductivity,Log Thermal Conductivity,Log Young Modulus,Log Poisson Ratio,Log Total Conductive Paths,Log Mean Conductive Length,Process Time,Preperation Time,Grid(X),Grid(Y),ppms,% Area - 0,% Area - 1,% Area - 2,% Real Area - 0,% Real Area - 1,% Real Area - 2,Size X -0,Size X -1,Size X -2,Size Y -0,Size Y -1,Size Y -2,Hoop Size - 0,Hoop Size - 1,Hoop Size - 2,
 ellipse_1iter300ppmC_101width_500_Area0.6,1,0.0446882,0.0446882,2.93745e+07,0.301419,88.71,1591.6,-3.10804,-3.10804,17.1956,-1.19926,4.48537,7.3725,0.13424,0.06885,1000,1000,101,0.349947,0.326731,0.323322,0.348029,0.328438,0.323533,1e-08,1e-08,1e-09,1e-08,1e-08,1e-08,5e-10,5e-10,5e-10
+```
+
 6. License
 ETMPEWPT is distributed as open-source software and is licensed under the GNU General Public License (GPL) Version 3.
 
