@@ -65,7 +65,7 @@ Open a terminal in the directory containing the source code files and execute a 
 wget https://github.com/lef27064/Perc2dElectricThermal/archive/refs/heads/master.zip -O Perc2d.zip
 unzip Perc2d.zip
 cd Perc2dElectricThermal-master/Percolation
-g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17
+g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17 - O3
 ```
 -std=c++17: Specifies the C++17 standard.
 -O3: Optimization level (recommended for performance).
@@ -343,6 +343,6 @@ Documentation Support / Authoring (via AI): Gemini (Google)
 
 * E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite”, Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371, https://doi.org/10.1016/j.physa.2024.129760
 
-* E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022
+* E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022, https://doi.org/10.1016/j.physa.2021.126738
 
 **Code References**: (As mentioned in the Finite Differences section) Edward Garboczi (Garboczi, E. (1998). Finite Element and Finite Difference Programs for Computing the Linear Electric and Elastic Properties of Digital Images of Random Materials. NIST Interagency/Internal Report (NISTIR), National Institute of Standards and Technology, Gaithersburg, MD, url="https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=860168")
