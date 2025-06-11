@@ -76,7 +76,8 @@ int main() {
         return EXIT_FAILURE; // Exit with a failure code
 
     // Prompt user to press a key before exiting
-    cout << "Press any key to exit...";
+
+    std::cout << "\nSimulation ended successfully\nPress any key to exit...";
     //delay(5); // Optional delay (commented out)
 
     // Read a character from input to keep the console window open until user interaction
