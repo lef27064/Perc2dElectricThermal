@@ -210,6 +210,8 @@ public:
      */
     std::vector<std::string> split(std::string strToSplit, char delimeter);
 
+    void readFromFile(const std::string& inputFileName);
+
     /**
      * @brief Scales a point based on given scale factors.
      * @param orig The original point.
@@ -446,7 +448,7 @@ public:
      * @brief Reads simulation parameters and settings from an input file.
      * @param inputFileName The name of the input file.
      */
-    void readFromFile(char* inputFileName);
+    //void readFromFile(char* inputFileName);
 
     /**
      * @brief Exports simulation data in a format suitable for Finite Difference Method (FDM) analysis.

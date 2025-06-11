@@ -1541,6 +1541,271 @@ std::vector<std::string> ShapeGenerator::split(std::string strToSplit, char deli
     return splittedStrings; // Return the vector of split strings
 }
 
+
+// The modified function
+void ShapeGenerator::readFromFile(const std::string& inputFileName) {
+    std::string line; // String to hold each line read from the file
+    // Use std::string directly in the ifstream constructor
+    std::ifstream inputFile(inputFileName);
+
+    if (inputFile.is_open()) { // Check if the file was opened successfully
+        // Loop through each line of the file
+        while (std::getline(inputFile, line)) {
+            // Skip lines that start with '#' (comments)
+            // This loop handles multiple consecutive comment lines
+            while (!line.empty() && line[0] == '#') {
+                if (!std::getline(inputFile, line)) {
+                    // Handle unexpected end of file after comments
+                    std::cerr << "Error: Unexpected end of file while skipping comments.\n";
+                    inputFile.close();
+                    throw std::runtime_error("File reading error: Unexpected EOF.");
+                }
+            }
+
+            // If after skipping comments, the line is empty, continue to next iteration
+            // This prevents issues if there are blank lines after comments or at EOF
+            if (line.empty()) {
+                continue;
+            }
+
+            // Read project Name
+            projectName = line;
+
+            // Use helper lambda for repetitive "read line and skip comments" logic
+            auto readNextMeaningfulLine = [&](std::ifstream& file, std::string& currentLine) {
+                if (!std::getline(file, currentLine)) {
+                    // This indicates an unexpected end of file
+                    std::cerr << "Error: Unexpected end of file while reading data.\n";
+                    file.close();
+                    throw std::runtime_error("File reading error: Unexpected EOF.");
+                }
+                while (!currentLine.empty() && currentLine[0] == '#') {
+                    if (!std::getline(file, currentLine)) {
+                        std::cerr << "Error: Unexpected end of file while skipping comments for next data.\n";
+                        file.close();
+                        throw std::runtime_error("File reading error: Unexpected EOF.");
+                    }
+                }
+                // Handle empty lines that might appear after comments or between data blocks
+                if (currentLine.empty()) {
+                    // Depending on file format, you might want to throw an error
+                    // or just ignore if empty lines are allowed between data.
+                    // For robustness, I'll attempt to read another line if it's empty.
+                    // However, for structured config files, an empty line might indicate missing data.
+                    // For now, let's assume empty lines are *not* expected where data should be.
+                    // If empty lines are allowed, you'd add 'continue;' here or adjust the logic.
+                }
+                };
+
+            // Read total number of components
+            readNextMeaningfulLine(inputFile, line);
+            totalComponents = std::stoi(line);
+            // Resize vectors based on totalComponents
+            /*components.resize(totalComponents);
+            componentsType.resize(totalComponents);
+            componentsSizeType.resize(totalComponents);
+            specialWeights.resize(totalComponents);
+            dimensionX.resize(totalComponents);
+            dimensionY.resize(totalComponents);
+            hoops.resize(totalComponents);
+            materialsElectricConductivity.resize(totalComponents);
+            materialsThermalConductivity.resize(totalComponents);
+            materialsYoungModulus.resize(totalComponents);
+            materialsPoissonRatio.resize(totalComponents);*/
+
+            // Read % weight of components
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strComp = split(line, ' ');
+            if (strComp.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for weight percentage.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                components[i] = std::stod(strComp[i]);
+            }
+
+            // Read component types (Circle, Rectangle, Ellipse etc.)
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strCompType = split(line, ' ');
+            if (strCompType.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for type.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                componentsType[i] = static_cast<ShapeType>(std::stoi(strCompType[i])); // Use static_cast for enum
+            }
+
+            // Read component size types (Constant, Variable)
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strCompSizeType = split(line, ' ');
+            if (strCompSizeType.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for size type.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                componentsSizeType[i] = static_cast<SizeType>(std::stoi(strCompSizeType[i])); // Use static_cast for enum
+            }
+
+            // Read special weight for each component
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strWeights = split(line, ' ');
+            if (strWeights.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for special weights.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                specialWeights[i] = std::stod(strWeights[i]);
+            }
+
+            // Read first dimension (e.g., width or 'a' for ellipse) for each component
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strdimX = split(line, ' ');
+            if (strdimX.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for dimension X.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                dimensionX[i] = std::stod(strdimX[i]);
+            }
+
+            // Read second dimension (e.g., height or 'b' for ellipse) for each component
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strdimY = split(line, ' ');
+            if (strdimY.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for dimension Y.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                dimensionY[i] = std::stod(strdimY[i]);
+            }
+
+            // Read hoop distances for each component
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strHoops = split(line, ' ');
+            if (strHoops.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for hoops.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                hoops[i] = std::stod(strHoops[i]);
+            }
+
+            // Read electric conductivity for each material
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> streConductivity = split(line, ' ');
+            if (streConductivity.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for electric conductivity.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                materialsElectricConductivity[i] = std::stod(streConductivity[i]);
+            }
+
+            // Read thermal conductivity for each material
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> streThermalConductivity = split(line, ' ');
+            if (streThermalConductivity.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for thermal conductivity.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                materialsThermalConductivity[i] = std::stod(streThermalConductivity[i]);
+            }
+
+            // Read Young's modulus for each material
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> streYoungModulus = split(line, ' ');
+            if (streYoungModulus.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for Young's Modulus.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                materialsYoungModulus[i] = std::stod(streYoungModulus[i]);
+            }
+
+            // Read Poisson's Ratio for each material
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strPoissonRatio = split(line, ' ');
+            if (strPoissonRatio.size() != totalComponents) {
+                std::cerr << "Error: Mismatch in number of components for Poisson's Ratio.\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            for (int i = 0; i < totalComponents; i++) {
+                materialsPoissonRatio[i] = std::stod(strPoissonRatio[i]);
+            }
+
+            // Read grid dimensions (width and height)
+            readNextMeaningfulLine(inputFile, line);
+            std::vector<std::string> strSizes = split(line, ' ');
+            if (strSizes.size() != 2) {
+                std::cerr << "Error: Expected 2 grid dimensions (width, height).\n";
+                throw std::runtime_error("File parsing error.");
+            }
+            width = std::stoi(strSizes[0]);
+            height = std::stoi(strSizes[1]);
+
+            // Read total number of iterations
+            readNextMeaningfulLine(inputFile, line);
+            iterations = std::stoi(line);
+
+            // Read pixels per minimum size
+            readNextMeaningfulLine(inputFile, line);
+            pixelsPerMinimumSize = std::stoi(line);
+
+            // Read boolean for "Swiss Cheese" effect
+            readNextMeaningfulLine(inputFile, line);
+            // Case-insensitive comparison using std::string
+            std::transform(line.begin(), line.end(), line.begin(), ::tolower); // Convert to lowercase
+            swissCheese = (line == "true");
+
+            // Read boolean for calculating electric conductivity
+            readNextMeaningfulLine(inputFile, line);
+            std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+            calcElectricConductivity = (line == "true");
+
+            // Read boolean for calculating electric conductivity with FDM
+            readNextMeaningfulLine(inputFile, line);
+            std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+            calcElectricConductivityWithFDM = (line == "true");
+
+            // Read boolean for calculating statistics
+            readNextMeaningfulLine(inputFile, line);
+            std::transform(line.begin(), line.end(), line.begin(), ::tolower);
+            calcStatistcs = (line == "true");
+
+            // Break the while loop after the first block of parameters is read
+            // Assuming the file contains only one block of parameters to read
+            break;
+        }
+
+        inputFile.close(); // Close the input file
+
+        // Initialize min and max dimensions and factor
+        min = minElement(dimensionY, 0, totalComponents); // Find minimum Y dimension
+        max = maxElement(dimensionX, 0, totalComponents); // Find maximum X dimension
+
+        // Calculate scaling factor
+        if (min != 0) { // Avoid division by zero
+            factor = static_cast<double>(pixelsPerMinimumSize) / min;
+        }
+        else {
+            std::cerr << "Warning: Minimum dimension is zero, factor will be undefined.\n";
+            factor = 0.0; // Or throw an error
+        }
+
+    }
+    else { // If file opening failed
+        std::cerr << "*************************************************************************************\n";
+        std::cerr << "Error: Cannot find " << inputFileName << ". Program halted...\n";
+        std::cerr << "*************************************************************************************\n";
+        delay(4); // Some delay
+        exit(-1); // Exit program with an error code
+    }
+}
+
+
+
+/*
 // Reads simulation parameters from an input file
 void ShapeGenerator::readFromFile(char* inputFileName)
 {
@@ -1797,7 +2062,7 @@ void ShapeGenerator::readFromFile(char* inputFileName)
         delay(4); // Some delay
         exit(-1); // Exit program with an error code
     }
-}
+}*/
 
 // Exports grid data for Finite Difference Method (FDM) simulation
 void ShapeGenerator::exportForFDM(char* fileName)

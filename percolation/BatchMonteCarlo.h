@@ -63,10 +63,13 @@ public:
 	int getInputFiles(void);
 	void show(void);
 	void Run();
-	void singlRunsaveResultstoReportHeader(ReportType ireportType, char* fileName);
-
-	void singlRunsaveResultstoReport(ReportType ireportType, char* fileName, int i);
+	void singlRunsaveResultstoReportHeader(ReportType ireportType, std::string& generatedFileName);
 	
+		
+	void singlRunsaveResultstoReport(ReportType ireportType, const std::string& fileName, int i);
+
+	//void singlRunsaveResultstoReport(ReportType ireportType, char* fileName, int i);
+
 	void saveResultstoReport(ReportType ireportType);
 	void saveResultsWithSemicolon(void);
 	void saveResults();
