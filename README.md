@@ -65,7 +65,7 @@ Open a terminal in the directory containing the source code files and execute a 
 wget https://github.com/lef27064/Perc2dElectricThermal/archive/refs/heads/master.zip -O Perc2d.zip
 unzip Perc2d.zip
 cd Perc2dElectricThermal-master/Percolation
-g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17 - O3
+g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o Perc2d -fopenmp -std=c++17 -O3
 ```
 -std=c++17: Specifies the C++17 standard.
 -O3: Optimization level (recommended for performance).
