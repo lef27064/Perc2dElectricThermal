@@ -157,6 +157,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cluster.cpp" />
+    <ClCompile Include="Dinic_omp.cpp" />
+    <ClCompile Include="Edmonds_karp.cpp" />
     <ClCompile Include="FD2DEL.cpp" />
     <ClCompile Include="general.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -166,9 +168,12 @@
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="ShapeGenerator.cpp" />
+    <ClCompile Include="SimplePathFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cluster.h" />
+    <ClInclude Include="Dinic_omp.h" />
+    <ClInclude Include="Edmonds_karp.h" />
     <ClInclude Include="FD2DEL.h" />
     <ClInclude Include="general.h" />
     <ClInclude Include="Grid.h" />
@@ -177,6 +182,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShapeGenerator.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="SimplePathFinder.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="settings.txt">

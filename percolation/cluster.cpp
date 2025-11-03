@@ -26,7 +26,6 @@ and its Applications, vol. 590, p. 126738, 2022
 if you use this programm and write a paper or report please cite above papers
 
 */
-
 #include "cluster.h" // Includes the header file that defines the 'point2d', 'doublepoint2d', and 'Cluster' structures.
 
 // --- point2d Struct Implementations ---
@@ -62,6 +61,13 @@ doublepoint2d::doublepoint2d(double a, double b)
 }
 
 // --- Cluster Struct Implementation ---
+// Define the operator function here, and ONLY here
+bool operator<(const point2d& a, const point2d& b) {
+	if (a.y != b.y) {
+		return a.y < b.y;
+	}
+	return a.x < b.x;
+}
 
 // Default constructor for 'Cluster': Initializes the members of a Cluster structure.
 // 'radius' and 'inertia' are set to 0.0 (double), and 'totalPoints' to 0 (size_t).

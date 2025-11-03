@@ -49,6 +49,9 @@ struct point2d
 	point2d(void);         // Default constructor.
 };
 
+// Declare the operator function
+bool operator<(const point2d& a, const point2d& b);
+
 // Structure to store double-precision 2D coordinates.
 struct doublepoint2d
 {

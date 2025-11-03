@@ -49,11 +49,11 @@ public:
     bool RandomSaveImageFile; // Flag to determine if image saving should be random (e.g., save only some images)
     int totalImagesToSave;    // Total number of images to save if `RandomSaveImageFile` is true
     bool saveShapes;          // Flag to determine if generated shapes should be saved
-    bool saveAsBmpImage;      // Flag to determine if images should be saved in BMP format
+    ImageType imageType;      // Flag to determine the image format (e.g., BMP, PNG)
     bool isLattice;           // Flag to determine if the simulation uses a lattice structure (default to true)
 
     // Default constructor: Initializes all settings with default values
-    Settings(void) : saveImageFile(true), RandomSaveImageFile(true), totalImagesToSave(1), saveShapes(true), saveAsBmpImage(true), isLattice(true) {};
+    Settings(void) : saveImageFile(true), RandomSaveImageFile(true), totalImagesToSave(1), saveShapes(true), imageType(ImageType::PNG), isLattice(true) {};
 
     // Parameterized constructor: Allows initializing settings with custom values
     // `isaveImageFile`: initial value for `saveImageFile`
@@ -62,7 +62,7 @@ public:
     // `isaveShapes`: initial value for `saveShapes`
     Settings(bool isaveImageFile, bool iRandomSaveImageFile, int itotalImagesToSave, bool isaveShapes)
         : saveImageFile(isaveImageFile), RandomSaveImageFile(iRandomSaveImageFile),
-        totalImagesToSave(itotalImagesToSave), saveShapes(isaveShapes), saveAsBmpImage(true), isLattice(true) {
+        totalImagesToSave(itotalImagesToSave), saveShapes(isaveShapes), imageType(ImageType::PNG), isLattice(true) {
     };
 
     // Member function to read settings from a specified file

@@ -45,6 +45,7 @@ if you use this programm and write a paper or report please cite above papers
 #include "cluster.h" // Custom header for cluster-related definitions and structures (e.g., clusterStatistics).
 #include <omp.h>    // For OpenMP directives, enabling parallel programming.
 #include <vector>   // For std::vector, a dynamic array.
+#include <map>       // For `std::map`, a sorted associative container.
 
 #define maxDimension 30000 // Defines a maximum dimension for grid-related arrays, potentially for pre-allocation or limits.
 
@@ -235,9 +236,10 @@ public:
 	// Displays the grid state (e.g., prints to console or visualizes).
 	void show() const;
 	// Saves the current grid state to a disk file.
-	void saveToDisk(char* imageFileName, bool saveAsBMP);
+	void saveToDisk(char* imageFileName, ImageType cimageType);
 	// Saves the current grid state to a disk file at a specified path.
-	void saveToDisk(char* path, char* imageFileName, bool saveAsBMP);
+	void saveToDisk(char* path, char* imageFileName, ImageType cimageType);
+	
 
 	// Destructor: Frees dynamically allocated memory.
 	~Grid();

@@ -21,7 +21,7 @@ Theory of this is published in two papers:
 1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
 Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
 https://doi.org/10.1016/j.physa.2024.129760
-2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
 and its Applications, vol. 590, p. 126738, 2022
 
 if you use this programm and write a paper or report please cite above papers
@@ -46,9 +46,14 @@ using namespace std; // Brings all names from the `std` namespace into the curre
 // As published in paper with left preference, the order is Left, Down, Up, Right.
 */
 // The x-coordinate offsets for checking neighbors.
-int xNum[] = { -1, 0 ,1,  0 };
+int DFSxNum[] = {0, 1 ,0,  -1 };
 // The y-coordinate offsets for checking neighbors.
-int yNum[] = { 0,  1 ,0, -1 };
+int DFSyNum[] = {-1, 0 ,1, 0 };
+//best
+int xNum[] = {-1,0 ,1,  0 };
+// The y-coordinate offsets for checking neighbors.
+int yNum[] = {0, 1 ,0, -1 };
+
 
 
 // Constructor for the Grid class.
@@ -108,7 +113,7 @@ Grid::Grid(int x, int y) : width(x), height(y)
 }
 
 
-// `clear` method: Resets all values in the `cell`, `visited`, `ingadients`, `cluster`, and `clusterVisited` arrays.
+// `clear` method: Resets all values in the `cell`, `visited`, `ingradients`, `cluster`, and `clusterVisited` arrays.
 void Grid::clear(void)
 {
 #pragma omp parallel sections // Executes the following sections in parallel.
@@ -493,10 +498,10 @@ int Grid::DFS(char* mat, bool* ivisited, point2dShort src, point2d* target, int*
 		}
 
 		// Iterates through the 4 neighbors.
-		for (int i = 3; i > -1; i--)
+		for (int i = 0; i < 4; i++)
 		{
-			int x = curr.x + xNum[i]; // Calculates neighbor's x-coordinate.
-			int y = curr.y + yNum[i]; // Calculates neighbor's y-coordinate.
+			int x = curr.x + DFSxNum[i]; // Calculates neighbor's x-coordinate.
+			int y = curr.y + DFSyNum[i]; // Calculates neighbor's y-coordinate.
 
 			position = (size_t)y * width + x; // Calculates neighbor's linear index.
 			// If neighbor is valid and is `HARD` or `SOFT` (percolable materials), push it to the stack.
@@ -753,11 +758,11 @@ void Grid::MarkMinimumPath(char* mat, bool* ivisited, stack<smallQueueNode>* clu
 		mat[index] = HARD;       // Sets cell state back to `HARD`.
 
 		// If the current node's previous matches the `last` node's current, it's part of the path.
-		if ((last.previous.x == currentPoint.pt.x) && (last.previous.y == currentPoint.pt.y))
-		{
-			last = currentPoint;        // Updates `last` to current.
-			listPath->push_front(last); // Adds `last` to `listPath`.
-		}
+		//if ((last.previous.x == currentPoint.pt.x) && (last.previous.y == currentPoint.pt.y))
+		//{
+		//	last = currentPoint;        // Updates `last` to current.
+		//	listPath->push_front(last); // Adds `last` to `listPath`.
+		//}
 	}
 }
 
@@ -790,6 +795,7 @@ int Grid::drawPaths(char* mat, bool* ivisited)
 
 
 // `BFS` method: Performs a Breadth-First Search to find a percolation path and calculate properties.
+
 int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* ielectricConductivities, double* resistance, double* ithermalConductivities, double* thermalResistance, double* iYoungModulus, double* YoungModulus, double* iPoissonRatio, double* PoissonRatio, point2d* finalPoint)
 {
 	*distance = 0;        // Initializes distance.
@@ -797,6 +803,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 	*thermalResistance = 0; // Initializes thermal resistance.
 	*YoungModulus = 0;    // Initializes Young's Modulus.
 	*PoissonRatio = 0;    // Initializes Poisson's Ratio.
+	std::map<point2d, point2d> parentMap;
 
 	size_t position = (size_t)src.y * width + src.x; // Linear index of source.
 	if (!mat[position]) // Checks if source is valid.
@@ -832,7 +839,7 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 		q.pop(); // Removes current node from queue.
 
 		// Iterates through neighbors.
-		for (int i = 3; i > -1; i--)
+		for (int i = 0; i < 4; i++)
 		{
 			int x = pt.x + xNum[i]; // Neighbor x-coordinate.
 			int y = pt.y + yNum[i]; // Neighbor y-coordinate.
@@ -845,11 +852,34 @@ int Grid::BFS(char* mat, bool* ivisited, point2d src, int* distance, double* iel
 				q.push(Adjcell);    // Pushes neighbor to queue.
 				backup.push(Adjcell); // Pushes neighbor to backup stack for path reconstruction.
 				ivisited[position] = true; // Marks neighbor as visited.
+				// Store the parent-child relationship.
+				// The neighbor (Adjcell.pt) is the child, and the current point (pt) is the parent.
+				parentMap[Adjcell.pt] = pt;
 			}
 		}
 	}
 
 	this->pathsList.push_front(singlePath); // Adds an empty path to `pathsList` to be filled.
+	
+	list<smallQueueNode>& currentPathList = pathsList.front();
+	point2d currentPoint = *finalPoint;
+
+	// Backtrack from finalPoint to src
+	while (currentPoint.x != src.x || currentPoint.y != src.y)
+	{
+		// Find the parent of the current point
+		point2d parentPoint = parentMap.at(currentPoint);
+
+		// Create a new node for the current point and add it to the front of the list
+		smallQueueNode pathNode = { currentPoint, parentPoint, 0 }; // Distance can be calculated or ignored.
+		currentPathList.push_front(pathNode);
+
+		// Move to the parent point for the next iteration
+		currentPoint = parentPoint;
+	}
+	// Add the source node to the path
+	smallQueueNode srcNode = { src, {0, 0}, 0 };
+	currentPathList.push_front(srcNode);
 	MarkMinimumPath(mat, ivisited, &backup, &pathsList.front()); // Reconstructs the minimum path.
 	drawPath(cell, visited, pathsList.front()); // Draws the found path on the main `cell` grid.
 
@@ -1188,11 +1218,12 @@ int  Grid::percolateWithRealPathLength(double* totalpaths, double* meanlength, d
 	clock_t iend = clock(); // Records end time.
 	*proccessTime = ((double)(iend - istart)) / CLOCKS_PER_SEC; // Calculates processing time.
 	cout << "mean Paths per RVE=" << *totalpaths << "\n";          // Prints total paths.
+
 	cout << "mean RVE electric resistance=" << *omeanRVEResistance << "\n"; // Prints mean electric resistance.
 	cout << "mean RVE Thermal resistance=" << *omeanRVEThermalResistance << "\n"; // Prints mean thermal resistance.
 	cout << "mean RVE Young Modulus=" << *omeanRVEYoungModulus << "\n";       // Prints mean Young's Modulus.
 	cout << "mean RVE Poissons Ratio=" << *omeanRVEPoissonRatio << "\n";       // Prints mean Poisson's Ratio.
-
+	cout << "Current process time=" << *proccessTime << " seconds\n"; // Prints processing time.
 	return result; // Returns the percolation result.
 }
 
@@ -1213,33 +1244,28 @@ void  Grid::show() const
 }
 
 // `saveToDisk` method: Saves the grid as an image file (BMP or PGM).
-void  Grid::saveToDisk(char* imageFileName, ImageType cimageType)
+void  Grid::saveToDisk(char* imageFileName, bool saveAsBMP)
 {
-	switch (cimageType)
+	if (saveAsBMP) // If `saveAsBMP` is true, generate a BMP image.
 	{
-	case PGM:generatePGMImage(cell, height, width, imageFileName); // Calls function to create PGM.
-		break;
-	case BMP:generateBitmapImage(cell, height, width, imageFileName); // Calls function to create BMP.
-		break;
-	case PNG:generatePNGImage(imageFileName, reinterpret_cast<const unsigned char*>(cell), height, width);
-		break;
-	default:
-		break;
+		generateBitmapImage(cell, height, width, imageFileName); // Calls function to create BMP.
 	}
-	
-
+	else // Otherwise, generate a PGM image.
+	{
+		generatePGMImage(cell, height, width, imageFileName); // Calls function to create PGM.
+	}
 }
 
 
 // `saveToDisk` method (overloaded): Saves the grid to a specified `path` with `imageFileName`.
-void  Grid::saveToDisk(char* path, char* imageFileName, ImageType cimageType)
+void  Grid::saveToDisk(char* path, char* imageFileName, bool saveAsBMP)
 {
 	// Allocates memory for the full filename (path + filename + null terminator).
 	char* filename{ new char[strlen(path) + strlen(imageFileName) + 1] };
 
 	strcpy(filename, path);    // Copies the path.
 	strcat(filename, imageFileName); // Concatenates the image filename.
-	saveToDisk(filename, cimageType); // Calls the other `saveToDisk` method.
+	saveToDisk(filename, saveAsBMP); // Calls the other `saveToDisk` method.
 }
 
 

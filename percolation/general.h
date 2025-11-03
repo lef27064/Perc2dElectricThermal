@@ -27,7 +27,6 @@ and its Applications, vol. 590, p. 126738, 2022
 if you use this programm and write a paper or report please cite above papers
 
 */
-
 #pragma once // Ensures this header file is included only once in a compilation unit
 
 #include <fstream>      // For file stream operations (e.g., reading from files)
@@ -45,13 +44,19 @@ using namespace std; // Using the standard namespace to avoid prefixing std::
 
 // Enumeration defining possible states for a cell in the grid
 enum CellState {
-	PERCOLATE = '1', // Represents a cell that is part of a percolating cluster (conductor)
-	HARD = '3',      // Represents a 'hard core' cell (e.g., impenetrable particle center)
+	PERCOLATE = '3', // Represents a cell that is part of a percolating cluster (conductor)
+	HARD = '1',      // Represents a 'hard core' cell (e.g., impenetrable particle center)
 	EMPTY = '0',     // Represents an empty cell (no conductor)
 	SOFT = '2',      // Represents a 'soft shell' or 'hoop' cell (e.g., part of a particle's outer layer)
 	BORDER = '4',    // Represents a cell on the boundary of the simulation domain
 	PATH = '5',      // Represents a cell identified as part of a connected path
 	SIDEPATH = '6'   // Represents a cell identified as part of a side path (e.g., for specific analysis)
+};
+
+enum ImageType {
+	PGM = 0, // Portable Gray Map image format
+	BMP = 1,  // Bitmap image format
+	PNG = 2  // Portable Network Graphics image format
 };
 
 // Enumeration defining types of particle sizes or distribution

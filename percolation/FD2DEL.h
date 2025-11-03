@@ -26,7 +26,7 @@ and its Applications, vol. 590, p. 126738, 2022
 if you use this programm and write a paper or report please cite above papers
 
 */
-
+#pragma once // Ensures this header file is included only once in a compilation unit.
 #include <algorithm>   // For std::fill_n, which efficiently fills a range with a value.
 #include <iostream>    // For standard input/output operations, like std::cout.
 #include <string>      // For std::string class.

@@ -20,7 +20,7 @@ Theory of this is published in two papers:
 1. E. Lambrou and L. N. Gergidis, “A computational method for calculating the electrical and thermal properties of random composite” ,
 Physica A: Statistical Mechanics and its Applications, Volume 642, 2024, 129760, ISSN 0378-4371,
 https://doi.org/10.1016/j.physa.2024.129760
-2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
+2. E. Lambrou and L. N. Gergidis, “A particle digitization-based computational method for continuum percolation,” Physica A: Statistical Mechanics
 and its Applications, vol. 590, p. 126738, 2022
 
 if you use this programm and write a paper or report please cite above papers
@@ -28,6 +28,9 @@ if you use this programm and write a paper or report please cite above papers
 */
 
 #include "image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION 
+#include "stb_image_write.h" // Υποθέτουμε ότι το αρχείο είναι στον ίδιο φάκελο
+
 
 // --- Global Color Definitions Initialization ---
 // These are the global sRGB color variables declared in image.h.
@@ -144,9 +147,7 @@ void setcolor(unsigned char* image, int start, unsigned char red, unsigned char 
 
 void setcolor(unsigned char* image, int start, sRGB iRGB)
 {
-	image[start] = iRGB.red;
-	image[start + 1] = iRGB.green;
-	image[start + 2] = iRGB.blue;
+	setcolor(image, start, iRGB.red, iRGB.green, iRGB.blue);
 }
 
 
@@ -428,4 +429,76 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 	infoHeader[14] = (unsigned char)(bytesPerPixel * 8);
 
 	return infoHeader;
+}
+/**
+ * @brief Επιστρέφει ένα RGB χρώμα (3 unsigned char) βάσει της κατάστασης του pixel.
+ * Προσομοίωση της λογικής setcolor() της BMP συνάρτησης.
+ */
+ std::array<unsigned char,3> getColorForState(int state) {
+	// Χρησιμοποιούμε std::array<unsigned char, 3> για να επιστρέψουμε R, G, B
+	using ColorArray = std::array<unsigned char,3>;
+
+	switch (state) {
+	case SOFT:      return ColorArray{255,0,0 };      // Red (Κόκκινο)
+	case EMPTY:     return ColorArray{0,0,0};        // Black (Μαύρο)
+	case HARD:      return ColorArray{ 255, 165, 0 };    // Orange (Πορτοκαλί)
+	case PERCOLATE: return ColorArray{ 255, 255, 255 };  // White (Λευκό)
+	case PATH:      return ColorArray{ 255, 255, 0 };    // Yellow (Κίτρινο)
+	case SIDEPATH:  return ColorArray{ 0, 191, 255 };    // Deep Sky Blue (Ανοιχτό Μπλε) - Πιο ακριβές από Light Blue
+	default:        return ColorArray{ 128, 128, 128 };  // Gray (Γκρι) για άγνωστες τιμές
+	}
+}
+
+/**
+ * @brief Αποθηκεύει έναν μονοδιάστατο πίνακα 8-bit τιμών ως αρχείο PNG (RGB).
+ * Η τιμή κάθε pixel χρησιμοποιείται ως κατάσταση για την αντιστοίχιση σε RGB χρώμα.
+ * @param filename Το όνομα του αρχείου PNG.
+ * @param array Ο δείκτης (buffer) στα δεδομένα κατάστασης (1D, 8-bit).
+ * @param width Το πλάτος της εικόνας σε pixels.
+ * @param height Το ύψος της εικόνας σε pixels.
+ */
+void generatePNGImage(const std::string& filename, const unsigned char* array, int width, int height) {
+	// Τώρα αποθηκεύουμε σε RGB (3 κανάλια)
+	const int CHANNELS = 3;
+	// Το stride είναι το πλάτος σε bytes: πλάτος (pixels) * 3 (κανάλια)
+	int stride = width * CHANNELS;
+
+	// Δημιουργία ενιαίου buffer 1D για τα δεδομένα RGB: size = width * height * 3
+	std::vector<unsigned char> data_buffer(width * height * CHANNELS);
+
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			// Υπολογισμός του δείκτη εισόδου (8-bit state value)
+			size_t input_index = (size_t)y * width + x;
+			int pixel_state = array[input_index]; // Η τιμή είναι η κατάσταση (State)
+
+			// Υπολογισμός του δείκτη εξόδου (όπου αρχίζουν τα 3 RGB bytes)
+			size_t output_start_index = (size_t)y * stride + (size_t)x * CHANNELS;
+
+			// Αντιστοίχιση της 8-bit κατάστασης σε 24-bit RGB χρώμα
+			std::array<unsigned char, 3> rgb_color = getColorForState(pixel_state);
+
+			// Αποθήκευση των 3 καναλιών στο buffer εξόδου
+			data_buffer[output_start_index + 0] = rgb_color[0]; // Red
+			data_buffer[output_start_index + 1] = rgb_color[1]; // Green
+			data_buffer[output_start_index + 2] = rgb_color[2]; // Blue
+		}
+	}
+
+	// Κλήση της συνάρτησης stb_image_write
+	int success = stbi_write_png(
+		filename.c_str(),
+		width,
+		height,
+		CHANNELS, // 3 κανάλια
+		data_buffer.data(), // Ο buffer με τα RGB δεδομένα
+		stride
+	);
+
+	if (success) {
+		std::cout << "Success: Array saved to PNG file: " << filename << std::endl;
+	}
+	else {
+		std::cerr << "Error: Failed to write PNG file: " << filename << std::endl;
+	}
 }

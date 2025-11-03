@@ -26,6 +26,7 @@ and its Applications, vol. 590, p. 126738, 2022
 if you use this programm and write a paper or report please cite above papers
 
 */
+#pragma once // Ensures this header file is included only once in a compilation
 
 #include <filesystem>
 

@@ -148,7 +148,14 @@ void Settings::readFromFile(char* fileName)
         // Determines if images should be saved in BMP format. It reads a string
         // and checks if it's "bmp" (case-insensitive).
         readStringSetting(line, "saveAsBmpImage_format"); // Reads the format string into 'line'.
-        saveAsBmpImage = (toLower(line) == "bmp");         // Sets `saveAsBmpImage` based on the format.
+        if (toLower(line) == "bmp") 
+               imageType = BMP;
+        else {
+            if (toLower(line) == "png")
+                imageType = PNG;
+            else
+                imageType = PGM;
+        }
 
         // --- Read 'isLattice' setting ---
         // Determines if the simulation uses a lattice structure.

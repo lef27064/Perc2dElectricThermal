@@ -6,7 +6,7 @@ FALSE
 1
 #Save shapes
 true
-#Save image as BMP,PGM
-BMP
+#Save image as BMP,PGM, PNG
+PNG
 # Is Lattice
-false
+TRUE

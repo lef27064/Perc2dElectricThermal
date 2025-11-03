@@ -33,7 +33,7 @@ if you use this programm and write a paper or report please cite above papers
 #include "Grid.h"    // Custom header file likely defining the 'Grid' class or related structures/enums for cell states.
 #include <errno.h>   // Provides access to the 'errno' variable and error codes for reporting system errors.
 #include <string.h>  // Provides string manipulation functions, potentially used for error messages (e.g., strerror).
-
+#include <array>
 
 // Structure to represent an sRGB color with blue, green, and red components.
 // The order (Blue, Green, Red) is typical for BMP file format pixel data.
@@ -66,6 +66,7 @@ void  generatePGMImage(char* image, int height, int width, char* imageFileName);
 // @param width The width of the image in pixels.
 // @param imageFileName A C-style string representing the name of the output BMP file.
 void generateBitmapImage(char* image, int height, int width, char* imageFileName);
+void generatePNGImage(const std::string& filename, const unsigned char* array, int width, int height);
 
 // Generates a BMP (Bitmap) image from an integer array, possibly for "Fortran-style" binary data.
 // This might imply a simpler black/white or 2-color mapping based on integer values.
