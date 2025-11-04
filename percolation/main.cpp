@@ -54,13 +54,13 @@ int main() {
     std::cout.imbue(cpploc);  // Imbue cout with the local locale
 
     // Display program information header
-    cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
+    cout << string(100,'-')<<"\n";
     cout << info.program;  // Program title
     cout << info.version;  // Program version
     cout << info.date;     // Creation date
     cout << info.author;   // Author information
     cout << info.licence;  // License information
-    cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
+    cout << string(100,'-')<<"\n";
     cout << "Start at " << NowToString() << "\n"; // Display current start time
 
     // Create a new instance of BatchMonteCarlo to manage simulations

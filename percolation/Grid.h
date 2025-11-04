@@ -218,20 +218,27 @@ public:
 
 	// Performs the core percolation simulation and measures processing time.
 	int percolate(double* proccessTime);
+	int percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength, 
+		double* ielectricConductivities, double* ithermalConductivities, 
+		double* iYoungModulus, double* iShearModulus, double* iPoissonRatio, 
+		double* meanRVEResistance, double* meanRVEThermalResistance, 
+		double* meanRVEYoungModulus, double* meanRVEShearModulus, double* meanRVEPoissonRatio);
 	// Performs percolation and calculates real path lengths and various material properties.
-	int percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength,
+	/*int percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength,
 		double* ielectricConductivities, double* ithermalConductivities,
 		double* iYoungModulus, double* iPoissonRatio,
 		double* meanResistance, double* meanThermalResistance,
-		double* meanYoungModulus, double* MeanPoissonRatio);
+		double* meanYoungModulus, double* MeanPoissonRatio);*/
 	// Overloaded version of percolateWithRealPathLength, also returning process time.
-	int percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime,
+	/*int percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime,
 		double* ielectricConductivities, double* omeanResistance,
 		double* ithermalConductivities, double* omeanThermalResistance,
 		double* iYoungModulus, double* omeanYoungModulus,
-		double* iPoissonRatio, double* omeanPoissonRatio);
+		double* iPoissonRatio, double* omeanPoissonRatio);*/
 
 	// Display and saving methods:
+
+	int percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime, double* ielectricConductivities, double* omeanRVEResistance, double* ithermalConductivities, double* omeanRVEThermalResistance, double* iYoungModulus, double* omeanRVEYoungModulus, double* iShearModulus, double* omeanRVEShearModulus, double* iPoissonRatio, double* omeanRVEPoissonRatio);
 
 	// Displays the grid state (e.g., prints to console or visualizes).
 	void show() const;

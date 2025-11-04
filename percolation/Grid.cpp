@@ -1089,6 +1089,97 @@ int Grid::percolate(double* proccessTime)
 
 // `percolateWithRealPathLength` method: Performs percolation, identifies real paths,
 // and calculates electrical, thermal, and mechanical properties.
+int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iShearModulus, double* iPoissonRatio, double* meanRVEResistance, double* meanRVEThermalResistance, double* meanRVEYoungModulus, double* meanRVEShearModulus, double* meanRVEPoissonRatio)
+{
+	int i;						// Loop counter.
+	point2dShort startPoint;	// Starting point for DFS.
+	point2d endPoint = { 0,0 }; // Ending point of a path.
+
+	// Arrays to store properties for parallel processing (though current loop is sequential).
+	double pelectricResistance[4] = { 0,0,0,0 };
+	double pthermalResistance[4] = { 0,0,0,0 };
+	double pYoungModulus[4] = { 0,0,0,0 };
+	double pPoissonRatio[4] = { 0,0,0,0 };
+	int realLength[4] = { 0,0,0,0 };
+	int pathsLength[4] = { 0,0,0,0 };
+
+	double sumResistance = 0;			// Accumulator for reciprocal of resistance.
+	double sumThermalResistance = 0;	// Accumulator for reciprocal of thermal resistance.
+	double sumRealLength = 0;			// Accumulator for real path lengths.
+
+	*totalPaths = 0;					// Initializes total number of paths.
+	*meanLength = 0;					// Initializes mean path length.
+	*meanCalculatedLength = 0;			// Initializes mean calculated path length.
+
+	bool isPercolate = false;			// Flag for percolation.
+
+	// Iterates through each column at the top row.
+	for (i = 0; i < width; i++)
+	{
+		isPercolate = false; // Reset percolation flag for each column.
+		startPoint = { (short)i,(short)0 }; // Sets the starting point (top row, current column).
+		// If the starting cell is `HARD` or `SOFT`, attempt DFS.
+		if (cell[i] == CellState::HARD || cell[i] == CellState::SOFT)
+			isPercolate = DFS(cell, visited, startPoint, &endPoint, &pathsLength[0]); // Performs DFS to find a path.
+
+		if (isPercolate) // If a percolation path is found.
+		{
+			// Performs BFS to find the shortest path and calculate properties along it.
+			BFS(cell, visited, { i,0 }, &realLength[0], ielectricConductivities, &pelectricResistance[0], ithermalConductivities, &pthermalResistance[0], iYoungModulus, &pYoungModulus[0], iPoissonRatio, &pPoissonRatio[0], &endPoint);
+			*totalPaths = *totalPaths + 1; // Increments total paths found.
+			sumRealLength = sumRealLength + realLength[0]; // Accumulates real path lengths.
+		}
+	}
+
+	sumResistance = 0; // Reset sum of resistances.
+	// Iterates through all found paths to calculate detailed properties.
+	std::list<std::list<smallQueueNode>>::iterator it;
+	for (it = pathsList.begin(); it != pathsList.end(); ++it)
+	{
+		// Calculates properties along the current path.
+		CalcPropetriesAtPath(cell, visited, *it, pelectricResistance, ielectricConductivities, pthermalResistance, ithermalConductivities,
+			pYoungModulus, iYoungModulus, pPoissonRatio, iPoissonRatio);
+
+		sumResistance += 1 / pelectricResistance[0];       // Accumulates reciprocal of resistance.
+		sumThermalResistance += 1 / pthermalResistance[0]; // Accumulates reciprocal of thermal resistance.
+	}
+
+	// Final calculations for mean properties if paths were found.
+	if ((*totalPaths) > 0)
+	{
+		memset(end, PERCOLATE, width); // Marks the bottom row as `PERCOLATE`.
+
+		(*meanLength) = (sumRealLength) / (*totalPaths); // Calculates mean path length.
+		(*meanCalculatedLength) = (sumRealLength) / (*totalPaths); // Also mean calculated length.
+
+		(*meanRVEResistance) = 1 / sumResistance;       // Calculates mean RVE electrical resistance.
+		(*meanRVEThermalResistance) = 1 / sumThermalResistance; // Calculates mean RVE thermal resistance.
+
+		// Calculates mean RVE path width for mechanical properties.
+		double meanRVEPathWidth = (sumResistance / ielectricConductivities[1]) * (*meanLength / (*totalPaths));
+		// Calculates mean RVE Young's Modulus.
+		(*meanRVEYoungModulus) = pow((iYoungModulus[1] * (*totalPaths) * meanRVEPathWidth), (width / (*meanCalculatedLength))) + (iYoungModulus[0] * (width - ((*totalPaths) * meanRVEPathWidth)) / width);
+		// Calculates mean RVE Poisson's Ratio.
+		(*meanRVEShearModulus) = pow((iShearModulus[1] * (*totalPaths) * meanRVEPathWidth), (width / (*meanCalculatedLength))) + (iShearModulus[0] * (width - ((*totalPaths) * meanRVEPathWidth)) / width);
+		(*meanRVEPoissonRatio) = (*meanRVEYoungModulus) / (2 * (*meanRVEShearModulus)) - 1; // Calculates mean RVE Poisson's Ratio.
+	}
+	else // If no paths were found, properties are set to default or initial values.
+	{
+		(*meanLength) = 0;
+		*meanCalculatedLength = 0;
+		*meanRVEResistance = 0;
+		*meanRVEThermalResistance = 0;
+		*meanRVEYoungModulus = iYoungModulus[0];
+		*meanRVEPoissonRatio = iPoissonRatio[0];
+	}
+
+	pathsList.clear(); // Clears the list of paths.
+	return (*totalPaths > 0); // Returns true if any paths were found, false otherwise.
+}
+
+/*
+// `percolateWithRealPathLength` method: Performs percolation, identifies real paths,
+// and calculates electrical, thermal, and mechanical properties.
 int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, double* meanCalculatedLength, double* ielectricConductivities, double* ithermalConductivities, double* iYoungModulus, double* iPoissonRatio, double* meanRVEResistance, double* meanRVEThermalResistance, double* meanRVEYoungModulus, double* MeanRVEPoissonRatio)
 {
 	int i; // Loop counter.
@@ -1175,15 +1266,16 @@ int  Grid::percolateWithRealPathLength(double* totalPaths, double* meanLength, d
 	pathsList.clear(); // Clears the list of paths.
 	return (*totalPaths > 0); // Returns true if any paths were found, false otherwise.
 }
+*/
 
 // `percolateWithRealPathLength` method (overloaded): Calls the detailed percolation
 // method and prints the results and processing time.
-int  Grid::percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime, double* ielectricConductivities, double* omeanRVEResistance, double* ithermalConductivities, double* omeanRVEThermalResistance, double* iYoungModulus, double* omeanRVEYoungModulus, double* iPoissonRatio, double* omeanRVEPoissonRatio)
+int  Grid::percolateWithRealPathLength(double* totalpaths, double* meanlength, double* meanRealLength, double* proccessTime, double* ielectricConductivities, double* omeanRVEResistance, double* ithermalConductivities, double* omeanRVEThermalResistance, double* iYoungModulus, double* omeanRVEYoungModulus, double* iShearModulus, double* omeanRVEShearModulus, double* iPoissonRatio, double* omeanRVEPoissonRatio)
 {
 	int result; // Stores the result.
 	clock_t istart = clock(); // Records start time.
 	// Calls the detailed percolation method.
-	result = percolateWithRealPathLength(totalpaths, meanlength, meanRealLength, ielectricConductivities, ithermalConductivities, iYoungModulus, iPoissonRatio, omeanRVEResistance, omeanRVEThermalResistance, omeanRVEYoungModulus, omeanRVEPoissonRatio);
+	result = percolateWithRealPathLength(totalpaths, meanlength, meanRealLength, ielectricConductivities, ithermalConductivities, iYoungModulus, iShearModulus, iPoissonRatio, omeanRVEResistance, omeanRVEThermalResistance, omeanRVEYoungModulus, omeanRVEShearModulus, omeanRVEPoissonRatio);
 
 	clock_t iend = clock(); // Records end time.
 	*proccessTime = ((double)(iend - istart)) / CLOCKS_PER_SEC; // Calculates processing time.
@@ -1192,7 +1284,7 @@ int  Grid::percolateWithRealPathLength(double* totalpaths, double* meanlength, d
 	cout << "mean RVE Thermal resistance=" << *omeanRVEThermalResistance << "\n"; // Prints mean thermal resistance.
 	cout << "mean RVE Young Modulus=" << *omeanRVEYoungModulus << "\n";       // Prints mean Young's Modulus.
 	cout << "mean RVE Poissons Ratio=" << *omeanRVEPoissonRatio << "\n";       // Prints mean Poisson's Ratio.
-
+	cout << "mean RVE Shear Modoulus=" << (*omeanRVEYoungModulus) / (2 * (1 + (*omeanRVEPoissonRatio))) << "\n"; // Prints mean Shear Modulus.
 	return result; // Returns the percolation result.
 }
 

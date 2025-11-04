@@ -26,9 +26,9 @@ example
 #Poisson Ratio
 0.30 0.32
 #width - height - depth
-500 500
+2000 2000
 #iterations
-100
+40
 #pixels per min Sphere
 101
 #Swiss chesse case TRUE or FALSE
@@ -38,4 +38,4 @@ TRUE
 # CALC ELECTRIC CONDUCTIVITY WITH FINITE DIFFERENCES
 false
 # CALCULATE STATISTICS
-FALSE
+true
