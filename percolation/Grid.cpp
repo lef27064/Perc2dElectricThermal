@@ -53,7 +53,7 @@ int yNum[] = { 0,  1 ,0, -1 };
 
 // Constructor for the Grid class.
 // Initializes a grid of specified width `x` and height `y`.
-Grid::Grid(int x, int y) : width(x), height(y)
+/*Grid::Grid(int x, int y) : width(x), height(y)
 {
 	total = (size_t)width * height; // Calculates the total number of cells in the grid.
 
@@ -125,6 +125,50 @@ void Grid::clear(void)
 		std::fill_n(clusterVisited, total, 0);
 	}
 
+}*
+Grid::Grid(int x, int y) : width(x), height(y)
+{
+    total = static_cast<size_t>(width) * height;
+
+    // Δέσμευση με new[] (συμβατό με delete[])
+    start = new char[total + 1];
+    cell = start;
+    size_t lastLine = static_cast<size_t>(width) * (height - 1);
+    end = start + lastLine;
+
+    visited = new bool[total + 1];
+    ingadients = new unsigned char[total + 1];
+    cluster = new unsigned char[total + 1];
+    clusterVisited = new bool[total + 1];
+
+    // Καθαρισμός/Αρχικοποίηση
+    clear();
+}
+
+void Grid::clear(void)
+{
+    // Σειριακά ή με OpenMP parallel for αν η μνήμη είναι GBs
+    std::fill_n(start, total, CellState::EMPTY);
+    std::fill_n(visited, total, false);
+    std::fill_n(ingadients, total, 0);
+    std::fill_n(cluster, total, 0x0);
+    std::fill_n(clusterVisited, total, false);
+}
+
+Grid::~Grid() 
+{
+    // Αποδέσμευση με delete[] (ταιριάζει με το new[])
+    delete[] start;
+    delete[] ingadients;
+    delete[] visited;
+    delete[] clusterVisited;
+    delete[] cluster;
+
+    // Τα vectors (Clusters, cMaxClusterRadius) καθαρίζονται ΑΥΤΟΜΑΤΑ.
+    // ΔΕΝ καλούμε ~vector()!
+
+    start = nullptr;
+    end = nullptr;
 }
 
 // `get` method: Reads the cell state at the specified `x` (column) and `y` (line) coordinates.
@@ -1334,7 +1378,7 @@ void  Grid::saveToDisk(char* path, char* imageFileName, ImageType cimageType)
 	saveToDisk(filename, cimageType); // Calls the other `saveToDisk` method.
 }
 
-
+/*
 // Destructor for the Grid class: Frees all dynamically allocated memory.
 Grid::~Grid() {
 	delete[] start;         // Frees memory for `start` (and `cell`).
@@ -1348,4 +1392,4 @@ Grid::~Grid() {
 
 	start = 0; // Sets pointers to null to prevent dangling pointers.
 	end = 0;   // Sets pointers to null.
-}
+}*/
