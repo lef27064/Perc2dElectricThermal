@@ -147,8 +147,8 @@ Current directory : "./outputs/"
 ---
 
 ## Understanding Output Results
-All results are automatically categorized under outputs/<project_name>/:report.csv:  
-Realization-by-realization data and ensemble averages ($\sigma_{eff}$, $k_{eff}$, percolation state).  
+All results are automatically categorized under outputs/<project_name>/:  
+report.csv:Realization-by-realization data and ensemble averages ($\sigma_{eff}$, $k_{eff}$, percolation state).  
 ReportWithSemicolon.csv: CSV formatted with semicolon separators for European regional Excel settings.  
 Statistics.csv: Cluster size distributions and critical percolation path data.images/:  
 Exported 2D BMP microstructures for visual inspection.shapes/: Coordinates and orientation data for reconstructed inclusion geometries.
