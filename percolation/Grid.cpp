@@ -125,7 +125,8 @@ void Grid::clear(void)
 		std::fill_n(clusterVisited, total, 0);
 	}
 
-}*
+}*/
+
 Grid::Grid(int x, int y) : width(x), height(y)
 {
     total = static_cast<size_t>(width) * height;
