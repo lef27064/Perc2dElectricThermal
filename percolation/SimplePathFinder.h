@@ -12,24 +12,24 @@ private:
     int rows;
     int cols;
 
-    // Εσωτερική βοήθεια συνάρτηση για την εύρεση μονοπατιού με BFS
+    // Γ…Γ³ΓΉΓ΄Γ¥Γ±Γ©ΓªΓ ΓΆΓ―ΓΓ¨Γ¥Γ©Γ΅ Γ³ΓµΓ­ΓΓ±Γ΄Γ§Γ³Γ§ Γ£Γ©Γ΅ Γ΄Γ§Γ­ Γ¥Γ½Γ±Γ¥Γ³Γ§ Γ¬Γ―Γ­Γ―Γ°Γ΅Γ΄Γ©Γ―Γ½ Γ¬Γ¥ BFS
     std::vector<std::pair<int, int>> find_path_bfs(
         std::vector<std::vector<bool>>& visited,
         int start_row, int end_row
     );
-    std::vector<std::pair<int, int>> SimplePathFinder::find_path_dfs(
+    std::vector<std::pair<int, int>> find_path_dfs(
         std::vector<std::vector<bool>>& visited,
         int start_row, int end_row
     );
 
 public:
-    // Κατασκευαστής που δέχεται το πλέγμα, τις γραμμές και τις στήλες
+    // ΓΓ΅Γ΄Γ΅Γ³ΓªΓ¥ΓµΓ΅Γ³Γ΄ΓΓ² Γ°Γ―Γµ Γ¤ΓΓ·Γ¥Γ΄Γ΅Γ© Γ΄Γ― Γ°Γ«ΓΓ£Γ¬Γ΅, Γ΄Γ©Γ² Γ£Γ±Γ΅Γ¬Γ¬ΓΓ² ΓªΓ΅Γ© Γ΄Γ©Γ² Γ³Γ΄ΓΓ«Γ¥Γ²
     SimplePathFinder(char* input_grid, int num_rows, int num_cols);
 
-    // Συνάρτηση που βρίσκει και αφαιρεί όλα τα μονοπάτια
+    // Γ“ΓµΓ­ΓΓ±Γ΄Γ§Γ³Γ§ Γ°Γ―Γµ ΓΆΓ±ΓΓ³ΓªΓ¥Γ© ΓªΓ΅Γ© Γ΅Γ¶Γ΅Γ©Γ±Γ¥Γ ΓΌΓ«Γ΅ Γ΄Γ΅ Γ¬Γ―Γ­Γ―Γ°ΓΓ΄Γ©Γ΅
     int find_all_paths();
 
-    // Βοήθεια συνάρτηση για εκτύπωση του πλέγματος
+    // Γ‚Γ―ΓΓ¨Γ¥Γ©Γ΅ Γ³ΓµΓ­ΓΓ±Γ΄Γ§Γ³Γ§ Γ£Γ©Γ΅ Γ¥ΓªΓ΄Γ½Γ°ΓΉΓ³Γ§ Γ΄Γ―Γµ Γ°Γ«ΓΓ£Γ¬Γ΅Γ΄Γ―Γ²
     void print_grid();
 };
 
