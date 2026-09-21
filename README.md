@@ -54,3 +54,120 @@ Ensure the executable is placed in a directory with the following structure:
 ├── inputs/
 │   └── example_2d.txt
 └── outputs/
+```
+
+---
+Place your configuration files in the inputs/ directory.
+
+Edit settings.txt to define output paths and realization limits.
+
+Run ETMPEWPT.exe.
+
+## Compilation
+### Linux / macOS (GCC / Clang)
+```text
+git clone [https://github.com/lef27064/Perc2dElectricThermal.git](https://github.com/lef27064/Perc2dElectricThermal.git)
+cd Perc2dElectricThermal/Percolation
+g++ main.cpp cluster.cpp BatchMonteCarlo.cpp Settings.cpp Grid.cpp Shapes.cpp image.cpp FD2DEL.cpp ShapeGenerator.cpp general.cpp -o ETMPEWPT -fopenmp -std=c++17 -O3
+```
+
+### Windows (Visual Studio)
+Open the project solution in Visual Studio.
+
+Set C++ Language Standard to C++17 (/std:c++17).
+
+Enable OpenMP Support (/openmp) in C/C++ Project Properties.
+
+Build in Release - x64 mode.
+---
+
+## Input File Specification
+Input parameters are defined via text files inside inputs/.
+
+Example Input (inputs/example_2d.txt):
+```text
+#name
+example_run
+#total component
+3
+#components % weights
+0.4 0.3 0.3
+#Components type Geometry : RECTANGLE = 0, SLOPEDRECTANGLE = 1, ELLIPSE = 3, NONE = 4
+4 3 1
+#SizeType CONSTANT = 0, VARIABLE = 1, NONE = 3
+3 0 0
+#Special Weights
+1.6532 1.3279 1.342
+#Dimension X
+10.0e-09 10.0e-09 1.0e-09 
+#Dimension Y
+10.0e-09 10.0e-09 10.0e-09 
+#hoops
+0.5e-09 0.5e-09 0.5e-09
+#Electric Conductivities
+1.e-16 1.0 0.5
+#Thermal Conductivities
+1.e-16 1.0 0.5
+#Young Modulus
+1.e+5 1.e+10 0.5e+9
+#Poisson Ratio
+0.3 0.32 0.31
+#width - height
+1000 1000
+#iterations
+200
+#pixels per min Sphere
+101
+#Swiss chesse case TRUE or FALSE
+FALSE
+# CALC ELECTRIC CONDUCTIVITY
+TRUE
+# CALC ELECTRIC CONDUCTIVITY WITH FINITE DIFFERENCES
+FALSE
+# CALCULATE STATISTICS
+FALSE
+```
+---
+
+## Global Settings Configuration
+Global execution directives are defined in settings.txt:
+```text
+# Number of iterations for the simulation
+Total Iterations to Run : 300
+# Save Image Files (TRUE/FALSE)
+Save image file(s) : TRUE
+# How many random images to save
+Save random image(s) : 3
+# Save specific iterations (TRUE/FALSE)
+Save image(s) for specific iteration(s) : FALSE
+Iterations to save : 1, 50, 100
+# Output Directory
+Current directory : "./outputs/"
+```
+---
+
+## Understanding Output Results
+All results are automatically categorized under outputs/<project_name>/:report.csv:  
+Realization-by-realization data and ensemble averages ($\sigma_{eff}$, $k_{eff}$, percolation state).  
+ReportWithSemicolon.csv: CSV formatted with semicolon separators for European regional Excel settings.  
+Statistics.csv: Cluster size distributions and critical percolation path data.images/:  
+Exported 2D BMP microstructures for visual inspection.shapes/: Coordinates and orientation data for reconstructed inclusion geometries.
+
+---
+
+## License
+Distributed under the GNU General Public License v3.0 (GPL-3.0).
+See LICENSE for details.
+
+---
+
+## Citation & Publications
+Author: Eleftherios Lambrou  
+Contact: lef27064@otenet.gr  
+If you use ETMPEWPT in your research, please cite the following theoretical papers:
+
+1. E. Lambrou and L. N. Gergidis, "A computational method for calculating the electrical and thermal properties of random composite", Physica A: Statistical Mechanics and its Applications, vol. 642, p. 129760, 2024. DOI: 10.1016/j.physa.2024.129760E.
+
+2. Lambrou and L. N. Gergidis, "A particle digitization-based computational method for continuum percolation", Physica A: Statistical Mechanics and its Applications, vol. 590, p. 126738, 2022. DOI: 10.1016/j.physa.2021.126738
+
+---
