@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use ETMPEWPT in your research, please cite it as below."
+authors:
+  - family-names: "Lambrou"
+    given-names: "Eleftherios"
+    email: "lef27064@otenet.gr"
+title: "ETMPEWPT: Electric, Thermal, Mechanical Properties Estimation With Percolation Theory (2D Version)"
+version: "2.0.0-alpha"
+date-released: 2026-09-21
+url: "https://github.com/lef27064/Perc2dElectricThermal"
