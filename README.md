@@ -1,5 +1,6 @@
 # ETMPEWPT (Electric, Thermal, Mechanical Properties Estimation With Percolation Theory) - 2D Version
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22869715.svg)](https://doi.org/10.5281/zenodo.22869715)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![OpenMP](https://img.shields.io/badge/Parallel-OpenMP-orange.svg)](https://www.openmp.org/)
