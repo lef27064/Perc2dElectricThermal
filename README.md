@@ -161,7 +161,7 @@ Exported 2D BMP microstructures for visual inspection.shapes/: Coordinates and o
 
 You can run the full 2D Continuum Percolation simulation directly in Google Colab using our provided notebook:
 
-- 📓 **[Open Notebook in Colab] [https://colab.research.google.com/github/lef27064/Perc2dElectricThermal/blob/main/percolation/ETMPEWPT_QuickStart.ipynb](https://colab.research.google.com/github/lef27064/Perc2dElectricThermal/blob/main/percolation/ETMPEWPT_QuickStart.ipynb)** 
+- 📓 **[Open Notebook in Colab] [https://colab.research.google.com/github/lef27064/Perc2dElectricThermal/blob/master/percolation/ETMPEWPT_QuickStart.ipynb](https://colab.research.google.com/github/lef27064/Perc2dElectricThermal/blob/master/percolation/ETMPEWPT_QuickStart.ipynb)** 
 
 The notebook handles:
 - Environment cleanup and workspace setup
