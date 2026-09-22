@@ -20,8 +20,9 @@ The program generates representative volume elements (RVEs) through Monte Carlo 
 5. [Input File Specification](#input-file-specification)
 6. [Global Settings Configuration](#global-settings-configuration)
 7. [Understanding Output Results](#understanding-output-results)
-8. [License](#license)
-9. [Citation & Publications](#citation--publications)
+8. [Quick Start with Google Colab](#quick-start-with-google-colab)
+9. [License](#license)
+10. [Citation & Publications](#citation--publications)
 
 ---
 
@@ -153,6 +154,20 @@ report.csv:Realization-by-realization data and ensemble averages ($\sigma_{eff}$
 ReportWithSemicolon.csv: CSV formatted with semicolon separators for European regional Excel settings.  
 Statistics.csv: Cluster size distributions and critical percolation path data.images/:  
 Exported 2D BMP microstructures for visual inspection.shapes/: Coordinates and orientation data for reconstructed inclusion geometries.
+
+---
+
+## Quick Start with Google Colab
+
+You can run the full 2D Continuum Percolation simulation directly in Google Colab using our provided notebook:
+
+- 📓 **[Open Notebook in Colab](https://colab.research.google.com/github/lef27064/Perc2dElectricThermal/blob/main/percolation/try.ipynb)** *(προάρμοσε το path αν το μετονόμασες)*
+
+The notebook handles:
+- Environment cleanup and workspace setup
+- Automatic repository cloning & C++17 compilation with OpenMP support
+- Input file generation (`settings.txt` & `inputs/example_2d.txt`)
+- Execution of the `ETMPEWPT` binary
 
 ---
 
